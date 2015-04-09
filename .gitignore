@@ -1,0 +1,11 @@
+*~
+sched*
+*session.xml
+*.out
+\#*\#
+*_C.d
+*_C.so
+temp_gccflags.c
+.sl*/
+.consign
+*_cxx*

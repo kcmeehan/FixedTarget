@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<job maxFilesPerProcess="75" filesPerHour="10" simulateSubmission="false" fileListSyntax="paths">
+
+  <stdout URL="file:/gpfs01/star/pwg_tasks/lsf01/AuFixedTargetReco/logs/DataExtract_$JOBINDEX.out" />
+  <stderr URL="file:/gpfs01/star/pwg_tasks/lsf01/AuFixedTargetReco/logs/DataExtract_$JOBINDEX.err" />
+  
+
+  <input URL="filelist:/star/u/cflores/DataCollector/AuTarget_4GeV.list" />
+
+  <command>
+
+    cd /star/u/cflores/DataCollector/
+
+    root4star -q -b RunStDataCollectorMaker.C\(999999999,\"$FILELIST\",\"$SCRATCH/\",\"$JOBID\"\)
+  </command>
+
+  <output fromScratch="*.root" toURL="file:/gpfs01/star/pwg_tasks/lsf01/AuFixedTargetReco/dataFiles/"/>
+
+</job>
