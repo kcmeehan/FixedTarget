@@ -4,4 +4,4 @@ Email:		chrflores@ucdavis.edu
 
 Subsequent Contributors: (Please list your name here if you've made a contribution to this repo)
 
-This is a simple data collection Maker for grabing STAR data. It is built on three classes one for each of the following: Event, PrimaryVertex, and Track.
+This is a simple data collection Maker for grabbing STAR data. It is built on three classes one for each of the following: Event, PrimaryVertex, and Track.
