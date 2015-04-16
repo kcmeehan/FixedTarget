@@ -12,7 +12,7 @@ class EventInfo : public TObject {
 
  public:
 
-  //Data Memebers
+  //Data Members
   EventInfo();
   virtual ~EventInfo();
 

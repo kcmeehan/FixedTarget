@@ -66,7 +66,5 @@ void TrackInfo::SetTrackInfo(StMuTrack *track){
   firstPoint.SetXYZ(track->firstPoint().x(),track->firstPoint().y(),track->firstPoint().z());
   lastPoint.SetXYZ(track->lastPoint().x(),track->lastPoint().y(),track->lastPoint().z());
   tofMatchFlag = track->btofPidTraits().matchFlag();
-
-
 }
 
