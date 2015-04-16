@@ -1,3 +1,5 @@
+#include <iostream>
+#include <stdlib.h>
 #include <TObject.h>
 #include "TClonesArray.h"
 #include "TVector3.h"
@@ -62,7 +64,6 @@ void EventInfo::SetEventInfo(StMuDst *dst){
     AddPrimaryVertex(dst,iVertex);
   }
 
-
 }
 
 //__________________________________________________________
@@ -82,7 +83,7 @@ void EventInfo::ResetEventInfo(){
   eventNumber = -999;
   nPrimaryVertices = 0;
 
-  primaryVertexArray->Clear();
+  primaryVertexArray->Delete();
 }
 
 //__________________________________________________________
@@ -97,3 +98,4 @@ void EventInfo::PrintEventInfo(){
   if (nPrimaryVertices > 0)
     ((PrimaryVertexInfo *)primaryVertexArray->At(0))->PrintPrimaryVertexInfo();
 }
+

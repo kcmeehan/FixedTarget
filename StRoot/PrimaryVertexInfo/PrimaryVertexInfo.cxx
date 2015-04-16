@@ -13,7 +13,6 @@ ClassImp(PrimaryVertexInfo);
 //____________________________________________________________________________
 PrimaryVertexInfo::PrimaryVertexInfo(){
 
-
   vertexIndex = -999;
   nPrimaryTracks = -999;
   refMult = -999;
@@ -26,13 +25,12 @@ PrimaryVertexInfo::PrimaryVertexInfo(){
 
   trackArray = new TClonesArray("TrackInfo",0);
 
-
 }
 
 //___________________________________________________________________________
 PrimaryVertexInfo::~PrimaryVertexInfo(){
 
-  //delete trackArray;  
+  delete trackArray;  
 
 
 
@@ -50,7 +48,7 @@ void PrimaryVertexInfo::SetRefMultUserRange(Double_t etaLow, Double_t etaHigh){
 void PrimaryVertexInfo::SetPrimaryVertexInfo(StMuDst *dst, Int_t index){
 
   //Set the Vertex Index
-  dst->setVertexIndex(index);
+  //dst->setVertexIndex(index);
 
   vertexIndex    = index;
   nPrimaryTracks = dst->primaryTracks()->GetEntries();
@@ -61,7 +59,7 @@ void PrimaryVertexInfo::SetPrimaryVertexInfo(StMuDst *dst, Int_t index){
   zVertex        = dst->event()->primaryVertexPosition().z();
 
   //Loop Over All the Primary Tracks and Add them to the Track Array
-  //Also count them as contributing the the refMultUser if they satisfy
+  //Also count them as contributing to the refMultUser if they satisfy
   //the user defined range
   for (Int_t trackIndex=0; trackIndex < nPrimaryTracks; trackIndex++){
     
@@ -72,7 +70,6 @@ void PrimaryVertexInfo::SetPrimaryVertexInfo(StMuDst *dst, Int_t index){
     if (dst->primaryTracks(trackIndex)->eta() > refMultUserEtaLow &&
 	dst->primaryTracks(trackIndex)->eta() < refMultUserEtaHigh)
       refMultUser++;
-
   }
 
 }
@@ -99,7 +96,7 @@ void PrimaryVertexInfo::ResetPrimaryVertexInfo(){
   yVertex = -999;
   zVertex = -999;
 
-  trackArray->Clear();
+  trackArray->Delete();
 
 }
 
@@ -111,7 +108,4 @@ void PrimaryVertexInfo::PrintPrimaryVertexInfo(){
        <<"refMult: "          <<refMult         <<"\n"
        <<"refMultUser: "      <<refMultUser     <<"\n"
        <<"VertexLocation: x=" <<xVertex <<", y=" <<yVertex <<", z=" <<zVertex <<"\n";
-
-  cout <<((TrackInfo *)trackArray->At(0))->eta <<"\n";
-
 }
