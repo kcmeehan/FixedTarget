@@ -15,6 +15,7 @@ PrimaryVertexInfo::PrimaryVertexInfo(){
 
   vertexIndex = -999;
   nPrimaryTracks = -999;
+  ntofMatches = -999;
   refMult = -999;
   refMultUser = -999;
   refMultUserEtaLow = -.05;
@@ -52,6 +53,7 @@ void PrimaryVertexInfo::SetPrimaryVertexInfo(StMuDst *dst, Int_t index){
 
   vertexIndex    = index;
   nPrimaryTracks = dst->primaryTracks()->GetEntries();
+  ntofMatches    = 0;
   refMult        = dst->event()->refMult();
   refMultUser    = 0; //Counted In Loop Below
   xVertex        = dst->event()->primaryVertexPosition().x();
@@ -65,7 +67,8 @@ void PrimaryVertexInfo::SetPrimaryVertexInfo(StMuDst *dst, Int_t index){
     
     //Add the Track
     AddTrack(dst->primaryTracks(trackIndex),trackIndex);
-
+    
+    ntofMatches = ntofMatches + dst->primaryTracks(trackIndex)->btofPidTraits().matchFlag();
     //Count it as part of refMultUser
     if (dst->primaryTracks(trackIndex)->eta() > refMultUserEtaLow &&
 	dst->primaryTracks(trackIndex)->eta() < refMultUserEtaHigh)
@@ -88,6 +91,7 @@ void PrimaryVertexInfo::ResetPrimaryVertexInfo(){
 
   vertexIndex = -999;
   nPrimaryTracks = -999;
+  ntofMatches = -999;
   refMult = -999;
   refMultUser = -999;
   refMultUserEtaLow = -.05;
@@ -105,6 +109,7 @@ void PrimaryVertexInfo::PrintPrimaryVertexInfo(){
 
   cout <<"VertexIndex: "      <<vertexIndex     <<"\n"
        <<"nPrimaryTracks: "   <<nPrimaryTracks  <<"\n"
+       <<"ntofMatches: "   <<ntofMatches  <<"\n"
        <<"refMult: "          <<refMult         <<"\n"
        <<"refMultUser: "      <<refMultUser     <<"\n"
        <<"VertexLocation: x=" <<xVertex <<", y=" <<yVertex <<", z=" <<zVertex <<"\n";

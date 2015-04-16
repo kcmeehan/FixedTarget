@@ -17,6 +17,7 @@ class PrimaryVertexInfo : public TObject {
 
   Int_t vertexIndex;
   Int_t nPrimaryTracks;
+  Int_t ntofMatches;
   Double_t refMult;  //Standard RefMult |dN/dEta| < .5
   Double_t refMultUser; //RefMult in User defined Range
   Double_t refMultUserEtaLow;
