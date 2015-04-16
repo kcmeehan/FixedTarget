@@ -9,3 +9,4 @@ temp_gccflags.c
 .sl*/
 .consign
 *_cxx*
+*.root
