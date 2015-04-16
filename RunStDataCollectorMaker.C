@@ -39,8 +39,7 @@ void RunStDataCollectorMaker(Int_t nEvents=1,
   StMuDstMaker *muDstMaker = new StMuDstMaker(0,0,"",fileList,"",100);
   St_db_Maker *dbMaker = new St_db_Maker("StarDb","MySQL:StarDb");
 
-  StDataCollectionMaker *myMaker = 
-    new StDataCollectionMaker("StDataCollectionMaker");
+  StDataCollectionMaker *myMaker = new StDataCollectionMaker("StDataCollectionMaker");
 
   myMaker->SetOutDir(outDir);
   myMaker->SetFileIndex(index);

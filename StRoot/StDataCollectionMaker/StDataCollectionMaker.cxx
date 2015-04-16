@@ -23,6 +23,7 @@
 #include "StRunInfo.h"
 
 #include "StRoot/TrackInfo/TrackInfo.h"
+#include "StRoot/PrimaryVertexInfo/PrimaryVertexInfo.h"
 #include "StRoot/EventInfo/EventInfo.h"
 #include "StDataCollectionMaker.h"
 
