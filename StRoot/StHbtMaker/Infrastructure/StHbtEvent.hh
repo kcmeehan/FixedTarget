@@ -124,7 +124,8 @@ public:
   unsigned short ZdcAdcEast() const;
   unsigned short ZdcAdcWest() const;
   int NumberOfTpcHits() const;
-  UInt_t NumberOfTofMatches(const StMuDst*);
+  UInt_t NumberOfTofMatches() const;
+  UInt_t calcNumberOfTofMatches(const StMuDst*);
   unsigned short NumberOfTracks() const;
   unsigned short NumberOfGoodTracks() const;
   unsigned int UncorrectedNumberOfPositivePrimaries() const;

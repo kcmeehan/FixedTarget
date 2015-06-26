@@ -9,7 +9,7 @@ public:
 
   fxtEventCut();
   fxtEventCut(fxtEventCut&);
-  ~fxtEventCut();
+  //~fxtEventCut();
 
   void SetMult(const Int_t lo,const Int_t hi);
   void SetMinTofMatches(const Int_t min);
@@ -20,7 +20,7 @@ public:
   Int_t NEventsFailed();
 
   virtual StHbtString Report();
-  virtual bool Pass(const StHbtEvent*);
+  virtual Bool_t Pass(const StHbtEvent*);
 
   fxtEventCut* Clone();
 

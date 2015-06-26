@@ -214,7 +214,7 @@ StHbtEvent::StHbtEvent(const StMuDst* dst, int trackType) {
   mEventNumber = ev->eventNumber();
   mRunNumber = ev->runNumber();
   mTpcNhits = 0;
-  mNumberOfTofMatches = NumberOfTofMatches(dst);
+  mNumberOfTofMatches = calcNumberOfTofMatches(dst);
   mNumberOfTracks = ev->eventSummary().numberOfTracks();
   mNumberOfGoodTracks = ev->eventSummary().numberOfGoodTracks();
   mCtbMultiplicity = (unsigned short) ev->ctbMultiplicity();
@@ -298,7 +298,7 @@ StHbtEvent::StHbtEvent(const StMuDst* dst, int trackType, bool readV0Daughters) 
   mRunNumber = ev->runNumber();
   mTpcNhits = 0;
   mNumberOfTracks = ev->eventSummary().numberOfTracks();
-  mNumberOfTofMatches = NumberOfTofMatches(dst);
+  mNumberOfTofMatches = calcNumberOfTofMatches(dst);
   mNumberOfGoodTracks = ev->eventSummary().numberOfGoodTracks();
   mCtbMultiplicity = (unsigned short) ev->ctbMultiplicity();
   mZdcAdc[0] = (unsigned short) ev->zdcAdcAttentuatedSumWest();
@@ -583,6 +583,7 @@ unsigned short StHbtEvent::CtbMult() const {return mCtbMultiplicity;}
 unsigned short StHbtEvent::ZdcAdcEast() const {return mZdcAdc[0];}
 unsigned short StHbtEvent::ZdcAdcWest() const {return mZdcAdc[1];}
 int            StHbtEvent::NumberOfTpcHits() const {return mTpcNhits;}
+UInt_t         StHbtEvent::NumberOfTofMatches() const {return mNumberOfTofMatches;}
 unsigned short StHbtEvent::NumberOfTracks() const {return mNumberOfTracks;}
 unsigned short StHbtEvent::NumberOfGoodTracks() const {return mNumberOfGoodTracks;}
 unsigned int StHbtEvent::UncorrectedNumberOfPositivePrimaries() const {return mUncorrectedNumberOfPositivePrimaries;}
@@ -605,7 +606,7 @@ unsigned int StHbtEvent::TriggerWord() const {return mTriggerWord;}
 unsigned int StHbtEvent::TriggerActionWord() const {return mTriggerActionWord;}
 unsigned int StHbtEvent::L3TriggerAlgorithm(const unsigned int& i) const {return mL3TriggerAlgorithm[i];}
 
-UInt_t StHbtEvent::NumberOfTofMatches(const StMuDst* muDst){
+UInt_t StHbtEvent::calcNumberOfTofMatches(const StMuDst* muDst){
 
 	Int_t nPrimary 	= muDst->primaryTracks()->GetEntries();
 	Int_t nTofMatched = 0;
