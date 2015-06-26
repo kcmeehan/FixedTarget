@@ -124,6 +124,7 @@ public:
   unsigned short ZdcAdcEast() const;
   unsigned short ZdcAdcWest() const;
   int NumberOfTpcHits() const;
+  UInt_t NumberOfTofMatches(const StMuDst*);
   unsigned short NumberOfTracks() const;
   unsigned short NumberOfGoodTracks() const;
   unsigned int UncorrectedNumberOfPositivePrimaries() const;
@@ -173,6 +174,7 @@ private:
   unsigned short mZdcAdc[2];       // Zero-degree calorimeter 
                                          //values east/west
   int mTpcNhits;                         // number of TPC hits
+  UInt_t mNumberOfTofMatches;
   unsigned short mNumberOfTracks;     // total number of TPC tracks
   unsigned short mNumberOfGoodTracks; // number of "good" tracks
   unsigned int mUncorrectedNumberOfPositivePrimaries;

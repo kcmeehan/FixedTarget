@@ -214,6 +214,7 @@ StHbtEvent::StHbtEvent(const StMuDst* dst, int trackType) {
   mEventNumber = ev->eventNumber();
   mRunNumber = ev->runNumber();
   mTpcNhits = 0;
+  mNumberOfTofMatches = NumberOfTofMatches(dst);
   mNumberOfTracks = ev->eventSummary().numberOfTracks();
   mNumberOfGoodTracks = ev->eventSummary().numberOfGoodTracks();
   mCtbMultiplicity = (unsigned short) ev->ctbMultiplicity();
@@ -297,6 +298,7 @@ StHbtEvent::StHbtEvent(const StMuDst* dst, int trackType, bool readV0Daughters) 
   mRunNumber = ev->runNumber();
   mTpcNhits = 0;
   mNumberOfTracks = ev->eventSummary().numberOfTracks();
+  mNumberOfTofMatches = NumberOfTofMatches(dst);
   mNumberOfGoodTracks = ev->eventSummary().numberOfGoodTracks();
   mCtbMultiplicity = (unsigned short) ev->ctbMultiplicity();
   mZdcAdc[0] = (unsigned short) ev->zdcAdcAttentuatedSumWest();
@@ -439,6 +441,7 @@ StHbtEvent::StHbtEvent(const StHbtEvent& ev, StHbtTrackCut* tCut, StHbtV0Cut* vC
   mZdcAdc[0] = ev.mZdcAdc[0];
   mZdcAdc[1] = ev.mZdcAdc[1];
   mTpcNhits = ev.mTpcNhits;
+  mNumberOfTofMatches = ev.mNumberOfTofMatches;
   mNumberOfTracks = ev.mNumberOfTracks;
   mNumberOfGoodTracks = ev.mNumberOfGoodTracks;
   mUncorrectedNumberOfPositivePrimaries = ev.mUncorrectedNumberOfPositivePrimaries;
@@ -601,3 +604,28 @@ double StHbtEvent::MagneticField() const {return mMagneticField;}
 unsigned int StHbtEvent::TriggerWord() const {return mTriggerWord;}
 unsigned int StHbtEvent::TriggerActionWord() const {return mTriggerActionWord;}
 unsigned int StHbtEvent::L3TriggerAlgorithm(const unsigned int& i) const {return mL3TriggerAlgorithm[i];}
+
+UInt_t StHbtEvent::NumberOfTofMatches(const StMuDst* muDst){
+
+	Int_t nPrimary 	= muDst->primaryTracks()->GetEntries();
+	Int_t nTofMatched = 0;
+	for (int iNode = 0; iNode < nPrimary; iNode++ ){
+		StMuTrack*	tPrimary 	= (StMuTrack*)muDst->primaryTracks(iNode);
+//		StMuTrack*	tGlobal 	= (StMuTrack*)tPrimary->globalTrack();
+
+		if ( !tPrimary ) continue;
+		if ( tPrimary->vertexIndex() != 0 ) continue;
+
+		/**
+		 * Get Tof info
+		 */
+		StMuBTofPidTraits bTofPidTraits	= tPrimary->btofPidTraits();
+
+		if ( bTofPidTraits.matchFlag() > 0 ) 
+			nTofMatched++;
+	}
+
+	return nTofMatched;
+
+}
+
