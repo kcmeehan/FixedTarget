@@ -7,7 +7,7 @@
 
 void fxtFemtoAnalysis(const TString fileList = "FXTFiles.list" 
 					   , const TString outFile = "fxtTestOut.root"
-					   , const Int_t nEvents = 999
+					   , const Int_t nEvents = 99
                        )
 {
 	//------------------- Define Cut Values ------------------//
@@ -70,6 +70,11 @@ void fxtFemtoAnalysis(const TString fileList = "FXTFiles.list"
 
     // Two sets of track cuts, one for pi+ and on for pi-
     franksTrackCut* trackCut[2];
+    fxtTrackCutMonitor* trackPiPlusPass = new fxtTrackCutMonitor("_PiPlusPass_",piMass );
+    fxtTrackCutMonitor* trackPiPlusFail = new fxtTrackCutMonitor("_PiPlusFail",piMass );
+    fxtTrackCutMonitor* trackPiMinusPass = new fxtTrackCutMonitor("_PiMinusPass_",piMass );
+    fxtTrackCutMonitor* trackPiMinusFail = new fxtTrackCutMonitor("_PiMinusFail",piMass );
+
     for(Int_t i = 0; i <=1; i++)
     {
         trackCut[i] = new franksTrackCut;
@@ -85,6 +90,9 @@ void fxtFemtoAnalysis(const TString fileList = "FXTFiles.list"
         Int_t charge = i ? 1 : -1;
         trackCut[i]->SetCharge(charge);
     }
+
+    trackCut[0]->AddCutMonitor(trackPiMinusPass,trackPiMinusFail);
+    trackCut[1]->AddCutMonitor(trackPiPlusPass,trackPiPlusFail);
 
     // Pair Cuts
     kTPairCut* ktCut = new kTPairCut();
@@ -116,8 +124,8 @@ void fxtFemtoAnalysis(const TString fileList = "FXTFiles.list"
         fxtAnalysis[i]->SetNumEventsToMix(nEventsToMix);
 
         TString title = "";
-        if(i==0) {title += "_PiMinus";}
-        if(i==1) {title += "_PiPlus";}
+        if(i==0) {title += "PiMinus";}
+        if(i==1) {title += "PiPlus";}
         qinvCF[i] = new QinvCorrFctn(title.Data(),nQbins,qRange[0],qRange[1]);
         fxtAnalysis[i]->AddCorrFctn(qinvCF[i]);
     }
@@ -128,7 +136,7 @@ void fxtFemtoAnalysis(const TString fileList = "FXTFiles.list"
 	StChain* chain = new StChain("StChain");
 	chain->SetDebug(0);
 
-	StMuDstMaker* muMaker = new StMuDstMaker(0,0,"",fileList.Data(),"st:MuDst.root", 100, "MuDst");
+	StMuDstMaker* muMaker = new StMuDstMaker(0,0,"",fileList.Data(),"st:MuDst.root", 1000, "MuDst");
 	StHbtMaker* hbtMaker = new StHbtMaker;
     StHbtMuDstMakerReader* reader = new StHbtMuDstMakerReader(muMaker);
 	hbtMaker->HbtManager()->SetEventReader(reader);
@@ -144,14 +152,13 @@ void fxtFemtoAnalysis(const TString fileList = "FXTFiles.list"
   
 	for (Int_t i = 0; i < nEvents; i++)
     {
-		if(i%100==0) { cout << "Working on event " << i << " of " << nEvents << " events." << endl; }
 
 		chain->Clear();
 		Int_t makeReturn = chain->Make(i);
 
 		if (makeReturn)
         {
-			cout << "Bad return code!" << endl;
+			cout << "Out of events!" << endl;
 			break;
 		}
 	} 
@@ -179,8 +186,4 @@ void fxtFemtoAnalysis(const TString fileList = "FXTFiles.list"
 
     histoOutput.Close();
   
-    delete muMaker;
-    delete hbtMaker;
-    delete reader;
-    delete chain;
 }
