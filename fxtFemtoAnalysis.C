@@ -7,7 +7,7 @@
 
 void fxtFemtoAnalysis(const TString fileList = "FXTFiles.list" 
 					   , const TString outFile = "fxtTestOut.root"
-					   , const Int_t nEvents = 99
+					   , const Int_t nEvents = 9999
                        )
 {
 	//------------------- Define Cut Values ------------------//
@@ -80,10 +80,10 @@ void fxtFemtoAnalysis(const TString fileList = "FXTFiles.list"
         trackCut[i] = new franksTrackCut;
         trackCut[i]->SetMass(piMass);
         trackCut[i]->SetRapidity(rapidity[0],rapidity[1]);
-        trackCut[i]->SetNSigmaProton(-10000,nSigma[0]);         // Enforces that |nsigma_pion| < 2
-        trackCut[i]->SetNSigmaKaon(-10000,nSigma[0]);           // and that nsigma_proton < -2,
-        trackCut[i]->SetNSigmaPion(nSigma[0],nSigma[1]);        // nsigma_kaon < -2, and 
-        trackCut[i]->SetNSigmaElectron(nSigma[1],10000);        // nsigma_electron > 2
+        trackCut[i]->SetNSigmaProton(nSigma[1],nSigma[0]);
+        trackCut[i]->SetNSigmaKaon(nSigma[1],nSigma[0]);
+        trackCut[i]->SetNSigmaPion(nSigma[0],nSigma[1]);
+        trackCut[i]->SetNSigmaElectron(nSigma[1],nSigma[0]);
         trackCut[i]->SetPt(pt[0],pt[1]);
         trackCut[i]->SetNHits(nHitsTpc[0],nHitsTpc[1]);
         trackCut[i]->SetDCAGlobal(dcaGlobal[0],dcaGlobal[1]);
