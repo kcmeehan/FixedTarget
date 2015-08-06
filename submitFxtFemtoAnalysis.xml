@@ -5,7 +5,7 @@
     <command>
         starver SL14i
         cons   
-        root4star -l -q -b fxtFemtoAnalysis.C\(\"$FILELIST\",\"FXT_${JOBID}.root\",999999) &gt;&amp; ${JOBID}.log
+        root4star -l -q -b fxtFemtoAnalysis.C\(\"$FILELIST\",\"FXT_${JOBID}.root\",999999\) &gt;&amp; ${JOBID}.log
     </command> 
 
     <SandBox installer="ZIP">
@@ -22,7 +22,7 @@
     <stderr URL="file:/gpfs/mnt/gpfs01/star/scratch/campbell/fxtTest/logs/$JOBID.err"/>                         <!-- Change Path -->
 
     <Generator>
-        <Location>./submitDirectory</Location>
-        <ReportLocation>/gpfs/mnt/gpfs01/star/scratch/campbell/fxtTest/logs/</ReportLocation>                   <!-- Change Path -->
+        <Location>/gpfs/mnt/gpfs01/star/scratch/campbell/fxtTest/submitDirectory</Location>
+        <ReportLocation>/gpfs/mnt/gpfs01/star/scratch/campbell/fxtTest/submitDirectory</ReportLocation>                   <!-- Change Path -->
     </Generator>
 </job>
