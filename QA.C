@@ -9,15 +9,20 @@ Bool_t isPion(StMuTrack* track);
 Bool_t isKaon(StMuTrack* track);
 Bool_t isProton(StMuTrack* track);
 
-void QA(const TString fileList = "FXTFiles.list"
+void QA(const TString fileList = "4x5GeVfxtFiles.list"
 				, const TString outFile = "testOut.root" 
 				, const Int_t nEvents = 999 
 				)
 {
 
 	TStopwatch* timer = new TStopwatch();
+	//----------------- Define event cuts ---------------//
+    // 3.3 GeV
+    // Float_t VzLow = 209, VzHigh = 211, VxLow = -2, VxHigh = 2, VyLow = -4, VyHigh = -2, minTofMatches = 11;
+    // 4.5 GeV
+    Float_t VzLow = 210, VzHigh = 212, VxLow = -10, VxHigh = 10, VyLow = -10, VyHigh = 10, minTofMatches = 2;
 
-	//-----------------  Load Libraries ---------------//
+	//----------------- Load Libraries ---------------//
 	gROOT->LoadMacro("$STAR/StRoot/StMuDSTMaker/COMMON/macros/loadSharedLibraries.C");
 	loadSharedLibraries();
 
@@ -31,7 +36,12 @@ void QA(const TString fileList = "FXTFiles.list"
 	//----------------------- Make Histograms, etc. -----------------------//
 
 	TH1I* hRefmult = new TH1I("hRefmult","refmult", 800,0.5,800.5);
+    TProfile* piPlusMultVsRefmult = new TProfile("piPlusMultVsRefmult","piPlusMultVsRefmult", 800,0.5,800.5);
+    TProfile* piMinusMultVsRefmult = new TProfile("piMinusMultVsRefmult","piMinusMultVsRefmult", 800,0.5,800.5);
+    TH2F* dEdxElectron = new TH2F("dEdxElectron","dEdxElectron",500,-2,2,200,0,0.00004);
     TH2F* dEdxPion = new TH2F("dEdxPion","dEdxPion",500,-2,2,200,0,0.00004);
+    TH2F* dEdxKaon = new TH2F("dEdxKaon","dEdxKaon",500,-2,2,200,0,0.00004);
+    TH2F* dEdxProton = new TH2F("dEdxProton","dEdxProton",500,-2,2,200,0,0.00004);
     TH2F* dEdx = new TH2F("dEdx","dEdx",500,-2,2,200,0,0.00004);
     TH1D* eventCuts = new TH1D("eventCuts","Event Cuts",5,-0.5,4.5);
     TH1D* particleYield = new TH1D("particleYield","Particle Yield",10,-0.5,9.5);
@@ -72,8 +82,7 @@ void QA(const TString fileList = "FXTFiles.list"
         Int_t nTofMatches = calcNumberOfTofMatches(tracks);
         Bool_t eventPass = kTRUE;
 
-        // Do event cuts
-        Float_t VzLow = 209, VzHigh = 211, VxLow = -2, VxHigh = 2, VyLow = -4, VyHigh = -2, minTofMatches = 11;
+
         Float_t vx = event->primaryVertexPosition().x();
         Float_t vy = event->primaryVertexPosition().y();
         Float_t vz = event->primaryVertexPosition().z();
@@ -94,6 +103,7 @@ void QA(const TString fileList = "FXTFiles.list"
 
             StMuTrack* muTrack = 0;
             Int_t nMuTracks = tracks->GetEntries();
+            Int_t nPiPlus = 0, nPiMinus = 0;
             
             for(Int_t j=0; j<nMuTracks; j++)
             {
@@ -103,25 +113,32 @@ void QA(const TString fileList = "FXTFiles.list"
                 {
 
                     particleYield->Fill(1);
-                    dEdx->Fill(muTrack->dEdx(),muTrack->charge()*muTrack->p().mag());
+                    dEdx->Fill(muTrack->charge()*muTrack->p().mag(),muTrack->dEdx());
 
                     if(isElectron(muTrack)){
                         if(muTrack->charge() == 1) {particleYield->Fill(2);}
                         else {particleYield->Fill(3);}
+                        dEdxElectron->Fill(muTrack->charge()*muTrack->p().mag(),muTrack->dEdx());
                     } else if (isPion(muTrack)) {
-                        if(muTrack->charge() == 1) {particleYield->Fill(4);}
-                        else {particleYield->Fill(5);}
+                        if(muTrack->charge() == 1) {particleYield->Fill(4); nPiPlus++;}
+                        else {particleYield->Fill(5); nPiMinus++;}
+                        dEdxPion->Fill(muTrack->charge()*muTrack->p().mag(),muTrack->dEdx());
                     } else if (isKaon(muTrack)) {
                         if(muTrack->charge() == 1) {particleYield->Fill(6);}
                         else {particleYield->Fill(7);}
+                        dEdxKaon->Fill(muTrack->charge()*muTrack->p().mag(),muTrack->dEdx());
                     } else if (isProton(muTrack)) {
                         if(muTrack->charge() == 1) {particleYield->Fill(8);}
                         else {particleYield->Fill(9);}
+                        dEdxProton->Fill(muTrack->charge()*muTrack->p().mag(),muTrack->dEdx());
                     }
 
                 } // If track is good
 
             } // Loop over tracks
+
+            piPlusMultVsRefmult->Fill(refmult,nPiPlus);
+            piMinusMultVsRefmult->Fill(refmult,nPiMinus);
 
             if (iReturn) {
                 cout << "And... we're done!" << endl;
@@ -136,10 +153,23 @@ void QA(const TString fileList = "FXTFiles.list"
 	
 	chain->Finish();
 
+    // Create a histogram that shows the average particle yeild per event
+    TH1D* particleYieldNormalized = (TH1D*) particleYield->Clone("particleYieldNormalized");
+    Double_t scaleFactor = 1/( (Double_t)particleYield->GetBinContent(5) );
+    particleYieldNormalized->Scale(scaleFactor);
+
 	TFile* fOut = new TFile(outFile.Data(), "RECREATE");
     hRefmult->Write();
     particleYield->Write();
+    particleYieldNormalized->Write();
     eventCuts->Write();
+    dEdx->Write();
+    dEdxElectron->Write();
+    dEdxPion->Write();
+    dEdxKaon->Write();
+    dEdxProton->Write();
+    piPlusMultVsRefmult->Write();
+    piMinusMultVsRefmult->Write();
     fOut->Close();
 
 	delete chain;

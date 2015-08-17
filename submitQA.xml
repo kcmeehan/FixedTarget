@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<job  datasetSplitting="fileBased" minFilesPerProcess="500" maxFilesPerProcess="1000" simulateSubmission="false" fileListSyntax="xrootd">
+<job  datasetSplitting="fileBased" minFilesPerProcess="1" maxFilesPerProcess="1" simulateSubmission="false" fileListSyntax="xrootd">
 
     <command>
-        starver SL14i
-        cons   
         root4star -l -q -b QA.C\(\"$FILELIST\",\"FXT_${JOBID}.root\",999999\) &gt;&amp; ${JOBID}.log
     </command> 
 
     <SandBox installer="ZIP">
         <Package>
         <File>file:./QA.C</File>
-        <File>file:./StRoot</File>
         </Package>
     </SandBox>
 
     <stdout discard="true" />
-        <input URL="filelist:/star/u/campbell/fxtFemtoAnalysis/FXTFiles.list" nFiles="all" />                   <!-- Change Path -->
+        <input URL="filelist:/star/u/campbell/fxtFemtoAnalysis/4x5GeVfxtFiles.list" nFiles="all" />                   <!-- Change Path -->
         <output fromScratch="*.root" toURL="file:/gpfs/mnt/gpfs01/star/scratch/campbell/fxtTest/output/" />     <!-- Change Path -->
         <output fromScratch="*.log" toURL="file:/gpfs/mnt/gpfs01/star/scratch/campbell/fxtTest/logs/" />        <!-- Change Path -->
     <stderr URL="file:/gpfs/mnt/gpfs01/star/scratch/campbell/fxtTest/logs/$JOBID.err"/>                         <!-- Change Path -->
