@@ -116,11 +116,6 @@ void QoslCMSCorrFctnRPkT::AddRealPair(const StHbtPair* pair){
 
 	if(fabs(Qo)>qMax || fabs(Qs)>qMax || fabs(Ql)>qMax) return; 
 
-	Ql = fabs(Ql);
-  if ( Qs<0.0 ) {
-		Qs*=-1.0;
-		Qo*=-1.0;
-  }
   mNumerator[rpBin][ktBin]->Fill(Qo,Qs,Ql);
 }
 //____________________________
@@ -142,11 +137,6 @@ void QoslCMSCorrFctnRPkT::AddMixedPair(const StHbtPair* pair){
 
 	if(fabs(Qo)>qMax || fabs(Qs)>qMax || fabs(Ql)>qMax) return; 
 
-	Ql = fabs(Ql);
-  if ( Qs<0.0 ) {
-		Qs*=-1.0;
-		Qo*=-1.0;
-  }
   mDenominator[rpBin][ktBin]->Fill(Qo,Qs,Ql);
   mCoulHisto[rpBin][ktBin]->Fill(Qo,Qs,Ql,weight);
 

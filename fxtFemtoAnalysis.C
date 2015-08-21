@@ -5,19 +5,19 @@
 // Then only thing that's special about this macro is that it uses fxtEventCut and fxtEventCutMonitor 
 // objects. The former simply cuts on Vx,Vy,Vz, and the number of Tof matched tracks.
 
-void fxtFemtoAnalysis(const TString fileList = "FXTFiles.list" 
+void fxtFemtoAnalysis(const TString fileList = "4x5GeVfxtFiles.list" 
 					   , const TString outFile = "fxtTestOut.root"
-					   , const Int_t nEvents = 9999
+					   , const Int_t nEvents = 999
                        )
 {
 	//------------------- Define Cut Values ------------------//
 
     // Event cuts
     const Int_t mult[2] = {0,1000};
-    const Int_t minNumberOfTofMatches = 11;
-    const Float_t Vx[2] = {-2,2};
-    const Float_t Vy[2] = {-4,-2.5};
-    const Float_t Vz[2] = {209,211};
+    const Int_t minNumberOfTofMatches = 2;
+    const Float_t Vx[2] = {-4,2};
+    const Float_t Vy[2] = {-4,0};
+    const Float_t Vz[2] = {210,212};
 
     // Track Cuts
     const Float_t piMass =  0.13957018; // From PDG
@@ -79,11 +79,11 @@ void fxtFemtoAnalysis(const TString fileList = "FXTFiles.list"
     {
         trackCut[i] = new franksTrackCut;
         trackCut[i]->SetMass(piMass);
-        trackCut[i]->SetRapidity(rapidity[0],rapidity[1]);
-        trackCut[i]->SetNSigmaProton(nSigma[1],nSigma[0]);
-        trackCut[i]->SetNSigmaKaon(nSigma[1],nSigma[0]);
+        trackCut[i]->SetEta(rapidity[0],rapidity[1]);
+        trackCut[i]->SetNSigmaProton(-1000,nSigma[0]);
+        trackCut[i]->SetNSigmaKaon(-1000,nSigma[0]);
         trackCut[i]->SetNSigmaPion(nSigma[0],nSigma[1]);
-        trackCut[i]->SetNSigmaElectron(nSigma[1],nSigma[0]);
+        trackCut[i]->SetNSigmaElectron(-1000,nSigma[0]);
         trackCut[i]->SetPt(pt[0],pt[1]);
         trackCut[i]->SetNHits(nHitsTpc[0],nHitsTpc[1]);
         trackCut[i]->SetDCAGlobal(dcaGlobal[0],dcaGlobal[1]);
@@ -112,11 +112,12 @@ void fxtFemtoAnalysis(const TString fileList = "FXTFiles.list"
 
 	//------------------- Instantiate Hbt Analyses and Correlation Functions ------------------//
 
-    StHbtAnalysis* fxtAnalysis[2];
+    StHbtReactionPlaneAnalysis* fxtAnalysis[2];
     QinvCorrFctn* qinvCF[2];
+	QoslCMSCorrFctnRPkT* qCorrFctn[2];
     for(Int_t i = 0; i <=1; i++)
     {
-        fxtAnalysis[i] = new StHbtAnalysis();
+        fxtAnalysis[i] = new StHbtReactionPlaneAnalysis(0,1,-999,999,1,1,1000,1,-999,999); //standard
         fxtAnalysis[i]->SetEventCut(eventCut[i]);
         fxtAnalysis[i]->SetFirstParticleCut(trackCut[i]);
         fxtAnalysis[i]->SetSecondParticleCut(trackCut[i]);
@@ -126,8 +127,10 @@ void fxtFemtoAnalysis(const TString fileList = "FXTFiles.list"
         TString title = "";
         if(i==0) {title += "PiMinus";}
         if(i==1) {title += "PiPlus";}
-        qinvCF[i] = new QinvCorrFctn(title.Data(),nQbins,qRange[0],qRange[1]);
-        fxtAnalysis[i]->AddCorrFctn(qinvCF[i]);
+//        qinvCF[i] = new QinvCorrFctn(title.Data(),nQbins,qRange[0],qRange[1]);
+        qCorrFctn[i] = new QoslCMSCorrFctnRPkT(title.Data(),nQbins,qRange[0],qRange[1],nQbins,qRange[0],qRange[1],nQbins,qRange[0],qRange[1],1);
+//        fxtAnalysis[i]->AddCorrFctn(qinvCF[i]);
+        fxtAnalysis[i]->AddCorrFctn(qCorrFctn[i]);
     }
 
 
@@ -179,9 +182,17 @@ void fxtFemtoAnalysis(const TString fileList = "FXTFiles.list"
 
     for(Int_t i = 0; i <=1; i++)
     {
+        /*
         qinvCF[i]->Numerator()->Write();
         qinvCF[i]->Denominator()->Write();
         qinvCF[i]->Ratio()->Write();
+        */
+
+        for(int j=0; j<4; j++) { //bins 0,1,2,(3) are typical kt bins for this version. Bin 4 is the ktIntegrated histo.
+            qCorrFctn[i]->Numerator3D(0,j)->Write();
+            qCorrFctn[i]->Denominator3D(0,j)->Write();
+            qCorrFctn[i]->CoulHisto3D(0,j)->Write();
+        } // End loop over kt bins
     }
 
     histoOutput.Close();

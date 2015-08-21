@@ -11,7 +11,7 @@ Bool_t isProton(StMuTrack* track);
 
 void QA(const TString fileList = "4x5GeVfxtFiles.list"
 				, const TString outFile = "testOut.root" 
-				, const Int_t nEvents = 999 
+				, Int_t nEvents = 999 
 				)
 {
 
@@ -35,14 +35,19 @@ void QA(const TString fileList = "4x5GeVfxtFiles.list"
 
 	//----------------------- Make Histograms, etc. -----------------------//
 
-	TH1I* hRefmult = new TH1I("hRefmult","refmult", 800,0.5,800.5);
-    TProfile* piPlusMultVsRefmult = new TProfile("piPlusMultVsRefmult","piPlusMultVsRefmult", 800,0.5,800.5);
-    TProfile* piMinusMultVsRefmult = new TProfile("piMinusMultVsRefmult","piMinusMultVsRefmult", 800,0.5,800.5);
-    TH2F* dEdxElectron = new TH2F("dEdxElectron","dEdxElectron",500,-2,2,200,0,0.00004);
-    TH2F* dEdxPion = new TH2F("dEdxPion","dEdxPion",500,-2,2,200,0,0.00004);
-    TH2F* dEdxKaon = new TH2F("dEdxKaon","dEdxKaon",500,-2,2,200,0,0.00004);
-    TH2F* dEdxProton = new TH2F("dEdxProton","dEdxProton",500,-2,2,200,0,0.00004);
-    TH2F* dEdx = new TH2F("dEdx","dEdx",500,-2,2,200,0,0.00004);
+	TH1I* hRefmult = new TH1I("hRefmult","refmult", 100,0.5,100.5);
+	TH2I* nTracksVsRefmult = new TH2I("nTracksVsRefmult","nTracksVsRefmult", 100,0.5,100.5,500,0.5,500.5);
+    TProfile* piPlusMultVsRefmult = new TProfile("piPlusMultVsRefmult","piPlusMultVsRefmult", 100,0.5,100.5);
+    TProfile* piMinusMultVsRefmult = new TProfile("piMinusMultVsRefmult","piMinusMultVsRefmult", 100,0.5,100.5);
+    TH2F* dEdxElectron = new TH2F("dEdxElectron","dEdxElectron",500,-1.1,1.1,400,0,0.000025);
+    TH2F* dEdxPion = new TH2F("dEdxPion","dEdxPion",500,-1.1,1.1,400,0,0.000025);
+    TH2F* dEdxKaon = new TH2F("dEdxKaon","dEdxKaon",500,-1.1,1.1,400,0,0.000025);
+    TH2F* dEdxProton = new TH2F("dEdxProton","dEdxProton",500,-1.1,1.1,400,0,0.000025);
+    TH2F* dEdx = new TH2F("dEdx","dEdx",500,-1.1,1.1,400,0,0.000025);
+    TH1F* nTracks0Match = new TH1F("nTracks0Match","nTracks0Match",500,0.5,500.5);
+    TH1F* nTracks1Match = new TH1F("nTracks1Match","nTracks1Match",500,0.5,500.5);
+    TH1F* nTracks2Match = new TH1F("nTracks2Match","nTracks2Match",500,0.5,500.5);
+    TH1F* nTracks3Match = new TH1F("nTracks3Match","nTracks3Match",500,0.5,500.5);
     TH1D* eventCuts = new TH1D("eventCuts","Event Cuts",5,-0.5,4.5);
     TH1D* particleYield = new TH1D("particleYield","Particle Yield",10,-0.5,9.5);
     const Char_t* yieldTitles[10] = {"All Tracks","Pass Cuts","e+", "e-","Pi+", "Pi-", "K+", "K-", "p+", "p-"};
@@ -60,7 +65,9 @@ void QA(const TString fileList = "4x5GeVfxtFiles.list"
 	timer->Start();
 	Int_t iReturn = 0;
 	Float_t percentCounter = 0.01;
-	Int_t nEventsProcessed = 0;
+	Int_t nEventsProcessed = 0, nEventsGood = 0;
+
+    if(nEvents > muMaker->chain()->GetEntries()) {nEvents = muMaker->chain()->GetEntries();}
 
 	// Actual event loop
 	for (Int_t iev=0;iev<nEvents; iev++) {
@@ -80,6 +87,10 @@ void QA(const TString fileList = "4x5GeVfxtFiles.list"
         Float_t refmult = event->refMult();
         TObjArray* tracks = muMaker->muDst()->primaryTracks();
         Int_t nTofMatches = calcNumberOfTofMatches(tracks);
+        if(nTofMatches==0) {nTracks0Match->Fill(tracks->GetEntries());}
+        if(nTofMatches==1) {nTracks1Match->Fill(tracks->GetEntries());}
+        if(nTofMatches==2) {nTracks2Match->Fill(tracks->GetEntries());}
+        if(nTofMatches>2) {nTracks3Match->Fill(tracks->GetEntries());}
         Bool_t eventPass = kTRUE;
 
 
@@ -100,7 +111,8 @@ void QA(const TString fileList = "4x5GeVfxtFiles.list"
         {
             // Fill histograms
             hRefmult->Fill(refmult);
-
+            nEventsGood++;
+            nTracksVsRefmult->Fill(refmult,tracks->GetEntries());
             StMuTrack* muTrack = 0;
             Int_t nMuTracks = tracks->GetEntries();
             Int_t nPiPlus = 0, nPiMinus = 0;
@@ -140,28 +152,23 @@ void QA(const TString fileList = "4x5GeVfxtFiles.list"
             piPlusMultVsRefmult->Fill(refmult,nPiPlus);
             piMinusMultVsRefmult->Fill(refmult,nPiMinus);
 
-            if (iReturn) {
-                cout << "And... we're done!" << endl;
-                break;
-            }
         } // If event is good
 	} // loop over events 
 
 	Double_t eventLoopTime = timer->RealTime();
-	cout << endl << "***** Finished Event Loop. " << eventLoopTime << " seconds to process " << nEventsProcessed << " events."; 
+	cout << endl << "***** Finished Event Loop. " << eventLoopTime << " seconds to process " << nEventsProcessed << " events. "; 
 	cout << (Double_t)nEventsProcessed / eventLoopTime << " ev/s." << endl;
 	
 	chain->Finish();
 
-    // Create a histogram that shows the average particle yeild per event
-    TH1D* particleYieldNormalized = (TH1D*) particleYield->Clone("particleYieldNormalized");
-    Double_t scaleFactor = 1/( (Double_t)particleYield->GetBinContent(5) );
-    particleYieldNormalized->Scale(scaleFactor);
-
 	TFile* fOut = new TFile(outFile.Data(), "RECREATE");
+    nTracks0Match->Write();
+    nTracks1Match->Write();
+    nTracks2Match->Write();
+    nTracks3Match->Write();
+    nTracksVsRefmult->Write(); 
     hRefmult->Write();
     particleYield->Write();
-    particleYieldNormalized->Write();
     eventCuts->Write();
     dEdx->Write();
     dEdxElectron->Write();
