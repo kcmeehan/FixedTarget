@@ -113,6 +113,8 @@
 #include "StHbtMaker/Base/StHbtV0Cut.h"
 #include "StHbtMaker/Base/StHbtKinkCut.h"
 #include <string>
+#include "TRandom.h"
+#include "TRandom3.h"
 
 
 #ifdef __ROOT__ 
@@ -430,6 +432,7 @@ void StHbtAnalysis::MakePairs(const char* typeIn, StHbtParticleCollection *partC
   string type = typeIn;
 
   StHbtPair* ThePair = new StHbtPair;
+//  StHbtPair* ThePair2 = new StHbtPair;
 
   StHbtCorrFctnIterator CorrFctnIter;
 
@@ -454,11 +457,22 @@ void StHbtAnalysis::MakePairs(const char* typeIn, StHbtParticleCollection *partC
       StartInnerLoop = PartIter1;
       StartInnerLoop++;
     }
+
+    TRandom3 ran;
+    ran.SetSeed();
+    Float_t coin = ran.Rndm();
+
     ThePair->SetTrack1(*PartIter1);
 
     for (PartIter2 = StartInnerLoop; PartIter2!=EndInnerLoop;PartIter2++) {
 
-      ThePair->SetTrack2(*PartIter2);
+        ThePair->SetTrack2(*PartIter2);
+
+        if(coin > 0.5) {
+            ThePair->SetTrack1(*PartIter2);
+            ThePair->SetTrack2(*PartIter1);
+        }
+
 
       // The following lines have to be uncommented if you want pairCutMonitors
       // they are not in for speed reasons
