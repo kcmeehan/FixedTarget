@@ -52,6 +52,7 @@ Int_t StDataCollectionMaker::Init(){
   
   //Create an Instance of StEventInfo
   eventInfo = new EventInfo();
+  hvyvz = new TH2D("hvyvz", "Vy vs Vz", 1000,-500,500,1000,-10,10);
 
   //Create the Output TTree
   outTree = new TTree("DataTree","DataTree");
@@ -77,6 +78,13 @@ Int_t StDataCollectionMaker::Make(){
   //Check to make sure the Event is interesting
   if (!eventInfo->IsInterestingEvent(mMuDst))
     return kStOK;
+	
+  //Make pre-cuts vyvz histogram to see flange
+	Int_t nVert = mMuDst->primaryVertices()->GetEntries();
+	for(int ipv=0;ipv<nVert;ipv++){
+	  mMuDst->setVertexIndex(ipv);
+		hvyvz->Fill(mMuDst->event()->primaryVertexPosition().z(),mMuDst->event()->primaryVertexPosition().y());
+	}
 
   //Add The Event
   eventInfo->SetEventInfo(mMuDst);
@@ -99,6 +107,7 @@ Int_t StDataCollectionMaker::Finish(){
 
   //Save things to the file here
   outFile->cd();
+	hvyvz->Write();
   outTree->Write();
 
   cout <<"Done Saving\n" <<endl;
