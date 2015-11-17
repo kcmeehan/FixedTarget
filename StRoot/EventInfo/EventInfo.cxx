@@ -40,9 +40,8 @@ Bool_t EventInfo::IsInterestingEvent(StMuDst *dst){
   
   if (dst->primaryVertices()->GetEntries() == 0)
     return false;
-
-  return true;
-
+	
+   return true;
 }
 
 //__________________________________________________________
@@ -59,9 +58,12 @@ void EventInfo::SetEventInfo(StMuDst *dst){
   tofMultiplicity = event->triggerData()->tofMultiplicity();
 
   //Loop Over the Primary Vertices and Fill the Primary Vertex Array
+	int vCutCounter = 0;
   for (Int_t iVertex=0; iVertex < nPrimaryVertices; iVertex++){
     dst->setVertexIndex(iVertex);
-    AddPrimaryVertex(dst,iVertex);
+  	//if(dst->event()->primaryVertexPosition().z() < 200 || dst->event()->primaryVertexPosition().z() > 225) continue;
+    AddPrimaryVertex(dst,vCutCounter);
+		vCutCounter++;
   }
 
 }
@@ -75,8 +77,7 @@ void EventInfo::AddPrimaryVertex(StMuDst *dst, Int_t pos){
   tempVertex->SetPrimaryVertexInfo(dst,dst->currentVertexIndex());
 }
 
-
-//__________________________________________________________
+//__________________________________________________________ 
 void EventInfo::ResetEventInfo(){
 
   runNumber = -999;
