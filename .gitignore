@@ -2,6 +2,7 @@
 sched*
 *session.xml
 *.out
+*.list
 \#*\#
 *_C.d
 *_C.so
@@ -9,3 +10,5 @@ temp_gccflags.c
 .sl*/
 .consign
 *_cxx*
+*.root
+DavisDsts_AuAu_4_5

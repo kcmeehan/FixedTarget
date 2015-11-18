@@ -1,20 +1,29 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
 <job maxFilesPerProcess="75" filesPerHour="10" simulateSubmission="false" fileListSyntax="paths">
+  <Generator><Location>/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/dataSample2/schedFiles/</Location></Generator>
 
-  <stdout URL="file:/gpfs01/star/pwg_tasks/lsf01/AuFixedTargetReco/logs/DataExtract_$JOBINDEX.out" />
-  <stderr URL="file:/gpfs01/star/pwg_tasks/lsf01/AuFixedTargetReco/logs/DataExtract_$JOBINDEX.err" />
-  
+<stdout URL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/dataSample2/logs/DataExtract_$JOBINDEX.out" />
+<stderr URL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/dataSample2/logs/DataExtract_$JOBINDEX.err" />
 
-  <input URL="filelist:/star/u/cflores/DataCollector/AuTarget_4GeV.list" />
 
-  <command>
+<input URL="filelist:/star/u/kmeehan/FixedTarget/stdatacollector/AuAu_sample2.list" />
 
-    cd /star/u/cflores/DataCollector/
+<SandBox installer="ZIP">
+  <Package name="sched">
+    <File>file:/star/u/kmeehan/FixedTarget/stdatacollector/RunStDataCollectorMaker.C</File>
+    <File>file:/star/u/kmeehan/FixedTarget/stdatacollector/StRoot/</File>
+  </Package>
+</SandBox>
 
-    root4star -q -b RunStDataCollectorMaker.C\(999999999,\"$FILELIST\",\"$SCRATCH/\",\"$JOBID\"\)
-  </command>
+<command>
+starver SL15e 
 
-  <output fromScratch="*.root" toURL="file:/gpfs01/star/pwg_tasks/lsf01/AuFixedTargetReco/dataFiles/"/>
+cons
+
+root4star -q -b RunStDataCollectorMaker.C\(999999,\"$INPUTFILE0\",\"$SCRATCH/\",\"$JOBID\"\)
+</command>
+
+<output fromScratch="*.root" toURL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/dataSample2/data/"/>
 
 </job>
