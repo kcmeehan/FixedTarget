@@ -80,9 +80,6 @@ Int_t StDataCollectionMaker::Make(){
   //Add The Event
   eventInfo->SetEventInfo(mMuDst);
 
-  //Print Info
-  //eventInfo->PrintEventInfo();
-
   //Fill The Tree
   outTree->Fill();
 
