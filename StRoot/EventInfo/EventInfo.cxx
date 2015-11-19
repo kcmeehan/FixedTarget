@@ -58,12 +58,11 @@ void EventInfo::SetEventInfo(StMuDst *dst){
   tofMultiplicity = event->triggerData()->tofMultiplicity();
 
   //Loop Over the Primary Vertices and Fill the Primary Vertex Array
-	int vCutCounter = 0;
+  int vCutCounter = 0;
   for (Int_t iVertex=0; iVertex < nPrimaryVertices; iVertex++){
     dst->setVertexIndex(iVertex);
-  	//if(dst->event()->primaryVertexPosition().z() < 200 || dst->event()->primaryVertexPosition().z() > 225) continue;
     AddPrimaryVertex(dst,vCutCounter);
-		vCutCounter++;
+    vCutCounter++;
   }
 
 }

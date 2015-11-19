@@ -3,7 +3,6 @@
 
 //Forward Declarations
 class TClonesArray;
-//class TrackInfo;
 class StMuDst;
 class StMuTrack;
 
@@ -22,13 +21,11 @@ class EventInfo : public TObject {
   std::vector <unsigned int> triggerIDs;
   unsigned short tofMultiplicity;
 
-  //TClonesArray *trackArray;
   TClonesArray *primaryVertexArray;
 
   //Member Functions
   Bool_t IsInterestingEvent(StMuDst *dst);
   void SetEventInfo(StMuDst *dst);
-  //void AddTrack(StMuTrack *track, Int_t pos);
   void AddPrimaryVertex(StMuDst *dst, Int_t pos);
   void ResetEventInfo();
   void PrintEventInfo();
