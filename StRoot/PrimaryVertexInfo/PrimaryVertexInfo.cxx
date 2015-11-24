@@ -16,6 +16,7 @@ PrimaryVertexInfo::PrimaryVertexInfo(){
   vertexIndex = -999;
   nPrimaryTracks = -999;
   ntofMatches = -999;
+  nPions = -999;
   refMult = -999;
   refMultUser = -999;
   refMultUserEtaLow = -.05;
@@ -32,8 +33,6 @@ PrimaryVertexInfo::PrimaryVertexInfo(){
 PrimaryVertexInfo::~PrimaryVertexInfo(){
 
   delete trackArray;  
-
-
 
 }
 
@@ -53,6 +52,7 @@ void PrimaryVertexInfo::SetPrimaryVertexInfo(StMuDst *dst, Int_t index){
   ntofMatches    = 0; //Counted in Loop Below
   refMult        = dst->event()->refMult();
   refMultUser    = 0; //Counted In Loop Below
+  nPions         = 0; //Counted in Loop Below
   xVertex        = dst->event()->primaryVertexPosition().x();
   yVertex        = dst->event()->primaryVertexPosition().y();
   zVertex        = dst->event()->primaryVertexPosition().z();
@@ -73,7 +73,19 @@ void PrimaryVertexInfo::SetPrimaryVertexInfo(StMuDst *dst, Int_t index){
     if (dst->primaryTracks(trackIndex)->eta() > refMultUserEtaLow &&
 	dst->primaryTracks(trackIndex)->eta() < refMultUserEtaHigh)
       refMultUser++;
-  }
+    
+    //Increment nPion if this track passes the pion cut
+    if (fabs(dst->primaryTracks(trackIndex)->nSigmaPion()) < 2.0){
+      
+      if (dst->primaryTracks(trackIndex)->charge() > 0 &&
+	  dst->primaryTracks(trackIndex)->nSigmaProton() < -1.0)
+	nPions++;
+      else
+	nPions++;
+
+    }
+
+  }//End Loop Over Track Index
 
 }
 
@@ -92,6 +104,7 @@ void PrimaryVertexInfo::ResetPrimaryVertexInfo(){
   vertexIndex = -999;
   nPrimaryTracks = -999;
   ntofMatches = -999;
+  nPions = -999;
   refMult = -999;
   refMultUser = -999;
   refMultUserEtaLow = -.05;
@@ -109,7 +122,8 @@ void PrimaryVertexInfo::PrintPrimaryVertexInfo(){
 
   cout <<"VertexIndex: "      <<vertexIndex     <<"\n"
        <<"nPrimaryTracks: "   <<nPrimaryTracks  <<"\n"
-       <<"ntofMatches: "   <<ntofMatches  <<"\n"
+       <<"ntofMatches: "      <<ntofMatches     <<"\n"
+       <<"nPions: "           <<nPions           <<"\n"
        <<"refMult: "          <<refMult         <<"\n"
        <<"refMultUser: "      <<refMultUser     <<"\n"
        <<"VertexLocation: x=" <<xVertex <<", y=" <<yVertex <<", z=" <<zVertex <<"\n";

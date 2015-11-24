@@ -150,9 +150,14 @@ void EventInfo::AddPrimaryVertex(StMuDst *dst){
   PrimaryVertexInfo *tempVertex = 
     (PrimaryVertexInfo *)primaryVertexArray->ConstructedAt(position);
 
-  //Set the RefMult user range.
-  tempVertex->SetRefMultUserRange(-1.8,0);
-
+  //Set the RefMult user range depending on whether the vertex
+  //is in positive z or negative z.
+  Double_t zVertex = dst->event()->primaryVertexPosition().z();
+  if (zVertex >= 0)
+    tempVertex->SetRefMultUserRange(-1.8,0);
+  else 
+    tempVertex->SetRefMultUserRange(0,1.8);
+    
   //NOTE: If the user has specified vertex cuts then the vertex index
   //      in the DavisDST format will be different than the vertex
   //      index in the MuDST format. Hence, we keep a variable

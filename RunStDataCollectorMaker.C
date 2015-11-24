@@ -1,12 +1,14 @@
 class StChain;
 StChain *chain=0;
 
-void RunStDataCollectorMaker(Int_t nEvents=1,
-			     char *fileList,
-			     char *outDir="./",
-			     char *index="01"){
+void RunStDataCollectorMaker(Int_t nEvents=1,char *fileList,char *outDir="./",char *index="01",
+			     Double_t minVr=-999,Double_t maxVr=-999,
+			     Double_t minVz=-999,Double_t maxVz=-999,
+			     Double_t minVx=-999,Double_t maxVx=-999,
+			     Double_t minVy=-999,Double_t maxVy=-999,
+			     Int_t minNumberOfPrimaryTracks=-999){
 
-  //Load the Necessary Libraries                                                                                                                  
+  //Load the Necessary Libraries
   gROOT->LoadMacro("loadMuDst.C");
   loadMuDst();
   gROOT->Macro("LoadLogger.C");
@@ -39,10 +41,31 @@ void RunStDataCollectorMaker(Int_t nEvents=1,
   StMuDstMaker *muDstMaker = new StMuDstMaker(0,0,"",fileList,"",100);
   St_db_Maker *dbMaker = new St_db_Maker("StarDb","MySQL:StarDb");
 
-  StDataCollectionMaker *myMaker = new StDataCollectionMaker("StDataCollectionMaker");
+  StDataCollectionMaker *davisDstMaker = new StDataCollectionMaker("StDataCollectionMaker");
+  davisDstMaker->SetOutDir(outDir);
+  davisDstMaker->SetFileIndex(index);
 
-  myMaker->SetOutDir(outDir);
-  myMaker->SetFileIndex(index);
+  //By default the values of these cut variables in StDataCollectionMaker are set
+  //so that they will not imped on data taking if the user chooses not to set them,
+  //but if the User has passed in values for the vertex cuts then set them here
+  if (minVr != -999)
+    davisDstMaker->SetMinVr(minVr);
+  if (maxVr != -999)
+    davisDstMaker->SetMaxVr(maxVr);
+  if (minVz != -999)
+    davisDstMaker->SetMinVz(minVz);
+  if (maxVz != -999)
+    davisDstMaker->SetMaxVz(maxVz);
+  if (minVx != -999)
+    davisDstMaker->SetMinVx(minVx);
+  if (maxVx != -999)
+    davisDstMaker->SetMaxVx(maxVx);
+  if (minVy != -999)
+    davisDstMaker->SetMinVy(minVy);
+  if (maxVy != -999)
+    davisDstMaker->SetMaxVy(maxVy);
+  if (minNumberOfPrimaryTracks != -999)
+    davisDstMaker->SetMinNumberOfPrimaryTracks(minNumberOfPrimaryTracks);
 
   //Initialize
   Int_t initStat = chain->Init();
