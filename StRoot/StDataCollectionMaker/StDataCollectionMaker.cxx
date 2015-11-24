@@ -29,7 +29,32 @@
 ClassImp(StDataCollectionMaker);
 
 //__________________________________________________________________________ 
-StDataCollectionMaker::StDataCollectionMaker(char *name): StMaker(name){}
+StDataCollectionMaker::StDataCollectionMaker(char *name): StMaker(name){
+
+  //By Default set the status of the cut booleans to false
+  isMinVrSet = false;
+  isMaxVrSet = false;
+  isMinVzSet = false;
+  isMaxVzSet = false;
+  isMinVxSet = false;
+  isMaxVxSet = false;
+  isMinVySet = false;
+  isMaxVySet = false;
+  isMinNumberOfPrimaryTracksSet = false;
+
+  //Set default values for the cuts in such away that they won't 
+  //interfere with data taking.
+  minVr = -1;
+  maxVr = 5000;
+  minVz = -5000;
+  maxVz = 5000;
+  minVx = -5000;
+  maxVx = 5000;
+  minVy = -5000;
+  maxVy = 5000;
+  minNumberOfPrimaryTracks = -1;
+
+}
 
 //__________________________________________________________________________                                      
 StDataCollectionMaker::~StDataCollectionMaker(){}
@@ -72,23 +97,32 @@ Int_t StDataCollectionMaker::Make(){
   StMuDstMaker *muDstMaker = (StMuDstMaker *)GetMaker("MuDst");
   StMuDst *mMuDst = muDstMaker->muDst();
 
-  //Check to make sure the Event is interesting
+  //CHECK TO MAKE SURE THE EVENT IS INTERESTING
+  //This function makes sure that this event passes some
+  //very simple cuts. You can use this to prevent your DavisDSTs
+  //from filling up with lots of events that are not useful.
   if (!eventInfo->IsInterestingEvent(mMuDst))
     return kStOK;
 	
-  //Make pre-cuts vyvz histogram to see flange
-	Int_t nVert = mMuDst->primaryVertices()->GetEntries();
-	for(int ipv=0;ipv<nVert;ipv++){
-	  mMuDst->setVertexIndex(ipv);
-	}
+  //ADD THE EVENT/TRIGGER
+  //This function sets event level attributes like
+  //run number and event number, then loops over all the primary
+  //vertices of this event. In doing so recurses down the
+  //event->vertex->track class structure filling the variables
+  //at each level.
+  //NOTE: If the user has specified min or max vertex cuts in the
+  //RunStDataCollectorMaker.C macro each primary vertex will be
+  //tested to make sure it passes the cuts.
+  eventInfo->SetEventInfo(mMuDst,this);
 
-  //Add The Event
-  eventInfo->SetEventInfo(mMuDst);
-
-  //Fill The Tree
+  //FILL THE TREE
+  //This function recurses down the event->vertex->track class
+  //structure and adds all of the information to the output tree.
   outTree->Fill();
 
-  //Reset the EventInfo
+  //RESET EVENT INFO
+  //This function resets the event level variables to their default values
+  //and deletes the primary vertex array which then deletes the track array
   eventInfo->ResetEventInfo();
 
   //End of Make  
@@ -110,3 +144,79 @@ Int_t StDataCollectionMaker::Finish(){
 
   return kStOK;
 }
+
+//__________________________________________________________________________
+void StDataCollectionMaker::SetMinVr(Double_t val){
+
+  minVr = val;
+  isMinVrSet = true;
+
+}
+
+//__________________________________________________________________________
+void StDataCollectionMaker::SetMaxVr(Double_t val){
+
+  maxVr = val;
+  isMaxVrSet = true;
+
+}
+
+
+//__________________________________________________________________________
+void StDataCollectionMaker::SetMinVz(Double_t val){
+
+  minVz = val;
+  isMinVzSet = true;
+
+}
+
+//__________________________________________________________________________
+void StDataCollectionMaker::SetMaxVz(Double_t val){
+
+  maxVz = val;
+  isMaxVzSet = true;
+
+}
+
+//__________________________________________________________________________
+void StDataCollectionMaker::SetMinVx(Double_t val){
+
+  minVx = val;
+  isMinVxSet = true;
+
+}
+
+//__________________________________________________________________________
+void StDataCollectionMaker::SetMaxVx(Double_t val){
+
+  maxVx = val;
+  isMaxVxSet = true;
+
+}
+
+//__________________________________________________________________________
+void StDataCollectionMaker::SetMinVy(Double_t val){
+
+  minVy = val;
+  isMinVySet = true;
+
+}
+
+//__________________________________________________________________________
+void StDataCollectionMaker::SetMaxVy(Double_t val){
+
+  maxVy = val;
+  isMaxVySet = true;
+
+}
+
+//__________________________________________________________________________
+void StDataCollectionMaker::SetMinNumberOfPrimaryTracks(Int_t val){
+  
+  minNumberOfPrimaryTracks = val;
+  isMinNumberOfPrimaryTracksSet = true;
+}
+
+
+
+
