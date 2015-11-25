@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<job maxFilesPerProcess="25" filesPerHour="20" simulateSubmission="false" fileListSyntax="xrootd">
+<job maxEvents="300000" eventsPerHour="100000" simulateSubmission="false" fileListSyntax="xrootd">
 
   <stdout URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAl_3_5/logs/DataExtract_$JOBINDEX.out" />
   <stderr URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAl_3_5/logs/DataExtract_$JOBINDEX.err" />

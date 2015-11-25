@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<job maxFilesPerProcess="25" filesPerHour="20" simulateSubmission="false" fileListSyntax="xrootd">
+<job maxEvents="300000" eventsPerHour="100000" simulateSubmission="false" fileListSyntax="xrootd">
 
   <stdout URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAl_3_0/logs/DataExtract_$JOBINDEX.out" />
   <stderr URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAl_3_0/logs/DataExtract_$JOBINDEX.err" />
@@ -9,7 +9,7 @@
       /star/data05/scratch/cflores/DavisDSTs/AuAl_3_0/sched/
   </Location></Generator>
 
-  <input URL="catalog:star.bnl.gov?filetype=daq_reco_MuDst,trgsetupname=AuAu7_production,production=P10ih,filename~physics_adc,sanity=1,tpx=1 -distinct" nFiles="100"  />
+  <input URL="catalog:star.bnl.gov?filetype=daq_reco_MuDst,trgsetupname=AuAu7_production,production=P10ih,filename~physics,sanity=1,tpx=1 -distinct" nFiles="all"  />
 
   <SandBox installer="ZIP">
     <Package name="sched">
