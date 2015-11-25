@@ -39,7 +39,7 @@ TrackInfo::TrackInfo(){
   globalDCA.SetXYZ(-999,-999,-999);
   firstPoint.SetXYZ(-999,-999,-999);
   lastPoint.SetXYZ(-999,-999,-999);
-  tofMatchFlag = -999;
+  tofMatchFlag = 0;
 }
 
 //_________________________________________________________
