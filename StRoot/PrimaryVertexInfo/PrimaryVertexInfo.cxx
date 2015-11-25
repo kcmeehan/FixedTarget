@@ -67,7 +67,7 @@ void PrimaryVertexInfo::SetPrimaryVertexInfo(StMuDst *dst, Int_t index){
     
     //If the track has a matchFlag > 0 then 
     if (dst->primaryTracks(trackIndex)->btofPidTraits().matchFlag() > 0)
-      ntofMatches = ntofMatches++;
+      ntofMatches++;
 
     //Count it as part of refMultUser
     if (dst->primaryTracks(trackIndex)->eta() > refMultUserEtaLow &&

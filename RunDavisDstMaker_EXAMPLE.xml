@@ -58,7 +58,7 @@
  
     <!-- Run the Root Macro with the options above -->
     set nEvents = 999999     <!-- Number of events to run over. -->
-    root -q -b RunStDataCollectorMaker.C\($nEvents,\"$FILELIST\",\"$SCRATCH/\",\"$JOBID\",$minVr,$maxVr,$minVz,$maxVz,$minVx,$maxVx,$minVy,$maxVy,$minPrimaryTracks\)
+    root4star -q -b RunStDataCollectorMaker.C\($nEvents,\"$FILELIST\",\"$SCRATCH/\",\"$JOBID\",$minVr,$maxVr,$minVz,$maxVz,$minVx,$maxVx,$minVy,$maxVy,$minPrimaryTracks\)
 
 
     <!-- NOTE: You can also elect to not cut on any variable by not setting any of them at all.
@@ -66,10 +66,8 @@
 	 root4star -q -b RunStDataCollectorMaker.C\(999999,\"$INPUTFILE0\",\"$SCRATCH/\",\"$JOBID\"\)
       -->
  
-
-
   </command>
   
-  <output fromScratch="*.root" toURL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/dataSample2/data/"/>
+  <output fromScratch="*.root" toURL="file:/star/data05/scratch/cflores/DavisDSTs/AuAl_3_0/data/"/>
   
 </job>
