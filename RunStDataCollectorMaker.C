@@ -6,6 +6,7 @@ void RunStDataCollectorMaker(Int_t nEvents=1,char *fileList,char *outDir="./",ch
 			     Double_t minVz=-999,Double_t maxVz=-999,
 			     Double_t minVx=-999,Double_t maxVx=-999,
 			     Double_t minVy=-999,Double_t maxVy=-999,
+			     Double_t beamSpotX=-999,Double_t beamSpotY=-999,
 			     Int_t minNumberOfPrimaryTracks=-999){
 
   //Load the Necessary Libraries
@@ -64,6 +65,8 @@ void RunStDataCollectorMaker(Int_t nEvents=1,char *fileList,char *outDir="./",ch
     davisDstMaker->SetMinVy(minVy);
   if (maxVy != -999)
     davisDstMaker->SetMaxVy(maxVy);
+  if (beamSpotX != -999 && beamSpotY != -999)
+    davisDstMaker->SetBeamSpot(beamSpotX,beamSpotY);
   if (minNumberOfPrimaryTracks != -999)
     davisDstMaker->SetMinNumberOfPrimaryTracks(minNumberOfPrimaryTracks);
 

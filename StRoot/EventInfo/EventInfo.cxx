@@ -90,8 +90,15 @@ Bool_t EventInfo::IsInterestingVertex(StMuDst *dst, StDataCollectionMaker *dataC
   if (dataCollector->isMaxVySet && yVertex < dataCollector->GetMaxVy())
     return false;
 
-  //Compute the Radial Vertex
-  Double_t rVertex = sqrt(pow(xVertex,2.0) + pow(yVertex,2.0));
+  //Compute the Radial Vertex - If the beam spot location is set then
+  //calculate the radial vertex with the beam spot as the origin, otherwise
+  //calculate the radial vertex from (0,0)
+  Double_t rVertex(0);
+  if (dataCollector->isBeamSpotSet)
+    rVertex = sqrt(pow(xVertex - dataCollector->GetBeamSpotX(),2.0) + 
+		   pow(yVertex - dataCollector->GetBeamSpotY(),2.0));
+  else
+    rVertex = sqrt(pow(xVertex,2.0) + pow(yVertex,2.0));
 
   //R-Vertex Cuts
   if (dataCollector->isMinVrSet && rVertex < dataCollector->GetMinVr())

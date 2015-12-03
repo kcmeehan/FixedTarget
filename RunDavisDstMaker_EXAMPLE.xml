@@ -46,6 +46,9 @@
 	 to cut on a particular value set it to -999. If the value for a cut is -999
 	 no cut will be applied. -->
     <!-- These cuts can be useful to keep the file size of your DavisDST down -->
+    <!-- NOTE: If the beam spot quantities are set to something other -999 the 
+	 radial vertex location will be computed with respect to the beam spot,
+	 otherwise the radial vertex is computed from (0,0) -->
     set minVr = 2            <!-- Minimum Radial Vertex Position in cm -->
     set maxVr = 5            <!-- Maximum Raidal Vertex Position in cm -->
     set minVz = -200         <!-- Minimum Z Vertex Position in cm -->
@@ -54,11 +57,13 @@
     set maxVx = -999         <!-- Maximum X Vertex Position in cm -->
     set minVy = -999         <!-- Minimum Y Vertex Position in cm -->
     set maxVy = -999         <!-- Maximum Y Vertex Position in cm -->
+    set beamSpotX = -999     <!-- The X location of the beam spot -->
+    set beamSpotY = -999     <!-- The Y location of the beam spot -->
     set minPrimaryTracks = 2 <!-- Minimum number of primary tracks a primary vertex must have -->
  
     <!-- Run the Root Macro with the options above -->
     set nEvents = 999999     <!-- Number of events to run over. -->
-    root4star -q -b RunStDataCollectorMaker.C\($nEvents,\"$FILELIST\",\"$SCRATCH/\",\"$JOBID\",$minVr,$maxVr,$minVz,$maxVz,$minVx,$maxVx,$minVy,$maxVy,$minPrimaryTracks\)
+    root4star -q -b RunStDataCollectorMaker.C\($nEvents,\"$FILELIST\",\"$SCRATCH/\",\"$JOBID\",$minVr,$maxVr,$minVz,$maxVz,$minVx,$maxVx,$minVy,$maxVy,$beamSpotX,$beamSpotY,$minPrimaryTracks\)
 
 
     <!-- NOTE: You can also elect to not cut on any variable by not setting any of them at all.

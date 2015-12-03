@@ -40,6 +40,7 @@ StDataCollectionMaker::StDataCollectionMaker(char *name): StMaker(name){
   isMaxVxSet = false;
   isMinVySet = false;
   isMaxVySet = false;
+  isBeamSpotSet = false;
   isMinNumberOfPrimaryTracksSet = false;
 
   //Set default values for the cuts in such away that they won't 
@@ -52,6 +53,8 @@ StDataCollectionMaker::StDataCollectionMaker(char *name): StMaker(name){
   maxVx = 5000;
   minVy = -5000;
   maxVy = 5000;
+  beamSpotX = 0.0;
+  beamSpotY = 0.0;
   minNumberOfPrimaryTracks = -1;
 
 }
@@ -207,6 +210,15 @@ void StDataCollectionMaker::SetMaxVy(Double_t val){
 
   maxVy = val;
   isMaxVySet = true;
+
+}
+
+//__________________________________________________________________________
+void StDataCollectionMaker::SetBeamSpot(Double_t xVal, Double_t yVal){
+
+  beamSpotX = xVal;
+  beamSpotY = yVal;
+  isBeamSpotSet = true;
 
 }
 

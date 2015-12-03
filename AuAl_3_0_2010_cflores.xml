@@ -33,10 +33,12 @@
     set maxVx = -999         
     set minVy = -999         
     set maxVy = -999         
+    set beamSpotX = -999
+    set beamSpotY = -999
     set minPrimaryTracks = 2 
  
     set nEvents = 999999
-    root4star -q -b RunStDataCollectorMaker.C\($nEvents,\"$FILELIST\",\"$SCRATCH/\",\"$JOBID\",$minVr,$maxVr,$minVz,$maxVz,$minVx,$maxVx,$minVy,$maxVy,$minPrimaryTracks\)
+    root4star -q -b RunStDataCollectorMaker.C\($nEvents,\"$FILELIST\",\"$SCRATCH/\",\"$JOBID\",$minVr,$maxVr,$minVz,$maxVz,$minVx,$maxVx,$minVy,$maxVy,$beamSpotX,$beamSpotY,$minPrimaryTracks\)
 
   </command>
   
