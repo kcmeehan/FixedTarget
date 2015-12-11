@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
 <job maxFilesPerProcess="75" filesPerHour="10" simulateSubmission="false" fileListSyntax="paths">
-  <Generator><Location>/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/dataSample2/schedFiles/</Location></Generator>
+  <Generator><Location>/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/dataSample3/schedFiles/</Location></Generator>
 
-<stdout URL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/dataSample2/logs/DataExtract_$JOBINDEX.out" />
-<stderr URL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/dataSample2/logs/DataExtract_$JOBINDEX.err" />
+<stdout URL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/dataSample3/logs/DataExtract_$JOBINDEX.out" />
+<stderr URL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/dataSample3/logs/DataExtract_$JOBINDEX.err" />
 
 
-<input URL="filelist:/star/u/kmeehan/FixedTarget/stdatacollector/AuAu_sample2.list" />
+<input URL="filelist:/star/u/kmeehan/FixedTarget/davisdstmaker/stdatacollector/dataSample3.list" />
 
 <SandBox installer="ZIP">
   <Package name="sched">
-    <File>file:/star/u/kmeehan/FixedTarget/stdatacollector/RunStDataCollectorMaker.C</File>
-    <File>file:/star/u/kmeehan/FixedTarget/stdatacollector/StRoot/</File>
+    <File>file:/star/u/kmeehan/FixedTarget/davisdstmaker/stdatacollector/RunStDataCollectorMaker.C</File>
+    <File>file:/star/u/kmeehan/FixedTarget/davisdstmaker/stdatacollector/StRoot/</File>
   </Package>
 </SandBox>
 
@@ -21,9 +21,9 @@ starver SL15e
 
 cons
 
-root4star -q -b RunStDataCollectorMaker.C\(999999,\"$INPUTFILE0\",\"$SCRATCH/\",\"$JOBID\"\)
+root4star -q -b RunStDataCollectorMaker.C\(999999,\"$FILELIST\",\"$SCRATCH/\",\"$JOBID\"\)
 </command>
 
-<output fromScratch="*.root" toURL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/dataSample2/data/"/>
+<output fromScratch="*.root" toURL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/dataSample3/"/>
 
 </job>
