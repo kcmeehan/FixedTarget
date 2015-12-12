@@ -21,7 +21,7 @@ starver SL15e
 
 cons
 
-root4star -q -b RunStDataCollectorMaker.C\(999999,\"$INPUTFILE0\",\"$SCRATCH/\",\"$JOBID\"\)
+root4star -q -b RunStDataCollectorMaker.C\(999999,\"$FILELIST\",\"$SCRATCH/\",\"$JOBID\"\)
 </command>
 
 <output fromScratch="*.root" toURL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/dataSample2/data/"/>
