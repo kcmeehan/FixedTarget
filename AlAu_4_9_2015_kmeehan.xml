@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<job maxFilesPerProcess="75" filesPerHour="10" simulateSubmission="false" fileListSyntax="paths">
+  <Generator><Location>/star/data01/pwg/kmeehan/AlAuProd/davisdsts/schedFiles/</Location></Generator>
+
+<stdout URL="file:/star/data01/pwg/kmeehan/AlAuProd/davisdsts/sampleData/logs/DataExtract_$JOBINDEX.out" />
+<stderr URL="file:/star/data01/pwg/kmeehan/AlAuProd/davisdsts/sampleData/logs/DataExtract_$JOBINDEX.err" />
+
+
+<input URL="filelist:/star/u/kmeehan/FixedTarget/davisdstmaker/stdatacollector/AlAu_4_9_2015.list" />
+
+<SandBox installer="ZIP">
+  <Package name="sched">
+    <File>file:/star/u/kmeehan/FixedTarget/davisdstmaker/stdatacollector/RunStDataCollectorMaker.C</File>
+    <File>file:/star/u/kmeehan/FixedTarget/davisdstmaker/stdatacollector/StRoot/</File>
+  </Package>
+</SandBox>
+
+<command>
+starver SL15e 
+
+cons
+
+root4star -q -b RunStDataCollectorMaker.C\(999999,\"$FILELIST\",\"$SCRATCH/\",\"$JOBID\"\)
+</command>
+
+<output fromScratch="*.root" toURL="file:/star/data01/pwg/kmeehan/AlAuProd/davisdsts/sampleData/"/>
+
+</job>
