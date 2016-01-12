@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
 <job maxFilesPerProcess="75" filesPerHour="10" simulateSubmission="false" fileListSyntax="paths">
-  <Generator><Location>/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/dataSample3/schedFiles/</Location></Generator>
+  <Generator><Location>/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/sampleData/schedFiles/</Location></Generator>
 
-<stdout URL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/dataSample3/logs/DataExtract_$JOBINDEX.out" />
-<stderr URL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/dataSample3/logs/DataExtract_$JOBINDEX.err" />
+<stdout URL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/sampleData/logs/DataExtract_$JOBINDEX.out" />
+<stderr URL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/sampleData/logs/DataExtract_$JOBINDEX.err" />
 
 
-<input URL="filelist:/star/u/kmeehan/FixedTarget/davisdstmaker/stdatacollector/dataSample3.list" />
+<input URL="filelist:/star/u/kmeehan/FixedTarget/davisdstmaker/stdatacollector/AuAu_4_5_2015.list" />
 
 <SandBox installer="ZIP">
   <Package name="sched">
@@ -24,6 +24,6 @@ cons
 root4star -q -b RunStDataCollectorMaker.C\(999999,\"$FILELIST\",\"$SCRATCH/\",\"$JOBID\"\)
 </command>
 
-<output fromScratch="*.root" toURL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/dataSample3/"/>
+<output fromScratch="*.root" toURL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/sampleData/"/>
 
 </job>
