@@ -19,34 +19,35 @@ class TrackInfo : public TObject {
   //      unless prefixed with global.
 
   //Data Members
+  Int_t parentVertex;
   Int_t nHits;
   Int_t nHitsFit;
   Int_t nHitsPoss;
   Int_t dEdxHits;
   Int_t charge;
   short flag;
-  Double_t pZ;
-  Double_t pT;
-  Double_t dEdxTruncated;
-  Double_t dEdxFit;
-  Double_t tof;
-  Double_t tofBeta;
-  Double_t eta;
-  Double_t phi;
-  Double_t nSigmaElectron;
-  Double_t nSigmaPion;
-  Double_t nSigmaKaon;
-  Double_t nSigmaProton;
-  Double_t length;
-  Double_t lengthMeasured;
-  Double_t chi2;
-  Double_t nSigmaElectronTOF;
-  Double_t nSigmaPionTOF;
-  Double_t nSigmaKaonTOF;
-  Double_t nSigmaProtonTOF;
-  Double_t yLocalTOF;
-  Double_t zLocalTOF;
-  Double_t pathLengthTOF;
+  Float_t pZ;
+  Float_t pT;
+  Float_t dEdxTruncated;
+  Float_t dEdxFit;
+  Float_t tof;
+  Float_t tofBeta;
+  Float_t eta;
+  Float_t phi;
+  Float_t nSigmaElectron;
+  Float_t nSigmaPion;
+  Float_t nSigmaKaon;
+  Float_t nSigmaProton;
+  Float_t length;
+  Float_t lengthMeasured;
+  Float_t chi2;
+  Float_t nSigmaElectronTOF;
+  Float_t nSigmaPionTOF;
+  Float_t nSigmaKaonTOF;
+  Float_t nSigmaProtonTOF;
+  Float_t yLocalTOF;
+  Float_t zLocalTOF;
+  Float_t pathLengthTOF;
 
   TVector3 globalDCA;
   TVector3 firstPoint;
@@ -55,7 +56,8 @@ class TrackInfo : public TObject {
   unsigned char tofMatchFlag;
 
   //Member Functions
-  void SetTrackInfo(StMuTrack *track);
+  void SetTrackInfo(StMuTrack *track, Int_t trackIndex);
+  void PrintTrackInfo();
 
   ClassDef(TrackInfo,1);
 

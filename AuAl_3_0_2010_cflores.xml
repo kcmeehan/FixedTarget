@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<job maxEvents="300000" eventsPerHour="100000" simulateSubmission="false" fileListSyntax="xrootd">
+<!--<job maxEvents="300000" eventsPerHour="100000" simulateSubmission="true" fileListSyntax="xrootd"> -->
+<job maxFilesPerProcess="30" simulateSubmission="false" fileListSyntax="xrootd">
 
   <stdout URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAl_3_0/logs/DataExtract_$JOBINDEX.out" />
   <stderr URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAl_3_0/logs/DataExtract_$JOBINDEX.err" />
@@ -20,8 +21,9 @@
 
   <command>
   
-    starver SL15e 
-    
+    <!--starver SL15e -->
+    starver pro
+
     cons
 
     <!-- Selecting events on the 2010/2011 beampipe -->

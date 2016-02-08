@@ -3,12 +3,14 @@
 #include <TObject.h>
 #include "TClonesArray.h"
 #include "TVector3.h"
+#include "TTree.h"
 #include "StMuDSTMaker/COMMON/StMuDstMaker.h"
 #include "StMuDSTMaker/COMMON/StMuDst.h"
 #include "StMuDSTMaker/COMMON/StMuEvent.h"
 #include "StEvent/StTriggerData.h"
 
 #include "StRoot/StDataCollectionMaker/StDataCollectionMaker.h"
+#include "StRoot/TrackInfo/TrackInfo.h"
 #include "StRoot/PrimaryVertexInfo/PrimaryVertexInfo.h"
 #include "EventInfo.h"
 
@@ -27,15 +29,12 @@ EventInfo::EventInfo(){
   meanEta          = -999;
   tofMultiplicity  = -999;
   
-  primaryVertexArray = new TClonesArray("PrimaryVertexInfo",0);
-
-  cout <<"Created EventInfo" <<endl;
 }
 
 //__________________________________________________________
 EventInfo::~EventInfo(){
 
-  delete primaryVertexArray;
+  //delete primaryVertexArray;
 
 }
 
@@ -115,7 +114,21 @@ Bool_t EventInfo::IsInterestingVertex(StMuDst *dst, StDataCollectionMaker *dataC
 void EventInfo::SetEventInfo(StMuDst *dst,StDataCollectionMaker *dataCollector){
 
   StMuEvent *event = dst->event();
-  
+
+  //Check to make sure the vertex and track tree pointers are set
+  if (!vertexArray){
+    fputs("ERROR: EventInfo::SetEventInfo() - Pointer to vertex array is not set!\n", stderr);
+    fputs("       You must call EventInfo::SetVertexArrayPtr() prior to EventInfo::SetEventInfo().\n", stderr);
+    exit (EXIT_FAILURE);      
+  }
+
+  if (!trackArray){
+    fputs("ERROR: EventInfo::SetEventInfo() - Pointer to track array not set!\n", stderr);
+    fputs("       You must call EventInfo::SetTrackArrayPtr() prior to EventInfo::SetEventInfo().\n", stderr);
+    exit (EXIT_FAILURE);
+  }
+
+  //Set the Event Level Quantities
   runNumber        = event->runNumber();
   eventNumber      = event->eventNumber();
   nPrimaryVertices = dst->primaryVertices()->GetEntries();
@@ -125,7 +138,7 @@ void EventInfo::SetEventInfo(StMuDst *dst,StDataCollectionMaker *dataCollector){
   meanPt           = event->eventSummary().meanPt();
   meanEta          = event->eventSummary().meanEta();
   triggerIDs       = event->triggerIdCollection().nominal().triggerIds();
-  tofMultiplicity  = event->triggerData()->tofMultiplicity();
+  tofMultiplicity  = (Int_t)event->triggerData()->tofMultiplicity();
 
   //Loop Over the Primary Vertices and Fill the Primary Vertex Array
   for (Int_t iVertex=0; iVertex < nPrimaryVertices; iVertex++){
@@ -142,8 +155,13 @@ void EventInfo::SetEventInfo(StMuDst *dst,StDataCollectionMaker *dataCollector){
     if (!IsInterestingVertex(dst,dataCollector))
       continue;
 
-    //Add the vertex to the primary vertex array
+    //Set the tack pointers in the vertex
+    //vertex->SetTrackPtr(track);
+    //vertex->SetTrackArrayPtr(trackArray);
+
+    //Add the vertex 
     AddPrimaryVertex(dst);
+
   }
 
 }
@@ -153,17 +171,24 @@ void EventInfo::AddPrimaryVertex(StMuDst *dst){
 
   //Add the current primary vertex to the end of the primary
   //vertex array.
-  Int_t position = primaryVertexArray->GetEntries();
-  PrimaryVertexInfo *tempVertex = 
-    (PrimaryVertexInfo *)primaryVertexArray->ConstructedAt(position);
+  vertex = (PrimaryVertexInfo *)vertexArray->ConstructedAt(vertexArray->GetEntries());
+  
+  if (!vertex){
+    fputs("ERROR: EventInfo::AddPrimaryVertex() - Pointer to vertex not obtained from Vertex Array.\n",stderr);
+    exit (EXIT_FAILURE);
+  }
+
+  //Tell the vertex where the track Array is
+  vertex->SetTrackArrayPtr(trackArray);
+  vertex->SetVertexArrayPtr(vertexArray);
 
   //Set the RefMult user range depending on whether the vertex
   //is in positive z or negative z.
   Double_t zVertex = dst->event()->primaryVertexPosition().z();
   if (zVertex >= 0)
-    tempVertex->SetRefMultUserRange(-1.8,0);
+    vertex->SetRefMultUserRange(-refMultUserHigh,refMultUserLow);
   else 
-    tempVertex->SetRefMultUserRange(0,1.8);
+    vertex->SetRefMultUserRange(refMultUserLow,refMultUserHigh);
     
   //NOTE: If the user has specified vertex cuts then the vertex index
   //      in the DavisDST format will be different than the vertex
@@ -172,29 +197,87 @@ void EventInfo::AddPrimaryVertex(StMuDst *dst){
   //      this vertex is.
 
   //Set the primary vertex info
-  tempVertex->SetPrimaryVertexInfo(dst,dst->currentVertexIndex());
+  vertex->SetPrimaryVertexInfo(dst);
+
 }
 
 //__________________________________________________________ 
 void EventInfo::ResetEventInfo(){
 
-  runNumber = -999;
-  eventNumber = -999;
-  nPrimaryVertices = 0;
+  triggerIDs.clear();
+  
+  vertexArray->Clear();
+  trackArray->Clear();
 
-  primaryVertexArray->Delete();
 }
 
 //__________________________________________________________
-void EventInfo::PrintEventInfo(){
+void EventInfo::PrintEventInfo(Bool_t printVertices, Bool_t printTracks){
 
   cout <<"RunNumber: " <<runNumber <<"\n"
        <<"EventNumber: " <<eventNumber <<"\n"
        <<"nPrimaryVertices: " <<nPrimaryVertices <<"\n"
-       <<"VertexArraySize: " <<primaryVertexArray->GetEntries() <<"\n"
+       <<"nGoodPrimaryVertices: " <<vertexArray->GetEntries() <<"\n"
        <<"TriggerID 0: " <<triggerIDs.size() <<"\n";
 
-  if (nPrimaryVertices > 0)
-    ((PrimaryVertexInfo *)primaryVertexArray->At(0))->PrintPrimaryVertexInfo();
+  if (!printVertices)
+    return;
+
+  
+  for (Int_t iVertex=0; iVertex<vertexArray->GetEntries(); iVertex++){
+    vertex = (PrimaryVertexInfo *)vertexArray->At(iVertex);
+    vertex->PrintPrimaryVertexInfo(printTracks);
+  }
+  
+ 
 }
 
+//_________________________________________________________
+void EventInfo::SetVertexArrayPtr(TClonesArray *val){
+  
+  if (!val){
+    fputs("ERROR: EventInfo::SetVertexArrayPtr() - Pointer to primary vertex Array is NULL!\n", stderr);
+    exit (EXIT_FAILURE);
+  }
+
+  vertexArray = val;
+
+}
+
+/*
+//_________________________________________________________
+void EventInfo::SetVertexTreePtr(TTree *val){
+
+  if (!val){
+    fputs("ERROR: EventInfo::SetVertexTreePtr() - Pointer to PrimaryVertex Tree is NULL!\n", stderr);
+    exit (EXIT_FAILURE);
+  }
+
+  vertexTree = val;
+
+}
+*/
+
+//________________________________________________________
+void EventInfo::SetTrackArrayPtr(TClonesArray *val){
+
+  if (!val){
+    fputs("ERROR: EventInfo::SetTrackArrayPtr() - Pointer to track array is NULL!\n",stderr);
+    exit (EXIT_FAILURE);
+  }
+
+  trackArray = val;
+}
+
+/*
+//________________________________________________________
+void EventInfo::SetTrackTreePtr(TTree *val){
+
+  if (!val){
+    fputs("ERROR: EventInfo::SetTrackTreePtr() - Pointer to track tree is NULL!\n",stderr);
+    exit (EXIT_FAILURE);
+  }
+
+  trackTree = val;
+}
+*/

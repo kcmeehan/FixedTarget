@@ -7,6 +7,8 @@
 
 //Classes Used in the .cxx File                                              
 class TFile;
+class TrackInfo;
+class PrimaryVertexInfo;
 class EventInfo;
 class TBranch;
 
@@ -64,10 +66,20 @@ class StDataCollectionMaker : public StMaker {
   
   //Output File                                                              
   TFile *outFile;
-  TTree *outTree;
-  TBranch *outBranch;
 
+  //Trees, Branches, and objects for each type
+  TTree *outTree;
+  TBranch *eventBranch;
+  TBranch *vertexBranch;
+  TBranch *trackBranch;
+
+  TrackInfo *trackInfo;
+  PrimaryVertexInfo *vertexInfo;
   EventInfo *eventInfo;
+
+  //Arrays for the Vertices and Tracks
+  TClonesArray *vertexArray;
+  TClonesArray *trackArray;
 
   //Variables to hold the values of the cuts
   //if the user chooses to use them
