@@ -1,5 +1,7 @@
 #include <TObject.h>
 #include "TClonesArray.h"
+#include "TTree.h"
+
 #include "StMuDSTMaker/COMMON/StMuDstMaker.h"
 #include "StMuDSTMaker/COMMON/StMuDst.h"
 #include "StMuDSTMaker/COMMON/StMuEvent.h"
@@ -13,31 +15,32 @@ ClassImp(PrimaryVertexInfo);
 //____________________________________________________________________________
 PrimaryVertexInfo::PrimaryVertexInfo(){
 
-  vertexIndex = -999;
-  nPrimaryTracks = -999;
-  ntofMatches = -999;
-  nPions = -999;
-  refMult = -999;
-  refMultUser = -999;
-  refMultUserEtaLow = -.05;
+  trackStartIndex    = -999;
+  trackStopIndex     = -999;
+  vertexIndexMuDst   = -999;
+  nPrimaryTracks     = -999;
+  ntofMatches        = -999;
+  nPions             = -999;
+  refMult            = -999;
+  refMultUser        = -999;
+  refMultPosY        = -999;
+  refMultNegY        = -999;
+  refMultUserEtaLow  = -.05;
   refMultUserEtaHigh = .05;
-  xVertex = -999;
-  yVertex = -999;
-  zVertex = -999;
-
-  trackArray = new TClonesArray("TrackInfo",0);
+  xVertex            = -999;
+  yVertex            = -999;
+  zVertex            = -999;
 
 }
 
 //___________________________________________________________________________
 PrimaryVertexInfo::~PrimaryVertexInfo(){
 
-  delete trackArray;  
 
 }
 
 //___________________________________________________________________________
-void PrimaryVertexInfo::SetRefMultUserRange(Double_t etaLow, Double_t etaHigh){
+void PrimaryVertexInfo::SetRefMultUserRange(Float_t etaLow, Float_t etaHigh){
 
   refMultUserEtaLow = etaLow;
   refMultUserEtaHigh = etaHigh;
@@ -45,26 +48,33 @@ void PrimaryVertexInfo::SetRefMultUserRange(Double_t etaLow, Double_t etaHigh){
 }
 
 //___________________________________________________________________________
-void PrimaryVertexInfo::SetPrimaryVertexInfo(StMuDst *dst, Int_t index){
+void PrimaryVertexInfo::SetPrimaryVertexInfo(StMuDst *dst){
 
-  vertexIndex    = index;
-  nPrimaryTracks = dst->primaryTracks()->GetEntries();
-  ntofMatches    = 0; //Counted in Loop Below
-  refMult        = dst->event()->refMult();
-  refMultUser    = 0; //Counted In Loop Below
-  nPions         = 0; //Counted in Loop Below
-  xVertex        = dst->event()->primaryVertexPosition().x();
-  yVertex        = dst->event()->primaryVertexPosition().y();
-  zVertex        = dst->event()->primaryVertexPosition().z();
+  trackStartIndex  = trackArray->GetEntries();
+  trackStopIndex   = trackStartIndex; //Gets incremented in the loop below
+  vertexIndexMuDst = dst->currentVertexIndex();         
+  nPrimaryTracks   = dst->primaryTracks()->GetEntries();
+  ntofMatches      = 0; //Counted in Loop Below
+  refMult          = dst->event()->refMult();
+  refMultUser      = 0; //Counted In Loop Below
+  refMultPosY      = 0; //Counted in Loop Below
+  refMultNegY      = 0; //Counted in Loop Below
+  nPions           = 0; //Counted in Loop Below
+  xVertex          = dst->event()->primaryVertexPosition().x();
+  yVertex          = dst->event()->primaryVertexPosition().y();
+  zVertex          = dst->event()->primaryVertexPosition().z();
 
   //Loop Over All the Primary Tracks and Add them to the Track Array
   //Also count them as contributing to the refMultUser and ntofMatches
   //if they satisfy the respective conditions
   for (Int_t trackIndex=0; trackIndex < nPrimaryTracks; trackIndex++){
-    
-    //Add the Track to the Track Array
-    AddTrack(dst->primaryTracks(trackIndex),trackIndex);
-    
+   
+    //Add the Track to the Track Tree
+    AddTrack(dst->primaryTracks(trackIndex),vertexArray->GetEntries()-1);
+   
+    //Increment the TrackStopIndex
+    trackStopIndex++;
+
     //If the track has a matchFlag > 0 then 
     if (dst->primaryTracks(trackIndex)->btofPidTraits().matchFlag() > 0)
       ntofMatches++;
@@ -81,50 +91,99 @@ void PrimaryVertexInfo::SetPrimaryVertexInfo(StMuDst *dst, Int_t index){
 	  dst->primaryTracks(trackIndex)->nSigmaProton() < -1.0)
 	nPions++;
       else
-	nPions++;
-
+	nPions++;     
     }
+
+    //Increment refMultPosY
+    if (dst->primaryTracks(trackIndex)->eta() >= 0.0 &&
+	dst->primaryTracks(trackIndex)->eta() < 1.0)
+      refMultPosY++;
+
+    //Increment refMultNegY
+    if (dst->primaryTracks(trackIndex)->eta() >= -1.0 &&
+	dst->primaryTracks(trackIndex)->eta() < 0.0)
+      refMultNegY++;
 
   }//End Loop Over Track Index
 
 }
 
 //____________________________________________________________________________
-void PrimaryVertexInfo::AddTrack(StMuTrack *track, Int_t index){
+void PrimaryVertexInfo::AddTrack(StMuTrack *stTrack, Int_t vertexIndex){
 
-  TrackInfo *tempTrack = (TrackInfo *)trackArray->ConstructedAt(index);
-  tempTrack->SetTrackInfo(track);  
+  track = (TrackInfo *)trackArray->ConstructedAt(trackArray->GetEntries());
 
+  if (!track){
+    fputs("ERROR: PrimaryVertexInfo::AddTrack() - Pointer to track not obtained from track array.", stderr);
+    exit (EXIT_FAILURE);
+  }
+
+  track->SetTrackInfo(stTrack,vertexIndex);
 
 }
 
 //____________________________________________________________________________
 void PrimaryVertexInfo::ResetPrimaryVertexInfo(){
 
-  vertexIndex = -999;
-  nPrimaryTracks = -999;
-  ntofMatches = -999;
-  nPions = -999;
-  refMult = -999;
-  refMultUser = -999;
-  refMultUserEtaLow = -.05;
-  refMultUserEtaHigh = .05;
-  xVertex = -999;
-  yVertex = -999;
-  zVertex = -999;
-
-  trackArray->Delete();
+  
 
 }
 
 //____________________________________________________________________________
-void PrimaryVertexInfo::PrintPrimaryVertexInfo(){
+void PrimaryVertexInfo::PrintPrimaryVertexInfo(Bool_t printTracks){
 
-  cout <<"VertexIndex: "      <<vertexIndex     <<"\n"
-       <<"nPrimaryTracks: "   <<nPrimaryTracks  <<"\n"
-       <<"ntofMatches: "      <<ntofMatches     <<"\n"
+  cout <<"VertexIndexMuDst: " <<vertexIndexMuDst <<"\n"
+       <<"nPrimaryTracks: "   <<nPrimaryTracks   <<"\n"
+       <<"ntofMatches: "      <<ntofMatches      <<"\n"
        <<"nPions: "           <<nPions           <<"\n"
-       <<"refMult: "          <<refMult         <<"\n"
-       <<"refMultUser: "      <<refMultUser     <<"\n"
+       <<"refMult: "          <<refMult          <<"\n"
+       <<"refMultUser: "      <<refMultUser      <<"\n"
+       <<"refMultPosY: "      <<refMultPosY      <<"\n"
+       <<"refMultNegY: "      <<refMultNegY      <<"\n"
        <<"VertexLocation: x=" <<xVertex <<", y=" <<yVertex <<", z=" <<zVertex <<"\n";
+
+  if (!printTracks)
+    return;
+
+  for (Int_t iTrack=trackStartIndex; iTrack<trackStopIndex; iTrack++){
+    track = (TrackInfo *)trackArray->At(iTrack);
+    track->PrintTrackInfo();
+  }
+
+}
+
+//____________________________________________________________________________
+void PrimaryVertexInfo::SetTrackPtr(TrackInfo *val){
+
+  if (!val){
+    fputs("ERROR: PrimaryVertexInfo::SetTrackPtr() - Pointer to track is NULL!\n",stderr);
+    exit (EXIT_FAILURE);
+  }
+  
+  track = val;
+  
+}
+
+//____________________________________________________________________________
+void PrimaryVertexInfo::SetTrackArrayPtr(TClonesArray *val){
+
+  if (!val){
+    fputs("ERROR: PrimaryVertexInfo::SetTrackArrayPtr() - Pointer to track array is NULL!\n",stderr);
+    exit (EXIT_FAILURE);
+  }
+
+  trackArray = val;
+
+}
+
+//____________________________________________________________________________
+void PrimaryVertexInfo::SetVertexArrayPtr(TClonesArray *val){
+  
+  if (!val){
+    fputs("ERROR: PrimaryVertexInfo::SetVertexArrayPtr() - Pointer to vertex array is NULL!\n",stderr);
+    exit (EXIT_FAILURE);
+  }
+  
+  vertexArray = val;
+
 }

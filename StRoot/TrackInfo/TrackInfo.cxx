@@ -1,3 +1,4 @@
+#include <iostream>
 #include "TObject.h"
 #include "TVector3.h"
 #include "StMuDSTMaker/COMMON/StMuTrack.h"
@@ -7,7 +8,8 @@ ClassImp(TrackInfo);
 
 //__________________________________________________________
 TrackInfo::TrackInfo(){
-
+  
+  parentVertex = -999;
   nHits = -999;
   nHitsFit = -999;
   nHitsPoss = -999;
@@ -50,16 +52,17 @@ TrackInfo::~TrackInfo(){
 }
 
 //_________________________________________________________
-void TrackInfo::SetTrackInfo(StMuTrack *track){
+void TrackInfo::SetTrackInfo(StMuTrack *track, Int_t vertexIndex){
   
-  nHits      = track->nHits();
-  nHitsFit   = track->nHitsFit();
-  nHitsPoss  = track->nHitsPoss();
-  dEdxHits   = track->nHitsDedx();
-  flag       = track->flag();
-  pZ         = track->p().z();
-  pT         = track->pt();
-  charge     = track->charge();
+  parentVertex      = vertexIndex;
+  nHits             = track->nHits();
+  nHitsFit          = track->nHitsFit();
+  nHitsPoss         = track->nHitsPoss();
+  dEdxHits          = track->nHitsDedx();
+  flag              = track->flag();
+  pZ                = track->p().z();
+  pT                = track->pt();
+  charge            = track->charge();
   dEdxTruncated     = track->probPidTraits().dEdxTruncated();
   dEdxFit           = track->probPidTraits().dEdxFit();
   tof               = track->btofPidTraits().timeOfFlight();
@@ -88,3 +91,9 @@ void TrackInfo::SetTrackInfo(StMuTrack *track){
   tofMatchFlag = track->btofPidTraits().matchFlag();
 }
 
+//_________________________________________________________
+void TrackInfo::PrintTrackInfo(){
+
+  cout <<"parentVertex: " <<parentVertex <<"\n";
+
+}

@@ -57,6 +57,7 @@ StDataCollectionMaker::StDataCollectionMaker(char *name): StMaker(name){
   beamSpotY = 0.0;
   minNumberOfPrimaryTracks = -1;
 
+  cout <<"StDataCollectionMaker Object created" <<endl;
 }
 
 //__________________________________________________________________________                                      
@@ -64,6 +65,8 @@ StDataCollectionMaker::~StDataCollectionMaker(){}
 
 //__________________________________________________________________________                                
 Int_t StDataCollectionMaker::Init(){
+
+  cout <<"Starting Init()" <<endl;
 
   //Set the Output File Name                                       
   TString fileName = fileNameBase;
@@ -76,12 +79,28 @@ Int_t StDataCollectionMaker::Init(){
   //Create the outout Root File                                                                             
   outFile = new TFile(fileName.Data(), "RECREATE");
   
-  //Create an Instance of StEventInfo
-  eventInfo = new EventInfo();
+  //Create an Instance of each data object
+  eventInfo  = new EventInfo();
+  vertexInfo = new PrimaryVertexInfo();
+  trackInfo  = new TrackInfo();
 
-  //Create the Output TTree
+  //Create the Vertex and Track Arrays
+  vertexArray = new TClonesArray("PrimaryVertexInfo",0);
+  trackArray  = new TClonesArray("TrackInfo",0);
+
+  //Create the Output Tree and its Branches
   outTree = new TTree("DataTree","DataTree");
-  outBranch = outTree->Branch("EventInfo",&eventInfo,2000000);
+  eventBranch  = outTree->Branch("EventInfo", &eventInfo,  2000000);
+  vertexBranch = outTree->Branch("VertexInfo",&vertexArray,2000000);
+  trackBranch  = outTree->Branch("TrackInfo", &trackArray, 2000000);
+
+  //Set the Vertex and Track Pointers in EventInfo
+  eventInfo->SetVertexArrayPtr(vertexArray);
+  eventInfo->SetTrackArrayPtr(trackArray);
+
+  //Set the Range of RefMult User
+  //This will be set depending on the +- zVertex location
+  eventInfo->SetRefMultUser(0,1.8);
 
   //End of Init                                                              
   fputs("Finished Init()\n", stderr);
@@ -90,6 +109,9 @@ Int_t StDataCollectionMaker::Init(){
 
 //__________________________________________________________________________                           
 void StDataCollectionMaker::Clear(const char *c){
+
+  eventInfo->ResetEventInfo();
+
   return StMaker::Clear(c);
 }
 
@@ -97,8 +119,21 @@ void StDataCollectionMaker::Clear(const char *c){
 Int_t StDataCollectionMaker::Make(){
 
   //The MuDst
-  StMuDstMaker *muDstMaker = (StMuDstMaker *)GetMaker("MuDst");
-  StMuDst *mMuDst = muDstMaker->muDst();
+  StMuDstMaker *muDstMaker = NULL;
+  muDstMaker = (StMuDstMaker *)GetMaker("MuDst");
+  if (!muDstMaker){
+    fputs("ERROR: StDataCollectionMaker::Init() - Can't get pointer to StMuDstMaker!", stderr);
+    return kStFATAL;
+  }
+  cout <<muDstMaker <<endl;
+  StMuDst *mMuDst = NULL;
+  mMuDst = muDstMaker->muDst();
+  if (!mMuDst){
+    fputs("ERROR: StDataCollectionMaker::Init() - Can't get pointer to StMuDst!", stderr);
+    return kStFATAL;
+  }
+
+  cout <<muDstMaker <<" " <<mMuDst <<endl;
 
   //CHECK TO MAKE SURE THE EVENT IS INTERESTING
   //This function makes sure that this event passes some
@@ -106,7 +141,14 @@ Int_t StDataCollectionMaker::Make(){
   //from filling up with lots of events that are not useful.
   if (!eventInfo->IsInterestingEvent(mMuDst))
     return kStOK;
-	
+
+  //ADD THE EVENT/TRIGGER
+  eventInfo->SetEventInfo(mMuDst,this);
+  //  eventInfo->PrintEventInfo(true,true);
+  
+  //FILL THE EVENT TREE
+  outTree->Fill();
+  
   //ADD THE EVENT/TRIGGER
   //This function sets event level attributes like
   //run number and event number, then loops over all the primary
@@ -116,12 +158,14 @@ Int_t StDataCollectionMaker::Make(){
   //NOTE: If the user has specified min or max vertex cuts in the
   //RunStDataCollectorMaker.C macro each primary vertex will be
   //tested to make sure it passes the cuts.
-  eventInfo->SetEventInfo(mMuDst,this);
+
+  //eventInfo->SetEventInfo(mMuDst,this);
 
   //FILL THE TREE
   //This function recurses down the event->vertex->track class
   //structure and adds all of the information to the output tree.
-  outTree->Fill();
+  
+  //outTree->Fill();
 
   //RESET EVENT INFO
   //This function resets the event level variables to their default values

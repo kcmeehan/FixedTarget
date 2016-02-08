@@ -12,21 +12,6 @@ void RunStDataCollectorMaker(Int_t nEvents=1,char *fileList,char *outDir="./",ch
   //Load the Necessary Libraries
   gROOT->LoadMacro("loadMuDst.C");
   loadMuDst();
-  gROOT->Macro("LoadLogger.C");
-  gSystem->Load("StDetectorDbMaker");
-  gSystem->Load("StTpcDb");
-  
-  gSystem->Load("StDbBroker");
-  gSystem->Load("StDbUtilities");
-  gSystem->Load("StDaqLib");
-  gSystem->Load("StEmcRawMaker");
-  gSystem->Load("StEmcADCtoEMaker");
-  gSystem->Load("StPreEclMaker");
-  gSystem->Load("StEpcMaker");
-  
-  gSystem->Load("St_db_Maker");
-  gSystem->Load("StEEmcUtil");
-  gSystem->Load("StRefMultCorr");
 
   //Load Our Maker
   gSystem->Load("TrackInfo");
@@ -40,7 +25,14 @@ void RunStDataCollectorMaker(Int_t nEvents=1,char *fileList,char *outDir="./",ch
 
   //Add The Makers to the Chain                                              
   StMuDstMaker *muDstMaker = new StMuDstMaker(0,0,"",fileList,"",100);
-  St_db_Maker *dbMaker = new St_db_Maker("StarDb","MySQL:StarDb");
+  muDstMaker->SetStatus("*",0);
+  muDstMaker->SetStatus("MuEvent",1);
+  muDstMaker->SetStatus("PrimaryVertices",1);
+  muDstMaker->SetStatus("PrimaryTracks",1);
+  muDstMaker->SetStatus("GlobalTracks",1);
+  muDstMaker->SetStatus("BTof*",1);
+
+  //St_db_Maker *dbMaker = new St_db_Maker("StarDb","MySQL:StarDb");
 
   StDataCollectionMaker *davisDstMaker = new StDataCollectionMaker("StDataCollectionMaker");
   davisDstMaker->SetOutDir(outDir);
@@ -72,8 +64,8 @@ void RunStDataCollectorMaker(Int_t nEvents=1,char *fileList,char *outDir="./",ch
 
   //Initialize
   Int_t initStat = chain->Init();
-  if (initStat) chain->Fatal(initStat, "Failure During Init()");
-
+  if (initStat) 
+    chain->Fatal(initStat, "Failure During Init()");
 
   Int_t istat, iev=1;
  EventLoop: if (iev<=nEvents && istat!=2){
