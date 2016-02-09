@@ -17,15 +17,16 @@ class EventInfo : public TObject {
  private:
 
   //Data Members
-  Int_t nPrimaryVertices;
-  Int_t runNumber;
-  Int_t eventNumber;
-  Int_t nPileUpVertices;
-  Int_t adcSumBBCWest;
-  Int_t adcSumBBCEast;
-  Int_t tofMultiplicity;
-  Float_t meanPt;
-  Float_t meanEta;
+  Int_t nPrimaryVertices; //Number of vertices passing cuts
+  Int_t runNumber;        //Run Number
+  Int_t eventNumber;      //Event Number
+  Int_t nTotalVertices;   //Number of primary vertices reported in MuDst
+  Int_t nPileUpVertices;  //Numer of PileUp Vertices reported in MuDst
+  Int_t adcSumBBCWest;    //Sum of ADC values from BBC West
+  Int_t adcSumBBCEast;    //Sum of ADC values from BBC East
+  Int_t tofMultiplicity;  //Total Number of ToF Modules with a hit
+  Float_t meanPt;         //Average Pt for all global tracks in this event
+  Float_t meanEta;        //Averate Eta for all global tracks in this event
   std::vector <unsigned int> triggerIDs;
 
   Float_t refMultUserLow;  //!
@@ -46,6 +47,7 @@ class EventInfo : public TObject {
   virtual ~EventInfo();
 
   //Member Functions
+  Int_t GetNPrimaryVertices(){return nPrimaryVertices;}
   Bool_t IsInterestingEvent(StMuDst *dst);
   Bool_t IsInterestingVertex(StMuDst *dst, StDataCollectionMaker *dataCollector);
   void SetEventInfo(StMuDst *dst, StDataCollectionMaker *dataCollector);
