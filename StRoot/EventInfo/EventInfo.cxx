@@ -23,6 +23,7 @@ EventInfo::EventInfo(){
   eventNumber      = -999;
   nPrimaryVertices = -999;
   nPileUpVertices  = -999;
+  nTotalVertices   = -999;
   adcSumBBCWest    = -999;
   adcSumBBCEast    = -999;
   meanPt           = -999;
@@ -131,7 +132,8 @@ void EventInfo::SetEventInfo(StMuDst *dst,StDataCollectionMaker *dataCollector){
   //Set the Event Level Quantities
   runNumber        = event->runNumber();
   eventNumber      = event->eventNumber();
-  nPrimaryVertices = 0; //Counted in the Loop Below dst->primaryVertices()->GetEntries();
+  nPrimaryVertices = 0; //Counted in the Loop Below 
+  nTotalVertices   = dst->primaryVertices()->GetEntries();
   nPileUpVertices  = event->eventSummary().numberOfPileupVertices();
   adcSumBBCWest    = event->bbcTriggerDetector().adcSumWest();
   adcSumBBCEast    = event->bbcTriggerDetector().adcSumEast();
@@ -141,7 +143,7 @@ void EventInfo::SetEventInfo(StMuDst *dst,StDataCollectionMaker *dataCollector){
   tofMultiplicity  = (Int_t)event->triggerData()->tofMultiplicity();
 
   //Loop Over the Primary Vertices and Fill the Primary Vertex Array
-  for (Int_t iVertex=0; iVertex < nPrimaryVertices; iVertex++){
+  for (Int_t iVertex=0; iVertex < nTotalVertices; iVertex++){
     
     //THIS IS EXTREMELY IMPORTANT AND MUST BE DONE FIRST!
     //It tells the StMuDst class which primary vertex index
@@ -217,7 +219,7 @@ void EventInfo::PrintEventInfo(Bool_t printVertices, Bool_t printTracks){
   cout <<"RunNumber: " <<runNumber <<"\n"
        <<"EventNumber: " <<eventNumber <<"\n"
        <<"nPrimaryVertices: " <<nPrimaryVertices <<"\n"
-       <<"nGoodPrimaryVertices: " <<vertexArray->GetEntries() <<"\n"
+       <<"nTotalVertices: " <<nTotalVertices <<"\n"
        <<"TriggerID 0: " <<triggerIDs.size() <<"\n";
 
   if (!printVertices)
@@ -244,20 +246,6 @@ void EventInfo::SetVertexArrayPtr(TClonesArray *val){
 
 }
 
-/*
-//_________________________________________________________
-void EventInfo::SetVertexTreePtr(TTree *val){
-
-  if (!val){
-    fputs("ERROR: EventInfo::SetVertexTreePtr() - Pointer to PrimaryVertex Tree is NULL!\n", stderr);
-    exit (EXIT_FAILURE);
-  }
-
-  vertexTree = val;
-
-}
-*/
-
 //________________________________________________________
 void EventInfo::SetTrackArrayPtr(TClonesArray *val){
 
@@ -268,16 +256,3 @@ void EventInfo::SetTrackArrayPtr(TClonesArray *val){
 
   trackArray = val;
 }
-
-/*
-//________________________________________________________
-void EventInfo::SetTrackTreePtr(TTree *val){
-
-  if (!val){
-    fputs("ERROR: EventInfo::SetTrackTreePtr() - Pointer to track tree is NULL!\n",stderr);
-    exit (EXIT_FAILURE);
-  }
-
-  trackTree = val;
-}
-*/

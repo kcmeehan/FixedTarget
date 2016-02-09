@@ -20,7 +20,8 @@ class EventInfo : public TObject {
   Int_t nPrimaryVertices; //Number of vertices passing cuts
   Int_t runNumber;        //Run Number
   Int_t eventNumber;      //Event Number
-  Int_t nPileUpVertices;  //Number of Pile-Up vertices reported in MuDst
+  Int_t nTotalVertices;   //Number of primary vertices reported in MuDst
+  Int_t nPileUpVertices;  //Numer of PileUp Vertices reported in MuDst
   Int_t adcSumBBCWest;    //Sum of ADC values from BBC West
   Int_t adcSumBBCEast;    //Sum of ADC values from BBC East
   Int_t tofMultiplicity;  //Total Number of ToF Modules with a hit

@@ -142,7 +142,6 @@ Int_t StDataCollectionMaker::Make(){
 
   //ADD THE EVENT/TRIGGER
   eventInfo->SetEventInfo(mMuDst,this);
-  //  eventInfo->PrintEventInfo(true,true);
   
   //FILL THE EVENT TREE
   if (eventInfo->GetNPrimaryVertices() > 0)
