@@ -131,7 +131,7 @@ void EventInfo::SetEventInfo(StMuDst *dst,StDataCollectionMaker *dataCollector){
   //Set the Event Level Quantities
   runNumber        = event->runNumber();
   eventNumber      = event->eventNumber();
-  nPrimaryVertices = dst->primaryVertices()->GetEntries();
+  nPrimaryVertices = 0; //Counted in the Loop Below dst->primaryVertices()->GetEntries();
   nPileUpVertices  = event->eventSummary().numberOfPileupVertices();
   adcSumBBCWest    = event->bbcTriggerDetector().adcSumWest();
   adcSumBBCEast    = event->bbcTriggerDetector().adcSumEast();
@@ -161,7 +161,7 @@ void EventInfo::SetEventInfo(StMuDst *dst,StDataCollectionMaker *dataCollector){
 
     //Add the vertex 
     AddPrimaryVertex(dst);
-
+    nPrimaryVertices++;
   }
 
 }

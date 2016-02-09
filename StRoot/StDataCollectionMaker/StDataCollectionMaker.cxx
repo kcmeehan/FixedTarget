@@ -133,8 +133,6 @@ Int_t StDataCollectionMaker::Make(){
     return kStFATAL;
   }
 
-  cout <<muDstMaker <<" " <<mMuDst <<endl;
-
   //CHECK TO MAKE SURE THE EVENT IS INTERESTING
   //This function makes sure that this event passes some
   //very simple cuts. You can use this to prevent your DavisDSTs
@@ -147,26 +145,9 @@ Int_t StDataCollectionMaker::Make(){
   //  eventInfo->PrintEventInfo(true,true);
   
   //FILL THE EVENT TREE
-  outTree->Fill();
+  if (eventInfo->GetNPrimaryVertices() > 0)
+    outTree->Fill();
   
-  //ADD THE EVENT/TRIGGER
-  //This function sets event level attributes like
-  //run number and event number, then loops over all the primary
-  //vertices of this event. In doing so recurses down the
-  //event->vertex->track class structure filling the variables
-  //at each level.
-  //NOTE: If the user has specified min or max vertex cuts in the
-  //RunStDataCollectorMaker.C macro each primary vertex will be
-  //tested to make sure it passes the cuts.
-
-  //eventInfo->SetEventInfo(mMuDst,this);
-
-  //FILL THE TREE
-  //This function recurses down the event->vertex->track class
-  //structure and adds all of the information to the output tree.
-  
-  //outTree->Fill();
-
   //RESET EVENT INFO
   //This function resets the event level variables to their default values
   //and deletes the primary vertex array which then deletes the track array
