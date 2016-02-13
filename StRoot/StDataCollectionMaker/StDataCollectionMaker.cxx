@@ -253,6 +253,11 @@ void StDataCollectionMaker::SetMinNumberOfPrimaryTracks(Int_t val){
   isMinNumberOfPrimaryTracksSet = true;
 }
 
+//__________________________________________________________________________
+void StDataCollectionMaker::SetMaxNumberOfVertices(Int_t val){
 
+  maxNumberOfVertices = val;
+  isMaxNumberOfVerticesSet = true;
+}
 
 

@@ -33,6 +33,7 @@ class StDataCollectionMaker : public StMaker {
   Bool_t isMinVySet, isMaxVySet;
   Bool_t isBeamSpotSet;
   Bool_t isMinNumberOfPrimaryTracksSet;
+  Bool_t isMaxNumberOfVerticesSet;
 
   //Sets and Gets for the Vertex Cuts
   void SetMinVr(Double_t val);
@@ -45,7 +46,8 @@ class StDataCollectionMaker : public StMaker {
   void SetMaxVy(Double_t val);
   void SetBeamSpot(Double_t xVal, Double_t yVal);
   void SetMinNumberOfPrimaryTracks(Int_t val);
-  
+  void SetMaxNumberOfVertices(Int_t val);
+
   Double_t GetMinVr(){return minVr;}
   Double_t GetMaxVr(){return maxVr;}
   Double_t GetMinVz(){return minVz;}
@@ -57,6 +59,7 @@ class StDataCollectionMaker : public StMaker {
   Double_t GetBeamSpotX(){return beamSpotX;}
   Double_t GetBeamSpotY(){return beamSpotY;}
   Int_t GetMinNumberOfPrimaryTracks(){return minNumberOfPrimaryTracks;}
+  Int_t GetMaxNumberOfVertices(){return maxNumberOfVertices;}
 
  private:
   
@@ -89,6 +92,7 @@ class StDataCollectionMaker : public StMaker {
   Double_t minVy, maxVy;
   Double_t beamSpotX, beamSpotY;
   Int_t minNumberOfPrimaryTracks;
+  Int_t maxNumberOfVertices;
 
   ClassDef(StDataCollectionMaker, 1);
   

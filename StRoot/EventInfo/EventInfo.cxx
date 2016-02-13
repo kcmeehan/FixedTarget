@@ -142,6 +142,9 @@ void EventInfo::SetEventInfo(StMuDst *dst,StDataCollectionMaker *dataCollector){
   triggerIDs       = event->triggerIdCollection().nominal().triggerIds();
   tofMultiplicity  = (Int_t)event->triggerData()->tofMultiplicity();
 
+  if (dataCollector->isMaxNumberOfVerticesSet)
+    nTotalVertices = dataCollector->GetMaxNumberOfVertices();
+
   //Loop Over the Primary Vertices and Fill the Primary Vertex Array
   for (Int_t iVertex=0; iVertex < nTotalVertices; iVertex++){
     

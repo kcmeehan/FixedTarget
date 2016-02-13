@@ -60,10 +60,11 @@
     set beamSpotX = -999     <!-- The X location of the beam spot -->
     set beamSpotY = -999     <!-- The Y location of the beam spot -->
     set minPrimaryTracks = 2 <!-- Minimum number of primary tracks a primary vertex must have -->
+    set maxVertices = -999   <!-- Maximum number of primary vertices to be stored for each evet -->
  
     <!-- Run the Root Macro with the options above -->
     set nEvents = 999999     <!-- Number of events to run over. -->
-    root4star -q -b RunStDataCollectorMaker.C\($nEvents,\"$FILELIST\",\"$SCRATCH/\",\"$JOBID\",$minVr,$maxVr,$minVz,$maxVz,$minVx,$maxVx,$minVy,$maxVy,$beamSpotX,$beamSpotY,$minPrimaryTracks\)
+    root4star -q -b RunStDataCollectorMaker.C\($nEvents,\"$FILELIST\",\"$SCRATCH/\",\"$JOBID\",$minVr,$maxVr,$minVz,$maxVz,$minVx,$maxVx,$minVy,$maxVy,$beamSpotX,$beamSpotY,$minPrimaryTracks,$maxVertices\)
 
 
     <!-- NOTE: You can also elect to not cut on any variable by not setting any of them at all.

@@ -7,7 +7,7 @@ void RunStDataCollectorMaker(Int_t nEvents=1,char *fileList,char *outDir="./",ch
 			     Double_t minVx=-999,Double_t maxVx=-999,
 			     Double_t minVy=-999,Double_t maxVy=-999,
 			     Double_t beamSpotX=-999,Double_t beamSpotY=-999,
-			     Int_t minNumberOfPrimaryTracks=-999){
+			     Int_t minNumberOfPrimaryTracks=-999, Int_t maxNumberOfVertices=-999){
 
   //Load the Necessary Libraries
   gROOT->LoadMacro("loadMuDst.C");
@@ -61,6 +61,8 @@ void RunStDataCollectorMaker(Int_t nEvents=1,char *fileList,char *outDir="./",ch
     davisDstMaker->SetBeamSpot(beamSpotX,beamSpotY);
   if (minNumberOfPrimaryTracks != -999)
     davisDstMaker->SetMinNumberOfPrimaryTracks(minNumberOfPrimaryTracks);
+  if (maxNumberOfVertices != -999)
+    davisDstMaker->SetMaxNumberOfVertices(maxNumberOfVertices);
 
   //Initialize
   Int_t initStat = chain->Init();
