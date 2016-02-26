@@ -10,7 +10,7 @@ fxtEventCut::fxtEventCut(){
 } 
 
 Bool_t fxtEventCut::Pass(const StHbtEvent* event){
-  Int_t mult = event->NumberOfTracks();
+  Int_t mult = event->UncorrectedNumberOfPrimaries();
   Int_t nTofMatches = event->NumberOfTofMatches();
   Float_t Vx = event->PrimVertPos().x();
   Float_t Vy = event->PrimVertPos().y();
@@ -34,10 +34,10 @@ Bool_t fxtEventCut::Pass(const StHbtEvent* event){
 StHbtString fxtEventCut::Report(){
   string Stemp;
   char Ctemp[300];
-  sprintf(Ctemp,"\nMultiplicity:\t %d-%d",mMult[0],mMult[1]);
+  sprintf(Ctemp,"\nMultiplicity:\t %E-%E",mMult[0],mMult[1]);
   Stemp = Ctemp;
   sprintf(Ctemp,"\nMin Tof Matches:\t %d",mMinTofMatches);
-  Stemp = Ctemp;
+  Stemp += Ctemp;
   sprintf(Ctemp,"\nVertex X-position:\t %E-%E",mVx[0],mVx[1]);
   Stemp += Ctemp;
   sprintf(Ctemp,"\nVertex Y-position:\t %E-%E",mVy[0],mVy[1]);

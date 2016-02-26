@@ -11,7 +11,7 @@ public:
   fxtEventCut(fxtEventCut&);
   //~fxtEventCut();
 
-  void SetMult(const Int_t lo,const Int_t hi);
+  void SetMult(const Float_t lo,const Float_t hi);
   void SetMinTofMatches(const Int_t min);
   void SetVx(const Float_t lo, const Float_t hi);
   void SetVy(const Float_t lo, const Float_t hi);
@@ -26,7 +26,7 @@ public:
 
 private:
 
-  Int_t mMult[2];
+  Float_t mMult[2];
   Int_t mMinTofMatches;
   Float_t mVx[2];
   Float_t mVy[2];
@@ -41,7 +41,7 @@ private:
 
 };
 
-inline void fxtEventCut::SetMult(const Int_t lo, const Int_t hi){mMult[0]=lo; mMult[1]=hi;}
+inline void fxtEventCut::SetMult(const Float_t lo, const Float_t hi){mMult[0]=lo; mMult[1]=hi;}
 inline void fxtEventCut::SetMinTofMatches(const Int_t min){mMinTofMatches=min;}
 inline void fxtEventCut::SetVx(const Float_t lo, const Float_t hi){mVx[0]=lo; mVx[1]=hi;}
 inline void fxtEventCut::SetVy(const Float_t lo, const Float_t hi){mVy[0]=lo; mVy[1]=hi;}
