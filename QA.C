@@ -44,10 +44,8 @@ void QA(const TString fileList = "4x5GeVfxtFiles.list"
     TH2F* dEdxKaon = new TH2F("dEdxKaon","dEdxKaon",500,-1.1,1.1,400,0,0.000025);
     TH2F* dEdxProton = new TH2F("dEdxProton","dEdxProton",500,-1.1,1.1,400,0,0.000025);
     TH2F* dEdx = new TH2F("dEdx","dEdx",500,-1.1,1.1,400,0,0.000025);
-    TH1F* nTracks0Match = new TH1F("nTracks0Match","nTracks0Match",500,0.5,500.5);
-    TH1F* nTracks1Match = new TH1F("nTracks1Match","nTracks1Match",500,0.5,500.5);
-    TH1F* nTracks2Match = new TH1F("nTracks2Match","nTracks2Match",500,0.5,500.5);
-    TH1F* nTracks3Match = new TH1F("nTracks3Match","nTracks3Match",500,0.5,500.5);
+    TH1I* numberPrimaryVertices = new TH1I("numberPrimaryVertices","Number of Events with N Primary Vertices", 40, -0.5,39.5);
+    TH1I* verticesOfRankN = new TH1I("verticesOfRankN","Number of Primary Vertices of Rank N", 40, -0.5,39.5);
     TH1D* eventCuts = new TH1D("eventCuts","Event Cuts",5,-0.5,4.5);
     TH1D* particleYield = new TH1D("particleYield","Particle Yield",10,-0.5,9.5);
     const Char_t* yieldTitles[10] = {"All Tracks","Pass Cuts","e+", "e-","Pi+", "Pi-", "K+", "K-", "p+", "p-"};
@@ -87,11 +85,11 @@ void QA(const TString fileList = "4x5GeVfxtFiles.list"
         Float_t refmult = event->refMult();
         TObjArray* tracks = muMaker->muDst()->primaryTracks();
         Int_t nTofMatches = calcNumberOfTofMatches(tracks);
-        if(nTofMatches==0) {nTracks0Match->Fill(tracks->GetEntries());}
-        if(nTofMatches==1) {nTracks1Match->Fill(tracks->GetEntries());}
-        if(nTofMatches==2) {nTracks2Match->Fill(tracks->GetEntries());}
-        if(nTofMatches>2) {nTracks3Match->Fill(tracks->GetEntries());}
+        Int_t nPrimaryVertices = muMaker->muDst()->numberOfPrimaryVertices();
         Bool_t eventPass = kTRUE;
+
+        numberPrimaryVertices->Fill(nPrimaryVertices);
+        for(Int_t i = 0; i <= (nPrimaryVertices - 1); i++) { verticesOfRankN->Fill(i); }
 
 
         Float_t vx = event->primaryVertexPosition().x();
@@ -162,10 +160,6 @@ void QA(const TString fileList = "4x5GeVfxtFiles.list"
 	chain->Finish();
 
 	TFile* fOut = new TFile(outFile.Data(), "RECREATE");
-    nTracks0Match->Write();
-    nTracks1Match->Write();
-    nTracks2Match->Write();
-    nTracks3Match->Write();
     nTracksVsRefmult->Write(); 
     hRefmult->Write();
     particleYield->Write();
@@ -175,6 +169,8 @@ void QA(const TString fileList = "4x5GeVfxtFiles.list"
     dEdxPion->Write();
     dEdxKaon->Write();
     dEdxProton->Write();
+    numberPrimaryVertices->Write();
+    verticesOfRankN->Write();
     piPlusMultVsRefmult->Write();
     piMinusMultVsRefmult->Write();
     fOut->Close();
