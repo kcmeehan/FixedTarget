@@ -368,7 +368,9 @@ void StHbtAnalysis::ProcessEvent(const StHbtEvent* hbtEvent) {
       //------ Make real pairs. If identical, make pairs for one collection ------//
 
       if (AnalyzeIdenticalParticles()) {
+        cout << "Before MakePairs() - real\n";
         MakePairs("real", mPicoEvent->FirstParticleCollection() );
+        cout << "After MakePairs() - real\n";
       }
       else {
         MakePairs("real", mPicoEvent->FirstParticleCollection(),
@@ -428,11 +430,9 @@ void StHbtAnalysis::MakePairs(const char* typeIn, StHbtParticleCollection *partC
 // Build pairs, check pair cuts, and call CFs' AddRealPair() or
 // AddMixedPair() methods. If no second particle collection is
 // specfied, make pairs within first particle collection.
-
   string type = typeIn;
 
   StHbtPair* ThePair = new StHbtPair;
-//  StHbtPair* ThePair2 = new StHbtPair;
 
   StHbtCorrFctnIterator CorrFctnIter;
 
@@ -451,6 +451,7 @@ void StHbtAnalysis::MakePairs(const char* typeIn, StHbtParticleCollection *partC
     EndOuterLoop--;                             //   Outer loop goes to next-to-last particle
     EndInnerLoop = partCollection1->end() ;     //   Inner loop goes to last particle
   }
+
 
   for (PartIter1=StartOuterLoop;PartIter1!=EndOuterLoop;PartIter1++) {
     if (!partCollection2){
@@ -476,13 +477,13 @@ void StHbtAnalysis::MakePairs(const char* typeIn, StHbtParticleCollection *partC
 
       // The following lines have to be uncommented if you want pairCutMonitors
       // they are not in for speed reasons
-      // bool tmpPassPair = mPairCut->Pass(ThePair);
-      // mPairCut->FillCutMonitor(ThePair, tmpPassPair);
-      // if ( tmpPassPair )
+      bool tmpPassPair = mPairCut->Pass(ThePair);
+      mPairCut->FillCutMonitor(ThePair, tmpPassPair);
+      if ( tmpPassPair ){
 
       //---- If pair passes cut, loop over CF's and add pair to real/mixed ----//
 
-      if (mPairCut->Pass(ThePair)){
+//      if (mPairCut->Pass(ThePair)){
         for (CorrFctnIter=mCorrFctnCollection->begin();
              CorrFctnIter!=mCorrFctnCollection->end();CorrFctnIter++){
           StHbtCorrFctn* CorrFctn = *CorrFctnIter;

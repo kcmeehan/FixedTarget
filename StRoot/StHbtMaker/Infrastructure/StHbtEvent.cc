@@ -252,12 +252,13 @@ StHbtEvent::StHbtEvent(const StMuDst* dst, int trackType) {
     DEBUGVALUE2(trackType);
     int nTracks = tracks->GetEntries();
     DEBUGVALUE2(tracks->GetEntries());
+    mUncorrectedNumberOfPrimaries = 0;
     for ( int i=0; i<nTracks; i++) {
       StHbtTrack* trackCopy = new StHbtTrack(dst, (StMuTrack*) tracks->UncheckedAt(i));
       mTrackCollection->push_back(trackCopy);
+    mUncorrectedNumberOfPrimaries += trackCopy->isPionTrack();
     }
   }
-
   StStrangeEvMuDst* strangeEvent = dst->strangeEvent();
   // copy v0 collection  
   int nV0s = dst->v0s()->GetEntries();

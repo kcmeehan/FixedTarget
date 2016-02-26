@@ -146,6 +146,7 @@ public:
   ~StHbtTrack();
 //    ~StHbtTrack(){/* no-op*/};
 
+  Bool_t isPionTrack() const;
   short TrackType() const;
   short Charge() const;
   short NHits() const;

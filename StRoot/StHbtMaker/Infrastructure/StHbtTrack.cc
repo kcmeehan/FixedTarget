@@ -424,7 +424,7 @@ StHbtTrack::StHbtTrack(const StMuDst* dst, const StMuTrack* t) { // copy constru
    mTrackId = t->id();
 
 
-   mNHits = t->topologyMap().numberOfHits(kTpcId) + t->topologyMap().numberOfHits(kFtpcEastId) + t->topologyMap().numberOfHits(kFtpcWestId);
+   mNHits = t->topologyMap().numberOfHits(kTpcId);
 
    mNHitsPoss = t->nHitsPoss(); 
    mNHitsDedx = t->nHitsDedx(); 
@@ -540,4 +540,21 @@ StHbtTrack::~StHbtTrack()
 {
    if (mHiddenInfo)
      delete mHiddenInfo;
+}
+
+Bool_t StHbtTrack::isPionTrack() const
+{
+
+    Bool_t isPion = ( fabs(mNSigmaElectron) > 2
+                    && fabs(mNSigmaPion) < 2
+                    && fabs(mNSigmaKaon) > 2
+                    && fabs(mNSigmaProton) > 2
+                    && mPt > 0.15
+                    && mPt < 0.8
+                    && mNHits >= 15
+                    && mDCAxyGlobal <= 3.0
+                    );
+    
+    return isPion;
+
 }
