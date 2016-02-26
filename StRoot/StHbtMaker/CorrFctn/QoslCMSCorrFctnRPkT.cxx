@@ -25,7 +25,7 @@ QoslCMSCorrFctnRPkT::QoslCMSCorrFctnRPkT(char* title, const int& nbinso, const f
   for(int i=0; i<nRPbins; i++) {
    	TString TitAngle=Form("_phi%i",i*180/nRPbins);
 
-   	for(int j=0; j<nKtBins; j++) {
+   	for(int j=0; j<=nKtBins; j++) {
       TString TitKt=Form("_kt%i",j);
 
       // set up numerator
@@ -93,9 +93,9 @@ void QoslCMSCorrFctnRPkT::Finish(){
 StHbtString QoslCMSCorrFctnRPkT::Report(){
   string stemp = "QoslCMS Correlation Function Report:\n";
   char ctemp[100];
-  sprintf(ctemp,"Number of entries in numerator:\t%E\n",mNumerator[0][0]->GetEntries());
+  sprintf(ctemp,"Number of entries in numerator:\t%E\n",mNumerator[0][4]->GetEntries());
   stemp += ctemp;
-  sprintf(ctemp,"Number of entries in denominator:\t%E\n",mDenominator[0][0]->GetEntries());
+  sprintf(ctemp,"Number of entries in denominator:\t%E\n",mDenominator[0][4]->GetEntries());
   stemp += ctemp;
   //  stemp += mCoulombWeight->Report();
 
@@ -117,6 +117,7 @@ void QoslCMSCorrFctnRPkT::AddRealPair(const StHbtPair* pair){
 	if(fabs(Qo)>qMax || fabs(Qs)>qMax || fabs(Ql)>qMax) return; 
 
   mNumerator[rpBin][ktBin]->Fill(Qo,Qs,Ql);
+  mNumerator[rpBin][4]->Fill(Qo,Qs,Ql);
 }
 //____________________________
 void QoslCMSCorrFctnRPkT::AddMixedPair(const StHbtPair* pair){
@@ -139,6 +140,8 @@ void QoslCMSCorrFctnRPkT::AddMixedPair(const StHbtPair* pair){
 
   mDenominator[rpBin][ktBin]->Fill(Qo,Qs,Ql);
   mCoulHisto[rpBin][ktBin]->Fill(Qo,Qs,Ql,weight);
+  mDenominator[rpBin][4]->Fill(Qo,Qs,Ql);
+  mCoulHisto[rpBin][4]->Fill(Qo,Qs,Ql,weight);
 
 }
 //____________________________
@@ -176,19 +179,20 @@ int QoslCMSCorrFctnRPkT::GetRPBin(const StHbtPair* pair) {
 int QoslCMSCorrFctnRPkT::GetKtBin(const StHbtPair* pair) {
 
   double kT = fabs(pair->kT());
-  int ktBin;
+  int ktBin = -2;
 
   if(kT<0.15 || kT>0.6) return -1;
   
-  if(kT<0.25) 
+  if(kT<0.2) 
     ktBin = 0;
-  else if( kT >= 0.25 && kT < 0.35 ) 
+  else if( kT >= 0.2 && kT < 0.25 ) 
     ktBin = 1;
-  else if( kT >= 0.35 && kT < 0.45 ) 
+  else if( kT >= 0.25 && kT < 0.3 )
     ktBin = 2;
-  else if( kT >= 0.45 && kT <= 0.6 ) 
+  else if( kT >= 0.3 && kT <= 0.6 ) 
     ktBin = 3;
 
+  if(ktBin == -2) { cout << "QoslCMSCorrFctnRPkt::GetKtBin() - problem finding kTbin\n"; }
   return ktBin;
 
 }

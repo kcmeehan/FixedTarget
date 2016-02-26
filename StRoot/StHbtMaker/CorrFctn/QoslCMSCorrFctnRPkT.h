@@ -33,10 +33,10 @@ public:
   StHbt3DHisto* CoulHisto3D(const int& rpBin, const int& ktBin);
 
 private:
-  TH3S* mNumerator[12][4];
-  TH3S* mDenominator[12][4];
-  StHbt3DHisto* mQinvHisto[12][4];
-  StHbt3DHisto* mCoulHisto[12][4];
+  TH3S* mNumerator[12][5];
+  TH3S* mDenominator[12][5];
+  StHbt3DHisto* mQinvHisto[12][5];
+  StHbt3DHisto* mCoulHisto[12][5];
 
   StHbtCoulomb* mCorrection; //!
   StHbtPairCut* mPairCut;    //! this is a PairCut specific to THIS CorrFctn
