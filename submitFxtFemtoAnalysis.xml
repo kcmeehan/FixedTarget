@@ -4,25 +4,26 @@
 
     <command>
         starver SL14a
-        root4star -l -q -b fxtFemtoAnalysis.C\(\"$FILELIST\",\"FXT_${JOBID}.root\",999999\) &gt;&amp; ${JOBID}.log
+        root4star -l -b fxtFemtoAnalysis.C\(\"$FILELIST\",\"4x5GeV_mult3_${JOBID}.root\",999999\) &gt;&amp; ${JOBID}.log
     </command> 
 
     <SandBox installer="ZIP">
         <Package>
-        <File>file:./fxtFemtoAnalysis.C</File>
-        <File>file:./StRoot</File>
-        <File>file:./.sl64_gcc482</File>
+            <File>file:./QA.C</File>
+            <File>file:./fxtFemtoAnalysis.C</File>
+            <File>file:./StRoot</File>
+            <File>file:./.sl64_gcc482</File>
         </Package>
     </SandBox>
 
     <stdout discard="true" />
-        <input URL="filelist:/star/u/lisa/fxtFemtoAnalysis/4x5GeVfxtFiles.list" nFiles="all" />                   <!-- Change Path -->
-        <output fromScratch="*.root" toURL="file:/gpfs/mnt/gpfs01/star/scratch/lisa/fxtTest/output/" />     <!-- Change Path -->
-        <output fromScratch="*.log" toURL="file:/gpfs/mnt/gpfs01/star/scratch/lisa/fxtTest/logs/" />        <!-- Change Path -->
-    <stderr URL="file:/gpfs/mnt/gpfs01/star/scratch/lisa/fxtTest/logs/$JOBID.err"/>                         <!-- Change Path -->
+        <input URL="filelist:/star/u/campbell/fxtFemtoAnalysis/4x5GeVfxtFiles.list" nFiles="all" />                   <!-- Change Path -->
+        <output fromScratch="*.root" toURL="file:/gpfs/mnt/gpfs01/star/scratch/campbell/fxtTest/output/" />     <!-- Change Path -->
+        <output fromScratch="*.log" toURL="file:/gpfs/mnt/gpfs01/star/scratch/campbell/fxtTest/logs/" />        <!-- Change Path -->
+    <stderr URL="file:/gpfs/mnt/gpfs01/star/scratch/campbell/fxtTest/logs/$JOBID.err"/>                         <!-- Change Path -->
 
     <Generator>
-        <Location>/gpfs/mnt/gpfs01/star/scratch/lisa/fxtTest/submitDirectory</Location>
-        <ReportLocation>/gpfs/mnt/gpfs01/star/scratch/lisa/fxtTest/submitDirectory</ReportLocation>                   <!-- Change Path -->
+        <Location>/gpfs/mnt/gpfs01/star/scratch/campbell/fxtTest/submitDirectory</Location>
+        <ReportLocation>/gpfs/mnt/gpfs01/star/scratch/campbell/fxtTest/submitDirectory</ReportLocation>                   <!-- Change Path -->
     </Generator>
 </job>

@@ -18,11 +18,17 @@ void fxtFemtoAnalysis(const TString fileList = "4x5GeVfxtFiles.list"
     const Float_t Vx[2] = {-4,2};
     const Float_t Vy[2] = {-4,0};
     const Float_t Vz[2] = {210,212};
+    const Float_t multCut[2] = {31.5,1000}; // 0-25
+//    const Float_t multCut[2] = {22.5,31.5}; // 25-50
+//   const Float_t multCut[2] = {14.5,22.5};
+//    const Float_t multCut[2] = {0.5,14.5}; // 0-25 
+//    const Float_t multCut[2] = {0.5,1000}; // No restriction 
 
     // Track Cuts
     const Float_t piMass =  0.13957018; // From PDG
-    const Float_t rapidity[2] = {-0.75,75};
+    const Float_t rapidity[2] = {-999,999};
     const Float_t nSigma[2] = {-2,2};
+//    const Float_t pt[2] = {0.10,0.30};
     const Float_t pt[2] = {0.15,0.80};
     const Float_t nHitsTpc[2] = {15,50};
     const Float_t dcaGlobal[2] = {0.0, 3.0};
@@ -34,8 +40,8 @@ void fxtFemtoAnalysis(const TString fileList = "4x5GeVfxtFiles.list"
 
     // Hbt Analysis parameters
     const Int_t nEventsToMix = 3;
-    const Int_t nQbins = 50;
-    const Float_t qRange[2] = {0,0.20};
+    const Int_t nQbins = 40;
+    const Float_t qRange[2] = {-0.20,0.20};
 
 	//------------------- Load Shared Libraries ------------------//
 
@@ -50,8 +56,6 @@ void fxtFemtoAnalysis(const TString fileList = "4x5GeVfxtFiles.list"
     // which avoids double counting. However, we still only need to have one set of monitors,
     // since they're the same event cuts.
     //
-    // Incidentally, I haven't added any track/pair cut monitors, but they can be included
-    // in the same way.
     fxtEventCut* eventCut[2];
     fxtEventCutMonitor* eventPass = new fxtEventCutMonitor("eventPass",""); 
     fxtEventCutMonitor* eventFail = new fxtEventCutMonitor("eventFail","");
@@ -59,7 +63,7 @@ void fxtFemtoAnalysis(const TString fileList = "4x5GeVfxtFiles.list"
     for(Int_t i = 0; i <= 1; i++)
     {
         eventCut[i] = new fxtEventCut();
-        eventCut[i]->SetMult(mult[0],mult[1]);
+        eventCut[i]->SetMult(multCut[0],multCut[1]);
         eventCut[i]->SetMinTofMatches(minNumberOfTofMatches);
         eventCut[i]->SetVx(Vx[0],Vx[1]);
         eventCut[i]->SetVy(Vy[0],Vy[1]);
@@ -105,10 +109,23 @@ void fxtFemtoAnalysis(const TString fileList = "4x5GeVfxtFiles.list"
 	mergeCut->setDefaultFullFieldMergingPar();
 	mergeCut->setMaxFracOfMergedRow(maxFracMergedRows);
 
-    ManyPairCuts* pairCut = new ManyPairCuts();
-    pairCut->AddPairCut(ktCut);
-    pairCut->AddPairCut(qualityCut);
-    pairCut->AddPairCut(mergeCut);
+    ManyPairCuts* pairCut[2];
+    pairCut[0] = new ManyPairCuts();
+    pairCut[0]->AddPairCut(ktCut);
+    pairCut[0]->AddPairCut(qualityCut);
+    pairCut[0]->AddPairCut(mergeCut);
+    pairCut[1] = new ManyPairCuts();
+    pairCut[1]->AddPairCut(ktCut);
+    pairCut[1]->AddPairCut(qualityCut);
+    pairCut[1]->AddPairCut(mergeCut);
+
+    fxtPairCutMonitor* pairPiPlusPass = new fxtPairCutMonitor("_PiPlusPass_" );
+    fxtPairCutMonitor* pairPiPlusFail = new fxtPairCutMonitor("_PiPlusFail" );
+    fxtPairCutMonitor* pairPiMinusPass = new fxtPairCutMonitor("_PiMinusPass_" );
+    fxtPairCutMonitor* pairPiMinusFail = new fxtPairCutMonitor("_PiMinusFail" );
+
+    pairCut[0]->AddCutMonitor(pairPiMinusPass,pairPiMinusFail);
+    pairCut[1]->AddCutMonitor(pairPiPlusPass,pairPiPlusFail);
 
 	//------------------- Instantiate Hbt Analyses and Correlation Functions ------------------//
 
@@ -117,11 +134,11 @@ void fxtFemtoAnalysis(const TString fileList = "4x5GeVfxtFiles.list"
 	QoslCMSCorrFctnRPkT* qCorrFctn[2];
     for(Int_t i = 0; i <=1; i++)
     {
-        fxtAnalysis[i] = new StHbtReactionPlaneAnalysis(0,1,-999,999,1,1,1000,1,-999,999); //standard
+        fxtAnalysis[i] = new StHbtReactionPlaneAnalysis(0,1,-999,999,1,mult[0],multCut[1],1,-999,999); //standard
         fxtAnalysis[i]->SetEventCut(eventCut[i]);
         fxtAnalysis[i]->SetFirstParticleCut(trackCut[i]);
         fxtAnalysis[i]->SetSecondParticleCut(trackCut[i]);
-        fxtAnalysis[i]->SetPairCut(pairCut);
+        fxtAnalysis[i]->SetPairCut(pairCut[i]);
         fxtAnalysis[i]->SetNumEventsToMix(nEventsToMix);
 
         TString title = "";
@@ -152,10 +169,11 @@ void fxtFemtoAnalysis(const TString fileList = "4x5GeVfxtFiles.list"
 	//--------------------- The STAR chain Event loop ---------------------//
 
 	chain->Init();
+    Int_t nEventsProcessed = 0;
   
 	for (Int_t i = 0; i < nEvents; i++)
     {
-
+        nEventsProcessed++;
 		chain->Clear();
 		Int_t makeReturn = chain->Make(i);
 
@@ -167,10 +185,12 @@ void fxtFemtoAnalysis(const TString fileList = "4x5GeVfxtFiles.list"
 	} 
 
     chain->Finish();
-
+    cout << "Processed " << nEventsProcessed << " events\n";
 	//--------------------- Write Output ---------------------//
 	TFile histoOutput(outFile.Data(),"recreate");
 
+    histoOutput.mkdir("EventCuts");
+    histoOutput.cd("EventCuts");
     eventPass->VertexYvsVertexX()->Write();
     eventPass->VertexZ()->Write();
     eventPass->RefMult()->Write();
@@ -180,15 +200,55 @@ void fxtFemtoAnalysis(const TString fileList = "4x5GeVfxtFiles.list"
     eventFail->RefMult()->Write();
     eventFail->NumberOfTofMatches()->Write();
 
+    histoOutput.cd("../");
+    histoOutput.mkdir("TrackCuts");
+    histoOutput.cd("TrackCuts");
+    trackPiPlusPass->DCA()->Write();
+    trackPiPlusPass->DCAGlobal()->Write();
+    trackPiPlusPass->Nhits()->Write();
+    trackPiPlusPass->Pt()->Write();
+    trackPiPlusPass->NsigmaPion()->Write();
+    trackPiPlusPass->ChiSqr()->Write();
+    trackPiPlusFail->DCA()->Write();
+    trackPiPlusFail->DCAGlobal()->Write();
+    trackPiPlusFail->Nhits()->Write();
+    trackPiPlusFail->Pt()->Write();
+    trackPiPlusFail->NsigmaPion()->Write();
+    trackPiPlusFail->ChiSqr()->Write();
+    trackPiMinusPass->DCA()->Write();
+    trackPiMinusPass->DCAGlobal()->Write();
+    trackPiMinusPass->Nhits()->Write();
+    trackPiMinusPass->Pt()->Write();
+    trackPiMinusPass->NsigmaPion()->Write();
+    trackPiMinusPass->ChiSqr()->Write();
+    trackPiMinusFail->DCA()->Write();
+    trackPiMinusFail->DCAGlobal()->Write();
+    trackPiMinusFail->Nhits()->Write();
+    trackPiMinusFail->Pt()->Write();
+    trackPiMinusFail->NsigmaPion()->Write();
+    trackPiMinusFail->ChiSqr()->Write();
+
+    histoOutput.cd("../");
+    histoOutput.mkdir("PairCuts");
+    histoOutput.cd("PairCuts");
+    pairPiPlusPass->Kt()->Write();
+    pairPiPlusPass->FractionOfMergedRow()->Write();
+    pairPiPlusPass->SplittingLevel()->Write();
+    pairPiPlusFail->Kt()->Write();
+    pairPiPlusFail->FractionOfMergedRow()->Write();
+    pairPiPlusFail->SplittingLevel()->Write();
+    pairPiMinusPass->Kt()->Write();
+    pairPiMinusPass->FractionOfMergedRow()->Write();
+    pairPiMinusPass->SplittingLevel()->Write();
+    pairPiMinusFail->Kt()->Write();
+    pairPiMinusFail->FractionOfMergedRow()->Write();
+    pairPiMinusFail->SplittingLevel()->Write();
+
+    histoOutput.cd("../");
     for(Int_t i = 0; i <=1; i++)
     {
-        /*
-        qinvCF[i]->Numerator()->Write();
-        qinvCF[i]->Denominator()->Write();
-        qinvCF[i]->Ratio()->Write();
-        */
 
-        for(int j=0; j<4; j++) { //bins 0,1,2,(3) are typical kt bins for this version. Bin 4 is the ktIntegrated histo.
+        for(int j=0; j<=4; j++) { //bins 0,1,2,(3) are typical kt bins for this version. Bin 4 is the ktIntegrated histo.
             qCorrFctn[i]->Numerator3D(0,j)->Write();
             qCorrFctn[i]->Denominator3D(0,j)->Write();
             qCorrFctn[i]->CoulHisto3D(0,j)->Write();

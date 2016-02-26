@@ -12,7 +12,7 @@ ClassImp(fxtPairCutMonitor)
 fxtPairCutMonitor::fxtPairCutMonitor(const char* name){ // default constructor
   string s("fxtPairCutMonitor");
   string n(name);
-  mKt= new StHbt1DHisto( (s+n+"mKt").c_str(),"Kt",1500,0.0,1.5); 
+  mKt= new StHbt1DHisto( (s+n+"mKt").c_str(),"Kt",1500,0.0,1); 
   mFractionOfMergedRow= new StHbt1DHisto( (s+n+"mFractionOfMergedRow").c_str(),"Fraction of Merged Hits",100,0.,1.); 
   mSplittingLevel= new StHbt1DHisto( (s+n+"mSplittingLevel").c_str(),"Splitting Level",17,-0.6,1.1); 
   mPairRapidityVsEmissionAngle= new StHbt2DHisto( (s+n+"mPairRapidityVsEmissionAngle").c_str(),"Pair Rapidity vs EmissionAngle",180,0.,360, 200,-1.,1.);
