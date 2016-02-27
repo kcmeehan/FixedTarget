@@ -60,6 +60,8 @@ class StHbtMuDstMakerReader : public StHbtEventReader {
   ~StHbtMuDstMakerReader();
   
   StHbtEvent* ReturnHbtEvent();
+  StHbtEvent* ReturnHbtEvent(Int_t vertexIndex);
+  Int_t numberOfPrimaryVertices();
   int Init();
   int Init(const char* ReadWrite, StHbtString& Message)
           { return StHbtEventReader::Init(ReadWrite,Message);}//WarnOff

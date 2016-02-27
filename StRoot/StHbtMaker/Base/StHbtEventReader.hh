@@ -91,6 +91,8 @@ public:
   virtual ~StHbtEventReader(){/* no-op */}
 
   virtual StHbtEvent* ReturnHbtEvent() =0;
+  virtual StHbtEvent* ReturnHbtEvent(Int_t vertexIndex) { return 0; }
+  virtual Int_t numberOfPrimaryVertices() { return 0; }
 
   virtual StHbtString Report();    // user-written method to return string describing reader
                                       // Including whatever "early" cuts are being done
