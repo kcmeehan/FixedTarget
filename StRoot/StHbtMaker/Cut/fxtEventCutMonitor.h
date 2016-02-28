@@ -12,6 +12,7 @@ private:
   StHbt2DHisto*  mVertexYvsVertexX;  
   StHbt1DHisto*  mVertexZ; 
   StHbt1DHisto*  mRefMult;
+  StHbt1DHisto*  mNPrimary;
   StHbt1DHisto*  mNumberOfTofMatches;
 
 public:
@@ -37,6 +38,7 @@ public:
   StHbt2DHisto* VertexYvsVertexX() {return mVertexYvsVertexX;}
   StHbt1DHisto* VertexZ() {return mVertexZ;}
   StHbt1DHisto* RefMult() {return mRefMult;}
+  StHbt1DHisto* NPrimary() {return mNPrimary;}
   StHbt1DHisto* NumberOfTofMatches() {return mNumberOfTofMatches;}
   
 #ifdef __ROOT__ 

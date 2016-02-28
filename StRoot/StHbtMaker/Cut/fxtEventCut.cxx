@@ -10,14 +10,15 @@ fxtEventCut::fxtEventCut(){
 } 
 
 Bool_t fxtEventCut::Pass(const StHbtEvent* event){
-  Int_t mult = event->UncorrectedNumberOfPrimaries();
+//  Int_t mult = event->UncorrectedNumberOfPrimaries();
+  Int_t mult = event->NumberOfPrimaryTracks();
   Int_t nTofMatches = event->NumberOfTofMatches();
   Float_t Vx = event->PrimVertPos().x();
   Float_t Vy = event->PrimVertPos().y();
   Float_t Vz = event->PrimVertPos().z();
 
   Bool_t goodEvent =
-    ((mult > mMult[0]) && 
+    ((mult >= mMult[0]) && 
      (mult < mMult[1]) && 
      (nTofMatches >= mMinTofMatches) && 
      (Vx > mVx[0]) &&
@@ -26,6 +27,8 @@ Bool_t fxtEventCut::Pass(const StHbtEvent* event){
      (Vy < mVy[1]) &&
      (Vz > mVz[0]) &&
      (Vz < mVz[1]));
+
+    cout << "mult/cut/pass: " << mult << "/" << mMult[0] << "/"<< goodEvent << endl;
 
   goodEvent ? mNEventsPassed++ : mNEventsFailed++ ;
   return (goodEvent);

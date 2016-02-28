@@ -18,7 +18,7 @@ void fxtFemtoAnalysis(const TString fileList = "4x5GeVfxtFiles.list"
     const Float_t Vx[2] = {-4,2};
     const Float_t Vy[2] = {-4,0};
     const Float_t Vz[2] = {210,212};
-    const Float_t multCut[2] = {31.5,1000}; // 0-25
+    const Float_t multCut[2] = {122,1000}; // 0-25
 //    const Float_t multCut[2] = {22.5,31.5}; // 25-50
 //   const Float_t multCut[2] = {14.5,22.5};
 //    const Float_t multCut[2] = {0.5,14.5}; // 0-25 
@@ -194,10 +194,12 @@ void fxtFemtoAnalysis(const TString fileList = "4x5GeVfxtFiles.list"
     eventPass->VertexYvsVertexX()->Write();
     eventPass->VertexZ()->Write();
     eventPass->RefMult()->Write();
+    eventPass->NPrimary()->Write();
     eventPass->NumberOfTofMatches()->Write();
     eventFail->VertexYvsVertexX()->Write();
     eventFail->VertexZ()->Write();
     eventFail->RefMult()->Write();
+    eventFail->NPrimary()->Write();
     eventFail->NumberOfTofMatches()->Write();
 
     histoOutput.cd("../");
