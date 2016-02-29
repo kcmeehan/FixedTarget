@@ -9,7 +9,7 @@ Bool_t isPion(StMuTrack* track);
 Bool_t isKaon(StMuTrack* track);
 Bool_t isProton(StMuTrack* track);
 
-void QA(const TString fileList = "4x5GeVfxtFiles.list"
+void QA(const TString fileList = "muDst.list"
 				, const TString outFile = "testOut.root" 
 				, Int_t nEvents = 999 
 				)
@@ -36,6 +36,7 @@ void QA(const TString fileList = "4x5GeVfxtFiles.list"
 	//----------------------- Make Histograms, etc. -----------------------//
 
 	TH1I* hRefmult = new TH1I("hRefmult","refmult", 100,0.5,100.5);
+	TH1I* hPrimaryTracks = new TH1I("hPrimaryTracks","Number of Primary Tracks", 450,0.5,450.5);
 	TH2I* nTracksVsRefmult = new TH2I("nTracksVsRefmult","nTracksVsRefmult", 100,0.5,100.5,500,0.5,500.5);
     TProfile* piPlusMultVsRefmult = new TProfile("piPlusMultVsRefmult","piPlusMultVsRefmult", 100,0.5,100.5);
     TProfile* piMinusMultVsRefmult = new TProfile("piMinusMultVsRefmult","piMinusMultVsRefmult", 100,0.5,100.5);
@@ -67,7 +68,7 @@ void QA(const TString fileList = "4x5GeVfxtFiles.list"
 
     if(nEvents > muMaker->chain()->GetEntries()) {nEvents = muMaker->chain()->GetEntries();}
 
-	// Actual event loop
+	// Actual trigger loop
 	for (Int_t iev=0;iev<nEvents; iev++) {
 
 		Float_t progress = (Float_t)iev / (Float_t)nEvents;	
@@ -86,72 +87,79 @@ void QA(const TString fileList = "4x5GeVfxtFiles.list"
         TObjArray* tracks = muMaker->muDst()->primaryTracks();
         Int_t nTofMatches = calcNumberOfTofMatches(tracks);
         Int_t nPrimaryVertices = muMaker->muDst()->numberOfPrimaryVertices();
+        Int_t nPrimaryTracks = muMaker->muDst()->primaryTracks()->GetEntries();
         Bool_t eventPass = kTRUE;
 
         numberPrimaryVertices->Fill(nPrimaryVertices);
-        for(Int_t i = 0; i <= (nPrimaryVertices - 1); i++) { verticesOfRankN->Fill(i); }
 
-
-        Float_t vx = event->primaryVertexPosition().x();
-        Float_t vy = event->primaryVertexPosition().y();
-        Float_t vz = event->primaryVertexPosition().z();
-        eventCuts->Fill(0);
-        if( (vz > VzLow) && (vz < VzHigh) ) {eventCuts->Fill(1);}
-        else { eventPass = kFALSE;}
-        if( eventPass && (vx > VxLow) && (vx < VxHigh) ) {eventCuts->Fill(2);}
-        else { eventPass = kFALSE;}
-        if( eventPass && (vy > VyLow) && (vy < VyHigh) ) {eventCuts->Fill(3);}
-        else { eventPass = kFALSE;}
-        if ( eventPass && (nTofMatches >= minTofMatches)) {eventCuts->Fill(4);}
-        else { eventPass = kFALSE;}
-
-        if(eventPass)
-        {
-            // Fill histograms
-            hRefmult->Fill(refmult);
-            nEventsGood++;
-            nTracksVsRefmult->Fill(refmult,tracks->GetEntries());
-            StMuTrack* muTrack = 0;
-            Int_t nMuTracks = tracks->GetEntries();
-            Int_t nPiPlus = 0, nPiMinus = 0;
+        // Loop over vertices/events
+        for(Int_t vertexIndex = 0; vertexIndex <= (nPrimaryVertices - 1); vertexIndex++) 
+        { 
+            verticesOfRankN->Fill(vertexIndex); 
+            muMaker->muDst()->setVertexIndex(vertexIndex);
+            hPrimaryTracks->Fill(nPrimaryTracks);
             
-            for(Int_t j=0; j<nMuTracks; j++)
+            Float_t vx = event->primaryVertexPosition().x();
+            Float_t vy = event->primaryVertexPosition().y();
+            Float_t vz = event->primaryVertexPosition().z();
+            eventCuts->Fill(0);
+            if( (vz > VzLow) && (vz < VzHigh) ) {eventCuts->Fill(1);}
+            else { eventPass = kFALSE;}
+            if( eventPass && (vx > VxLow) && (vx < VxHigh) ) {eventCuts->Fill(2);}
+            else { eventPass = kFALSE;}
+            if( eventPass && (vy > VyLow) && (vy < VyHigh) ) {eventCuts->Fill(3);}
+            else { eventPass = kFALSE;}
+            if ( eventPass && (nTofMatches >= minTofMatches)) {eventCuts->Fill(4);}
+            else { eventPass = kFALSE;}
+
+            if(eventPass)
             {
-                muTrack = (StMuTrack*)tracks->UncheckedAt(j);
-                particleYield->Fill(0);
-                if(checkTrack(muTrack))
+                // Fill histograms
+                hRefmult->Fill(refmult);
+                nEventsGood++;
+                nTracksVsRefmult->Fill(refmult,tracks->GetEntries());
+                StMuTrack* muTrack = 0;
+                Int_t nMuTracks = tracks->GetEntries();
+                Int_t nPiPlus = 0, nPiMinus = 0;
+                
+                for(Int_t j=0; j<nMuTracks; j++)
                 {
+                    muTrack = (StMuTrack*)tracks->UncheckedAt(j);
+                    particleYield->Fill(0);
+                    if(checkTrack(muTrack))
+                    {
 
-                    particleYield->Fill(1);
-                    dEdx->Fill(muTrack->charge()*muTrack->p().mag(),muTrack->dEdx());
+                        particleYield->Fill(1);
+                        dEdx->Fill(muTrack->charge()*muTrack->p().mag(),muTrack->dEdx());
 
-                    if(isElectron(muTrack)){
-                        if(muTrack->charge() == 1) {particleYield->Fill(2);}
-                        else {particleYield->Fill(3);}
-                        dEdxElectron->Fill(muTrack->charge()*muTrack->p().mag(),muTrack->dEdx());
-                    } else if (isPion(muTrack)) {
-                        if(muTrack->charge() == 1) {particleYield->Fill(4); nPiPlus++;}
-                        else {particleYield->Fill(5); nPiMinus++;}
-                        dEdxPion->Fill(muTrack->charge()*muTrack->p().mag(),muTrack->dEdx());
-                    } else if (isKaon(muTrack)) {
-                        if(muTrack->charge() == 1) {particleYield->Fill(6);}
-                        else {particleYield->Fill(7);}
-                        dEdxKaon->Fill(muTrack->charge()*muTrack->p().mag(),muTrack->dEdx());
-                    } else if (isProton(muTrack)) {
-                        if(muTrack->charge() == 1) {particleYield->Fill(8);}
-                        else {particleYield->Fill(9);}
-                        dEdxProton->Fill(muTrack->charge()*muTrack->p().mag(),muTrack->dEdx());
-                    }
+                        if(isElectron(muTrack)){
+                            if(muTrack->charge() == 1) {particleYield->Fill(2);}
+                            else {particleYield->Fill(3);}
+                            dEdxElectron->Fill(muTrack->charge()*muTrack->p().mag(),muTrack->dEdx());
+                        } else if (isPion(muTrack)) {
+                            if(muTrack->charge() == 1) {particleYield->Fill(4); nPiPlus++;}
+                            else {particleYield->Fill(5); nPiMinus++;}
+                            dEdxPion->Fill(muTrack->charge()*muTrack->p().mag(),muTrack->dEdx());
+                        } else if (isKaon(muTrack)) {
+                            if(muTrack->charge() == 1) {particleYield->Fill(6);}
+                            else {particleYield->Fill(7);}
+                            dEdxKaon->Fill(muTrack->charge()*muTrack->p().mag(),muTrack->dEdx());
+                        } else if (isProton(muTrack)) {
+                            if(muTrack->charge() == 1) {particleYield->Fill(8);}
+                            else {particleYield->Fill(9);}
+                            dEdxProton->Fill(muTrack->charge()*muTrack->p().mag(),muTrack->dEdx());
+                        }
 
-                } // If track is good
+                    } // If track is good
 
-            } // Loop over tracks
+                } // Loop over tracks
 
-            piPlusMultVsRefmult->Fill(refmult,nPiPlus);
-            piMinusMultVsRefmult->Fill(refmult,nPiMinus);
+                piPlusMultVsRefmult->Fill(refmult,nPiPlus);
+                piMinusMultVsRefmult->Fill(refmult,nPiMinus);
 
-        } // If event is good
-	} // loop over events 
+            } // If event is good
+        } // loop over events 
+    } // loop over triggers
 
 	Double_t eventLoopTime = timer->RealTime();
 	cout << endl << "***** Finished Event Loop. " << eventLoopTime << " seconds to process " << nEventsProcessed << " events. "; 
@@ -161,6 +169,7 @@ void QA(const TString fileList = "4x5GeVfxtFiles.list"
 
 	TFile* fOut = new TFile(outFile.Data(), "RECREATE");
     nTracksVsRefmult->Write(); 
+    hPrimaryTracks->Write(); 
     hRefmult->Write();
     particleYield->Write();
     eventCuts->Write();
