@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<job  datasetSplitting="fileBased" minFilesPerProcess="10" maxFilesPerProcess="15" simulateSubmission="false" fileListSyntax="xrootd">
+<job  datasetSplitting="fileBased" minEvents="1000" maxEvents="10000" simulateSubmission="false" fileListSyntax="xrootd" softLimits="true">
 
     <command>
         starver SL14a
@@ -17,13 +17,13 @@
     </SandBox>
 
     <stdout discard="true" />
-        <input URL="filelist:/star/u/campbell/fxtFemtoAnalysis/4x5GeVfxtFiles.list" nFiles="all" />                   <!-- Change Path -->
+        <input URL="catalog:star.bnl.gov?path~/140/,trgsetupname=fixedTarget2015,production=P16ia,filetype=daq_reco_MuDst,storage=nfs,runnumber[]16140033-16140038" nFiles="all" />
         <output fromScratch="*.root" toURL="file:/gpfs/mnt/gpfs01/star/scratch/campbell/fxtTest/output/" />     <!-- Change Path -->
         <output fromScratch="*.log" toURL="file:/gpfs/mnt/gpfs01/star/scratch/campbell/fxtTest/logs/" />        <!-- Change Path -->
     <stderr URL="file:/gpfs/mnt/gpfs01/star/scratch/campbell/fxtTest/logs/$JOBID.err"/>                         <!-- Change Path -->
 
     <Generator>
-        <Location>/gpfs/mnt/gpfs01/star/scratch/campbell/fxtTest/submitDirectory</Location>
-        <ReportLocation>/gpfs/mnt/gpfs01/star/scratch/campbell/fxtTest/submitDirectory</ReportLocation>                   <!-- Change Path -->
+        <Location>/gpfs/mnt/gpfs01/star/scratch/campbell/fxtTest/schedulerFiles</Location>
+        <ReportLocation>/gpfs/mnt/gpfs01/star/scratch/campbell/fxtTest/schedulerFiles</ReportLocation>                   <!-- Change Path -->
     </Generator>
 </job>
