@@ -191,12 +191,6 @@ StHbtEvent::StHbtEvent(const StHbtTTreeEvent* ev) {
     StHbtKink* kinkCopy = new StHbtKink(ev, (StHbtTTreeKink*)ev->kinks()->UncheckedAt(i));
     mKinkCollection->push_back(kinkCopy);
   }
-  cout << "StHbtEvent::StHbtEvent(const StHbtTTreeEvent* ev) - collections:";
-  cout << " " << mTrackCollection->size();
-  cout << "/" << mV0Collection->size();
-  cout << "/" << mXiCollection->size();
-  cout << "/" << mKinkCollection->size();
-  cout << endl;
 }
 #endif
 
@@ -282,12 +276,6 @@ StHbtEvent::StHbtEvent(const StMuDst* dst, int trackType) {
 //     StHbtKink* kinkCopy = new StHbtKink( *dst->kinks(i) );
 //     mKinkCollection->push_back(kinkCopy);
 //   }
-  cout << "StHbtEvent::StHbtEvent(const StHbtTTreeEvent* ev) - collections:";
-  cout << " " << mTrackCollection->size();
-  cout << "/" << mV0Collection->size();
-  cout << "/" << mXiCollection->size();
-  cout << "/" << mKinkCollection->size();
-  cout << endl;
 }
 
 
@@ -410,12 +398,6 @@ StHbtEvent::StHbtEvent(const StMuDst* dst, int trackType, bool readV0Daughters) 
 //     StHbtKink* kinkCopy = new StHbtKink( *dst->kinks(i) );
 //     mKinkCollection->push_back(kinkCopy);
 //   }
-  cout << "StHbtEvent::StHbtEvent(const StHbtTTreeEvent* ev) - collections:";
-  cout << " " << mTrackCollection->size();
-  cout << "/" << mV0Collection->size();
-  cout << "/" << mXiCollection->size();
-  cout << "/" << mKinkCollection->size();
-  cout << endl;
 }
 
 

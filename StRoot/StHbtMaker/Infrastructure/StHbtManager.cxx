@@ -260,10 +260,8 @@ int StHbtManager::ProcessEvent(){
     Int_t nVertices = mEventReader->numberOfPrimaryVertices();
     for(Int_t vertexIndex = 0; vertexIndex <= (nVertices - 1); vertexIndex++)
     {
-      cout << "StHbtManager::ProcessEvent" << endl;
       // NOTE - this ReturnHbtEvent makes a *new* StHbtEvent - delete it when done!
       StHbtEvent* currentHbtEvent = mEventReader->ReturnHbtEvent(vertexIndex);
-      cout << "Event reader has returned control to manager" << endl;
       
       // if no HbtEvent is returned, then we abort processing.
       // the question is now: do we try again next time (i.e. there may be an HbtEvent next time)

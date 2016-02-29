@@ -339,17 +339,12 @@ void StHbtAnalysis::ProcessEvent(const StHbtEvent* hbtEvent) {
   bool tmpPassEvent = mEventCut->Pass(hbtEvent);
   mEventCut->FillCutMonitor(hbtEvent, tmpPassEvent);
   if (tmpPassEvent) {
-    cout << "StHbtAnalysis::ProcessEvent() - Event has passed cut - build picoEvent from " <<
-      hbtEvent->TrackCollection()->size() << " tracks in TrackCollection" << endl;
     // OK, analysis likes the event-- build a pico event from it, using tracks the analysis likes...
     mPicoEvent = new StHbtPicoEvent; // this is what we will make pairs from and put in Mixing Buffer
     // no memory leak. we will delete picoevents when they come out of the mixing buffer
     FillHbtParticleCollection(mFirstParticleCut,(StHbtEvent*)hbtEvent,mPicoEvent->FirstParticleCollection());
     if ( !(AnalyzeIdenticalParticles()) )
       FillHbtParticleCollection(mSecondParticleCut,(StHbtEvent*)hbtEvent,mPicoEvent->SecondParticleCollection());
-    cout <<"StHbtAnalysis::ProcessEvent - #particles in First, Second Collections: " <<
-      mPicoEvent->FirstParticleCollection()->size() << " " <<
-      mPicoEvent->SecondParticleCollection()->size() << endl;
     
     // mal - implement a switch which allows only using events with ParticleCollections containing a minimum
     // number of entries (jun2002)
@@ -368,15 +363,12 @@ void StHbtAnalysis::ProcessEvent(const StHbtEvent* hbtEvent) {
       //------ Make real pairs. If identical, make pairs for one collection ------//
 
       if (AnalyzeIdenticalParticles()) {
-        cout << "Before MakePairs() - real\n";
         MakePairs("real", mPicoEvent->FirstParticleCollection() );
-        cout << "After MakePairs() - real\n";
       }
       else {
         MakePairs("real", mPicoEvent->FirstParticleCollection(),
                           mPicoEvent->SecondParticleCollection() );
       }
-      cout << "StHbtAnalysis::ProcessEvent() - reals done ";
 
       //---- Make pairs for mixed events, looping over events in mixingBuffer ----//
 
@@ -398,7 +390,6 @@ void StHbtAnalysis::ProcessEvent(const StHbtEvent* hbtEvent) {
                             mPicoEvent->SecondParticleCollection() );
         }
       }
-      cout << " - mixed done   " << endl;
 
       //--------- If mixing buffer is full, delete oldest event ---------//
 
@@ -422,7 +413,6 @@ void StHbtAnalysis::ProcessEvent(const StHbtEvent* hbtEvent) {
     }
   }   // if currentEvent is accepted by currentAnalysis
   EventEnd(hbtEvent);  // cleanup for EbyE 
-  //cout << "StHbtAnalysis::ProcessEvent() - return to caller ... " << endl;
 }
 //_________________________
 void StHbtAnalysis::MakePairs(const char* typeIn, StHbtParticleCollection *partCollection1,

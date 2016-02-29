@@ -28,8 +28,6 @@ Bool_t fxtEventCut::Pass(const StHbtEvent* event){
      (Vz > mVz[0]) &&
      (Vz < mVz[1]));
 
-    cout << "mult/cut/pass: " << mult << "/" << mMult[0] << "/"<< goodEvent << endl;
-
   goodEvent ? mNEventsPassed++ : mNEventsFailed++ ;
   return (goodEvent);
 }

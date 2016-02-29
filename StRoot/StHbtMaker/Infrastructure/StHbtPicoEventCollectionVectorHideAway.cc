@@ -51,8 +51,6 @@ StHbtPicoEventCollection* StHbtPicoEventCollectionVectorHideAway::PicoEventColle
   if ( iy<0 || iy >= mBinsy) return 0;
   if ( iz<0 || iz >= mBinsz) return 0;
   int bin = ix + iy*mBinsx + iz*mBinsy*mBinsx; 
-  cout << " StHbtPicoEventCollectionVectorHideAway::PicoEventCollection(...) - bin(ix,iy,iz): ";
-  cout << bin << "(" << ix <<"," << iy << "," << iz <<")" << endl;
   return mCollectionVector[bin]; 
 }
 // -----------------------------------
