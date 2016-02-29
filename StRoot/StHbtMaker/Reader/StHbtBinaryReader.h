@@ -46,9 +46,6 @@
 #define StHbtBinaryReader_hh
 
 
-class StFlowMaker;
-class StFlowEvent;
-class StFlowAnalysisMaker;
 class StHbtIOBinary;
 
 #include "StHbtMaker/Base/StHbtEventReader.hh"
@@ -81,9 +78,6 @@ private:
   unsigned short mStHbtEventVersion;
   unsigned short mStHbtTrackVersion;
   unsigned short mStHbtV0Version;
-
-  StFlowMaker* mFlowMaker;             //!
-  StFlowAnalysisMaker* mFlowAnalysisMaker; //!
 
   //  int mReaderStatus;                   //!
 
@@ -121,8 +115,6 @@ public:
   void SetFileName(const char*);
   void SetAppendix(const char*);
   void AddFileList(const char*);
-  void SetFlowMaker(StFlowMaker* flowMaker);
-  void SetFlowAnalysisMaker(StFlowAnalysisMaker* flowAnal);
 
  private:
   void init(const char* dir, const char* file, const char* appendix);
@@ -133,9 +125,5 @@ public:
       
 
 };
-inline void StHbtBinaryReader::SetFlowMaker(StFlowMaker* flowMaker){mFlowMaker = flowMaker;}
-inline void StHbtBinaryReader::SetFlowAnalysisMaker(StFlowAnalysisMaker* flowAnal) {
-  mFlowAnalysisMaker = flowAnal;
-}
 
 #endif

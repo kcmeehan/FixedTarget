@@ -42,9 +42,6 @@ class StKinkMuDst;
 class StKinkMc;
 class StStrangeAssoc;
 
-/// flowstuff
-class StFlowMaker;
-
 class StMuCut;
 class TFile;
 class TTree;
@@ -77,10 +74,8 @@ class StHbtMuDstMakerReader : public StHbtEventReader {
   StMuDst* muDst();
 
   StStrangeMuDstMaker* stStrangeMuDstMaker();
-  StFlowMaker* flowMaker();
 
   void setProbabilityPidFile(const char* file);
-  void setFlowMaker(StFlowMaker*);
   void setTrackType(unsigned int);
   void setReadTracks(bool);
   void setReadV0s(bool);
@@ -94,7 +89,6 @@ private:
   StMuDst* mMuDst;
 
   StStrangeMuDstMaker* mStStrangeMuDstMaker;
-  StFlowMaker* mFlowMaker;
   StMuDstMaker* mMuDstMaker;
 
   ioMode mIoMode;
@@ -123,8 +117,6 @@ private:
 };
 
 inline StMuDst* StHbtMuDstMakerReader::muDst() { return mMuDst;}
-inline void StHbtMuDstMakerReader::setFlowMaker(StFlowMaker* f) {mFlowMaker=f;}
-inline StFlowMaker* StHbtMuDstMakerReader::flowMaker() {return mFlowMaker;}
 inline void StHbtMuDstMakerReader::setTrackType(unsigned int t) {mTrackType=t;}
 inline unsigned int StHbtMuDstMakerReader::trackType() {return mTrackType;}
 

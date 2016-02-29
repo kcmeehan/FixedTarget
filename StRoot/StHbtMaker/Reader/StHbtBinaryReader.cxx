@@ -23,11 +23,6 @@
 #include "StHbtMaker/Base/StHbtV0Cut.h"
 #include "StHbtMaker/Base/StHbtKinkCut.h"
 
-#include "StFlowMaker/StFlowMaker.h"
-#include "StFlowMaker/StFlowEvent.h"
-#include "StFlowAnalysisMaker/StFlowAnalysisMaker.h"
-#include "StFlowMaker/StFlowSelection.h"
-
 #include "StHbtMaker/Infrastructure/StHbtIOBinary.hh"
 #include "StHbtMaker/Reader/StHbtBinaryReader.h"
 
@@ -41,8 +36,6 @@ StHbtBinaryReader::StHbtBinaryReader(const char* dir, const char* file, const ch
 #ifdef __ROOT__
   mIOMaker =0;
 #endif
-  mFlowMaker = 0;
-  mFlowAnalysisMaker = 0;
 }
 //_______________________________
 #ifdef __ROOT__
@@ -51,8 +44,6 @@ StHbtBinaryReader::StHbtBinaryReader(StIOMaker* ioMaker, const char* dir, const 
   mRetrieve = 1;
   mIOMaker = ioMaker;
   if (mDebug) cout << " StHbtBinaryReader::StHbtBinaryReader() -  mIOMaker : " << mIOMaker << endl;
-  mFlowMaker = 0;
-  mFlowAnalysisMaker = 0;
 }
 #endif
 //_______________________________
@@ -71,8 +62,6 @@ void StHbtBinaryReader::init(const char* dir, const char* file, const char* appe
   mStHbtEventVersion = 2;
   mStHbtTrackVersion = 2,
   mStHbtV0Version = 3;
-  mFlowMaker = 0;
-  mFlowAnalysisMaker = 0;
 }
 //_______________________________
 StHbtBinaryReader::~StHbtBinaryReader(){
@@ -162,23 +151,6 @@ StHbtEvent* StHbtBinaryReader::ReturnHbtEvent(){
       event->V0Collection()->push_back(*pIter);
     }
     NewV0Collection.clear();
-  }
-
-  // to get RP from FlowMaker
-  if ( mFlowMaker && event ) {
-//     mFlowMaker->FillFlowEvent(event);
-//     // First get RP for whole event
-//     mFlowMaker->FlowSelection()->SetSubevent(-1);
-//     double reactionPlane = mFlowMaker->FlowEventPointer()->Psi(mFlowMaker->FlowSelection());
-//     cout << "Reaction Plane " << reactionPlane << endl;
-//     event->SetReactionPlane(reactionPlane);
-//     // Sub event RPs
-//     mFlowMaker->FlowSelection()->SetSubevent(0);
-//     double RP1 = mFlowMaker->FlowEventPointer()->Psi(mFlowMaker->FlowSelection());
-//     mFlowMaker->FlowSelection()->SetSubevent(1);
-//     double RP2 = mFlowMaker->FlowEventPointer()->Psi(mFlowMaker->FlowSelection());
-//     event->SetReactionPlaneSubEventDifference(RP1-RP2);
-//     if (mFlowAnalysisMaker) mFlowAnalysisMaker->Make();
   }
 
   if (mDebug>1) {

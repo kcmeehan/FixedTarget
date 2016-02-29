@@ -14,10 +14,6 @@
 #include "StarClassLibrary/StPhysicalHelixD.hh"
 #include "StarClassLibrary/StTimer.hh"
 
-#include "StFlowMaker/StFlowMaker.h"
-#include "StFlowMaker/StFlowSelection.h"
-#include "StFlowMaker/StFlowEvent.h"
-
 #include "StStrangeMuDstMaker/StStrangeMuDstMaker.h"
 #include "StStrangeMuDstMaker/StStrangeEvMuDst.hh"
 #include "StStrangeMuDstMaker/StV0MuDst.hh"
@@ -56,7 +52,7 @@ ClassImp(StHbtMuDstMakerReader)
 //-----------------------------------------------------------------------
 //-----------------------------------------------------------------------
 StHbtMuDstMakerReader::StHbtMuDstMakerReader(StMuDstMaker* maker) : 
-  mFlowMaker(0), mMuDstMaker(maker), 
+  mMuDstMaker(maker), 
   mTrackType(primary), mReadTracks(1), 
   mReadV0s(1), mReadXis(1), mReadKinks(1), mFinish(0),
   mHbtEvent(0)
@@ -85,7 +81,6 @@ int StHbtMuDstMakerReader::Init(){
   DEBUGMESSAGE1("");
 //   if (!ioMaker) mIOMaker = (StIOMaker*)GetMaker("IOMaker");
 //   if (!mStStrangeMuDstMaker) mStStrangeMuDstMaker = (StStrangeMuDstMaker*)GetMaker("StrangeMaker");
-//   if (!mFlowMaker)  = (StFlowMaker*)GetMaker("FlowMaker");
   return 0;
 }
 
@@ -145,13 +140,6 @@ StHbtEvent* StHbtMuDstMakerReader::ReturnHbtEvent(){
     }
   
   
-  if (mFlowMaker && mHbtEvent ) {
-    int harmonic = 1;
-    mFlowMaker->FlowSelection()->SetHarmonic(harmonic);
-    float psi = mFlowMaker->FlowEventPointer()->Psi(mFlowMaker->FlowSelection());
-    mHbtEvent->SetReactionPlane(psi);
-  }
-
   return mHbtEvent;
 }
 //-----------------------------------------------------------------------

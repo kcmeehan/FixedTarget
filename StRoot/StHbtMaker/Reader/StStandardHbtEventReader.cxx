@@ -196,11 +196,6 @@
 
 #include "StEventMaker/StEventMaker.h"
 
-#include "StFlowMaker/StFlowMaker.h"
-#include "StFlowMaker/StFlowEvent.h"
-#include "StFlowAnalysisMaker/StFlowAnalysisMaker.h"
-#include "StFlowMaker/StFlowSelection.h"
-
 //#define STHBTDEBUG
 
 #ifdef __ROOT__
@@ -218,8 +213,6 @@ StStandardHbtEventReader::StStandardHbtEventReader() : mTrackType(primary), mRea
   mTheV0Maker=0;
   mTheTagReader = 0;
   mReaderStatus = 0;  // "good"
-  mFlowMaker = 0;
-  mFlowAnalysisMaker = 0;
 }
 //__________________
 StStandardHbtEventReader::~StStandardHbtEventReader(){
@@ -460,24 +453,6 @@ StHbtEvent* StStandardHbtEventReader::ReturnHbtEvent(){
     cout << "StStandardHbtEventReader::Return(...) - no triggerDetectorCollection " << endl;
   }
 
-  /*
-  // Randy commented this out since the RP is obtained from the FlowMaker now
-  // Didn't remove in case someone found it useful
-  if (mTheTagReader) {
-    hbtEvent->SetEventNumber(mTheTagReader->tag("mEventNumber"));    
-    // reaction plane from tags 
-    StHbtThreeVector a( mTheTagReader->tag("qxa",1), mTheTagReader->tag("qya",1),0);
-    StHbtThreeVector b( mTheTagReader->tag("qxb",1), mTheTagReader->tag("qyb",1),0);
-    float reactionPlane = (a+b).phi();
-    float reactionPlaneSubEventDifference = a.angle(b);
-    cout << " reactionPlane : " << reactionPlane/3.1415927*180.;
-    cout << " reactionPlaneSubEventDifference : " << reactionPlaneSubEventDifference/3.1415927*180. << endl;
-    hbtEvent->SetReactionPlane(reactionPlane);
-    hbtEvent->SetReactionPlaneSubEventDifference(reactionPlaneSubEventDifference);
-  }
-  */
-
-
   // For Aihong's pid
   //  StuProbabilityPidAlgorithm aihongsPid(*rEvent);
   if (mReadTracks) {
@@ -640,23 +615,6 @@ StHbtEvent* StStandardHbtEventReader::ReturnHbtEvent(){
 	   rEvent->kinkVertices().size());
   }
 
-  // Can't get Reaction Plane until whole HbtEvent is filled
-  if ( mFlowMaker && hbtEvent ) {
-//     mFlowMaker->FillFlowEvent(hbtEvent);
-//     // First get RP for whole event
-//     mFlowMaker->FlowSelection()->SetSubevent(-1);
-//     double reactionPlane = mFlowMaker->FlowEventPointer()->Psi(mFlowMaker->FlowSelection());
-//     cout << "Reaction Plane " << reactionPlane << endl;
-//     hbtEvent->SetReactionPlane(reactionPlane);
-//     // Sub event RPs
-//     mFlowMaker->FlowSelection()->SetSubevent(0);
-//     double RP1 = mFlowMaker->FlowEventPointer()->Psi(mFlowMaker->FlowSelection());
-//     mFlowMaker->FlowSelection()->SetSubevent(1);
-//     double RP2 = mFlowMaker->FlowEventPointer()->Psi(mFlowMaker->FlowSelection());
-//     hbtEvent->SetReactionPlaneSubEventDifference(RP1-RP2);
-//     // if Flow Analysis is switched on ... make correction histogram
-//     if (mFlowAnalysisMaker) mFlowAnalysisMaker->Make();
-  }
 
   // There might be event cuts that modify the collections of Tracks or V0 in the event.
   // These cuts have to be done after the event is built. That's why we have the event cut

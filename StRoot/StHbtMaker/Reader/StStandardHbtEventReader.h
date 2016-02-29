@@ -133,10 +133,6 @@ class StKaonPlus;
 class StProton;
 class StTpcDedxPidAlgorithm;
 class StParticleDefinition;
-class StFlowMaker;
-class StFlowEvent;
-class StFlowAnalysisMaker;
-class StFlowSelection;
 
 class StStandardHbtEventReader : public StMaker, public StHbtEventReader{
 
@@ -152,9 +148,6 @@ private:
   bool mReadV0s;
   bool mReadXis;
   bool mReadKinks;
-
-  StFlowMaker* mFlowMaker;             //!
-  StFlowAnalysisMaker* mFlowAnalysisMaker; //!
 
  protected:
 
@@ -182,8 +175,6 @@ private:
   void SetReadV0s(bool);
   void SetReadXis(bool);
   void SetReadKinks(bool);
-  void SetFlowMaker(StFlowMaker* flowMaker);
-  void SetFlowAnalysisMaker(StFlowAnalysisMaker* flowAnal);
 
 #ifdef __ROOT__
   ClassDef(StStandardHbtEventReader, 1)
@@ -206,10 +197,5 @@ inline void StStandardHbtEventReader::SetReadTracks(bool b) { mReadTracks=b;}
 inline void StStandardHbtEventReader::SetReadV0s(bool b) { mReadV0s=b;}
 inline void StStandardHbtEventReader::SetReadXis(bool b) { mReadXis=b;}
 inline void StStandardHbtEventReader::SetReadKinks(bool b) { mReadKinks=b;}
-inline void StStandardHbtEventReader::SetFlowMaker(StFlowMaker* flowMaker){mFlowMaker = flowMaker;}
-inline void StStandardHbtEventReader::SetFlowAnalysisMaker(StFlowAnalysisMaker* flowAnal) {
-  mFlowAnalysisMaker = flowAnal;
-}
-
 #endif
 
