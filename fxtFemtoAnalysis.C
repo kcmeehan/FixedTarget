@@ -5,7 +5,7 @@
 // Then only thing that's special about this macro is that it uses fxtEventCut and fxtEventCutMonitor 
 // objects. The former simply cuts on Vx,Vy,Vz, and the number of Tof matched tracks.
 
-void fxtFemtoAnalysis(const TString fileList = "4x5GeVfxtFiles.list" 
+void fxtFemtoAnalysis(const TString fileList = "muDst.list" 
 					   , const TString outFile = "fxtTestOut.root"
 					   , const Int_t nEvents = 999
                        )

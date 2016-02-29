@@ -3,8 +3,8 @@
 <job  datasetSplitting="fileBased" minEvents="1000" maxEvents="10000" simulateSubmission="false" fileListSyntax="xrootd" softLimits="true">
 
     <command>
-        starver SL14a
-        root4star -l -b fxtFemtoAnalysis.C\(\"$FILELIST\",\"4x5GeV_mult3_${JOBID}.root\",999999\) &gt;&amp; ${JOBID}.log
+        starver SL15e
+        root4star -l -b fxtFemtoAnalysis.C\(\"$FILELIST\",\"4x5GeV_10PercCentral_${JOBID}.root\",999999\) &gt;&amp; ${JOBID}.log
     </command> 
 
     <SandBox installer="ZIP">
