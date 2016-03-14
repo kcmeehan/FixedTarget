@@ -12,6 +12,8 @@ private:
   StHbt1DHisto* mDCA;
   StHbt1DHisto* mDCAGlobal;
   StHbt1DHisto* mNhits;
+  StHbt1DHisto* mNHitsDedx;
+  StHbt1DHisto* mHitsRatio;
   StHbt1DHisto* mPt;
   StHbt1DHisto* mChiSqr;
   StHbt1DHisto* mNsigmaPion;
@@ -45,6 +47,8 @@ public:
   StHbt1DHisto* DCA() { return mDCA; }
   StHbt1DHisto* DCAGlobal() { return mDCAGlobal; }
   StHbt1DHisto* Nhits() { return mNhits; }
+  StHbt1DHisto* NhitsDedx() { return mNHitsDedx; }
+  StHbt1DHisto* HitsRatio() { return mHitsRatio; }
   StHbt1DHisto* Pt() { return mPt; }
   StHbt1DHisto* ChiSqr() { return mChiSqr; }
   StHbt1DHisto* NsigmaPion() { return mNsigmaPion; }

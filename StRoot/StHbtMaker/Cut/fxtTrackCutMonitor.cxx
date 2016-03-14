@@ -16,6 +16,8 @@ fxtTrackCutMonitor::fxtTrackCutMonitor(const char* name,const double ParticleMas
   mDCA= new StHbt1DHisto( (s+n+"mDCA").c_str(),"DCA",1000,0,5.); 
   mDCAGlobal= new StHbt1DHisto( (s+n+"mDCAGlobal").c_str(),"DCA Global",1000,0.,5.); 
   mNhits = new StHbt1DHisto( (s+n+"mNhits").c_str(),"nHits",50,0.,50.);
+  mNHitsDedx= new StHbt1DHisto( (s+n+"mNHitsDedx").c_str(),"Number of dE/dx Hits",60,-0.5,59.5); 
+  mHitsRatio= new StHbt1DHisto( (s+n+"mHitsRatio").c_str(),"nHitsFit / nHitsPoss",200,0,1); 
   mPt = new StHbt1DHisto( (s+n+"mPt").c_str(),"Pt",1300,0.,1.3);
   mChiSqr = new StHbt1DHisto( (s+n+"mChiSqr").c_str(),"ChiSqr",100,0.,10.);
   mNsigmaPion = new StHbt1DHisto( (s+n+"mNsigmaPion").c_str(),"NsigmaPion",70,-35.,35.);
@@ -51,6 +53,8 @@ fxtTrackCutMonitor::~fxtTrackCutMonitor(){
   delete mDCA;
   delete mDCAGlobal;
   delete mNhits;
+  delete mNHitsDedx;
+  delete mHitsRatio;
   delete mPt;
   delete mChiSqr;
   delete mNsigmaPion;
@@ -77,6 +81,8 @@ void  fxtTrackCutMonitor::Fill(const StHbtTrack* track){
   mDCA->Fill( track->DCAxy(), 1.); //using for DCA xyz
   mDCAGlobal->Fill( track->DCAxyGlobal(), 1.); //using for DCAxyz global
   mNhits->Fill(track->NHits(), 1.);
+  mNHitsDedx->Fill( track->NHitsDedx(), 1.);
+  mHitsRatio->Fill( (Float_t)track->NHits()/track->NHitsPossible(), 1.);
   mPt->Fill(track->Pt(), 1.);
   mChiSqr->Fill(track->ChiSquaredXY(), 1.); //use for ChiSqr variable (xyz or xy whichever it is)
   mNsigmaPion->Fill(track->NSigmaPion(), 1.);

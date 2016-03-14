@@ -47,6 +47,7 @@ franksTrackCut::franksTrackCut(){
   mDCAGlobal[0] = -1e9;  mDCAGlobal[1] = +1e9;
   mNHits[0] = 0; mNHits[1] = 60;
   mNdEdxHits[0] = 0; mNdEdxHits[1] = 60;
+  mHitsRatio[0] = 0; mHitsRatio[1] = 1; 
 }
 //------------------------------
 franksTrackCut::franksTrackCut(franksTrackCut& c) : StHbtTrackCut(c) {
@@ -80,6 +81,8 @@ franksTrackCut::franksTrackCut(franksTrackCut& c) : StHbtTrackCut(c) {
   mNHits[1] = c.mNHits[1];
   mNdEdxHits[0] = c.mNdEdxHits[0];
   mNdEdxHits[1] = c.mNdEdxHits[1];
+  mHitsRatio[0] = c.mHitsRatio[0];
+  mHitsRatio[1] = c.mHitsRatio[1];
   mP[0] = c.mP[0]; mP[1] = c.mP[1];
   mPt[0] = c.mPt[0]; mPt[1] = c.mPt[1];
   mPx[0] = c.mPx[0]; mPx[1] = c.mPx[1];
@@ -161,6 +164,9 @@ bool franksTrackCut::Pass(const StHbtTrack* track){
    cout << (track->NSigmaElectron() >= mNSigmaElectron[0]) << (track->NSigmaElectron() <= mNSigmaElectron[1]) << endl;
 #endif
 
+   Float_t hitsRatio = 0;
+   if( track->NHitsPossible() > 0) { hitsRatio = (Float_t)track->NHits() / track->NHitsPossible(); }
+
    bool goodTrack=( true &&
      (track->DCAxy()  >= mDCA[0]) &&
      (track->DCAxy()  <= mDCA[1]) &&
@@ -168,6 +174,8 @@ bool franksTrackCut::Pass(const StHbtTrack* track){
      (track->DCAxyGlobal()  <= mDCAGlobal[1]) &&
      (track->NHits() >= mNHits[0]) &&
      (track->NHits() <= mNHits[1]) &&
+     (hitsRatio >= mHitsRatio[0]) &&
+     (hitsRatio <= mHitsRatio[1]) &&
      (track->NHitsDedx() >= mNdEdxHits[0]) &&
      (track->NHitsDedx() <= mNdEdxHits[1]) &&
       (track->P().mag() >= mP[0]) &&

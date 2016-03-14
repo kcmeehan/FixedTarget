@@ -55,6 +55,7 @@ class franksTrackCut : public StHbtTrackCut
 
   void SetNHits(const int& lo, const int& hi);
   void SetNdEdxHits(const int& lo, const int& hi);
+  void SetHitsRatio(const int& lo, const int& hi);
   void SetP(const float& lo, const float& hi);
   void SetPt(const float& lo, const float& hi);
   void SetPx(const float& lo, const float& hi);
@@ -86,6 +87,7 @@ class franksTrackCut : public StHbtTrackCut
   float             mNSigmaAntiKaon[2];
   float             mNSigmaAntiProton[2];
   int               mNHits[2];
+  float             mHitsRatio[2];
   int               mNdEdxHits[2];
   float             mP[2];
   float             mPt[2];
@@ -126,6 +128,7 @@ inline void franksTrackCut::SetNSigmaAntiProton(const float& lo, const float& hi
 
 inline void franksTrackCut::SetNHits(const int& lo, const int& hi){mNHits[0]=lo;mNHits[1]=hi;}
 inline void franksTrackCut::SetNdEdxHits(const int& lo, const int& hi){mNdEdxHits[0]=lo;mNdEdxHits[1]=hi;}
+inline void franksTrackCut::SetHitsRatio(const int& lo, const int& hi){mHitsRatio[0]=lo;mHitsRatio[1]=hi;}
 inline void franksTrackCut::SetP(const float& lo, const float& hi){mP[0]=lo; mP[1]=hi;}
 inline void franksTrackCut::SetPt(const float& lo, const float& hi){mPt[0]=lo; mPt[1]=hi;}
 inline void franksTrackCut::SetPx(const float& lo, const float& hi){mPx[0]=lo; mPx[1]=hi;}
