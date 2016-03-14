@@ -21,6 +21,7 @@ void QA(const TString fileList = "muDst.list"
     // Float_t VzLow = 209, VzHigh = 211, VxLow = -2, VxHigh = 2, VyLow = -4, VyHigh = -2, minTofMatches = 11;
     // 4.5 GeV
     Float_t VzLow = 210, VzHigh = 212, VxLow = -10, VxHigh = 10, VyLow = -10, VyHigh = 10, minTofMatches = 2;
+    Float_t tenPercentCut = 112;
 
 	//----------------- Load Libraries ---------------//
 	gROOT->LoadMacro("$STAR/StRoot/StMuDSTMaker/COMMON/macros/loadSharedLibraries.C");
@@ -47,13 +48,13 @@ void QA(const TString fileList = "muDst.list"
     TH2F* dEdx = new TH2F("dEdx","dEdx",500,-1.1,1.1,400,0,0.000025);
     TH1I* numberPrimaryVertices = new TH1I("numberPrimaryVertices","Number of Events with N Primary Vertices", 40, -0.5,39.5);
     TH1I* verticesOfRankN = new TH1I("verticesOfRankN","Number of Primary Vertices of Rank N", 40, -0.5,39.5);
-    TH1D* eventCuts = new TH1D("eventCuts","Event Cuts",5,-0.5,4.5);
     TH1D* particleYield = new TH1D("particleYield","Particle Yield",10,-0.5,9.5);
     const Char_t* yieldTitles[10] = {"All Tracks","Pass Cuts","e+", "e-","Pi+", "Pi-", "K+", "K-", "p+", "p-"};
-    const Char_t* eventCutTitles[5] = {"All Events","Vz","Vx", "Vy","Tof Matches"};
+    TH1D* eventCuts = new TH1D("eventCuts","Event Cuts",6,-0.5,5.5);
+    const Char_t* eventCutTitles[6] = {"All Events","Vz","Vx", "Vy","Tof Matches", "10% Central"};
 
     for(Int_t i = 0; i <= 9; i++) { particleYield->GetXaxis()->SetBinLabel(i+1,yieldTitles[i]); }
-    for(Int_t i = 0; i <= 4; i++) { eventCuts->GetXaxis()->SetBinLabel(i+1,eventCutTitles[i]); }
+    for(Int_t i = 0; i <= 5; i++) { eventCuts->GetXaxis()->SetBinLabel(i+1,eventCutTitles[i]); }
 
 	//--------------------- The STAR chain Event loop ---------------------//
 	chain->Init();
@@ -87,7 +88,6 @@ void QA(const TString fileList = "muDst.list"
         TObjArray* tracks = muMaker->muDst()->primaryTracks();
         Int_t nTofMatches = calcNumberOfTofMatches(tracks);
         Int_t nPrimaryVertices = muMaker->muDst()->numberOfPrimaryVertices();
-        Int_t nPrimaryTracks = muMaker->muDst()->primaryTracks()->GetEntries();
         Bool_t eventPass = kTRUE;
 
         numberPrimaryVertices->Fill(nPrimaryVertices);
@@ -97,6 +97,7 @@ void QA(const TString fileList = "muDst.list"
         { 
             verticesOfRankN->Fill(vertexIndex); 
             muMaker->muDst()->setVertexIndex(vertexIndex);
+            Int_t nPrimaryTracks = muMaker->muDst()->primaryTracks()->GetEntries();
             hPrimaryTracks->Fill(nPrimaryTracks);
             
             Float_t vx = event->primaryVertexPosition().x();
@@ -111,6 +112,7 @@ void QA(const TString fileList = "muDst.list"
             else { eventPass = kFALSE;}
             if ( eventPass && (nTofMatches >= minTofMatches)) {eventCuts->Fill(4);}
             else { eventPass = kFALSE;}
+            if ( eventPass && (nPrimaryTracks >= tenPercentCut)) {eventCuts->Fill(5);}
 
             if(eventPass)
             {
