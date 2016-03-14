@@ -209,6 +209,7 @@ StHbtEvent::StHbtEvent(const StMuDst* dst, int trackType) {
   mRunNumber = ev->runNumber();
   mTpcNhits = 0;
   mNumberOfTofMatches = calcNumberOfTofMatches(dst);
+  mNumberOfGoodPrimaryTracks = calcNumberOfGoodPrimaryTracks(dst);
   mNumberOfTracks = ev->eventSummary().numberOfTracks();
   mNumberOfGoodTracks = ev->eventSummary().numberOfGoodTracks();
   mNumberOfPrimaryTracks = dst->primaryTracks()->GetEntries();
@@ -289,6 +290,7 @@ StHbtEvent::StHbtEvent(const StMuDst* dst, int trackType, bool readV0Daughters) 
   mTpcNhits = 0;
   mNumberOfTracks = ev->eventSummary().numberOfTracks();
   mNumberOfTofMatches = calcNumberOfTofMatches(dst);
+  mNumberOfGoodPrimaryTracks = calcNumberOfGoodPrimaryTracks(dst);
   mNumberOfGoodTracks = ev->eventSummary().numberOfGoodTracks();
   mCtbMultiplicity = (unsigned short) ev->ctbMultiplicity();
   mZdcAdc[0] = (unsigned short) ev->zdcAdcAttentuatedSumWest();
@@ -571,6 +573,7 @@ UInt_t         StHbtEvent::NumberOfTofMatches() const {return mNumberOfTofMatche
 unsigned short StHbtEvent::NumberOfTracks() const {return mNumberOfTracks;}
 unsigned short StHbtEvent::NumberOfGoodTracks() const {return mNumberOfGoodTracks;}
 unsigned short StHbtEvent::NumberOfPrimaryTracks() const {return mNumberOfPrimaryTracks;}
+unsigned short StHbtEvent::NumberOfGoodPrimaryTracks() const {return mNumberOfGoodPrimaryTracks;}
 unsigned int StHbtEvent::UncorrectedNumberOfPositivePrimaries() const {return mUncorrectedNumberOfPositivePrimaries;}
 unsigned int StHbtEvent::UncorrectedNumberOfNegativePrimaries() const {return mUncorrectedNumberOfNegativePrimaries;}
 unsigned int StHbtEvent::UncorrectedNumberOfPrimaries() const {return mUncorrectedNumberOfPrimaries;}
@@ -600,7 +603,6 @@ UInt_t StHbtEvent::calcNumberOfTofMatches(const StMuDst* muDst){
 //		StMuTrack*	tGlobal 	= (StMuTrack*)tPrimary->globalTrack();
 
 		if ( !tPrimary ) continue;
-		if ( tPrimary->vertexIndex() != 0 ) continue;
 
 		/**
 		 * Get Tof info
@@ -612,6 +614,26 @@ UInt_t StHbtEvent::calcNumberOfTofMatches(const StMuDst* muDst){
 	}
 
 	return nTofMatched;
+
+}
+
+UInt_t StHbtEvent::calcNumberOfGoodPrimaryTracks(const StMuDst* muDst){
+
+	Int_t nPrimary 	= muDst->primaryTracks()->GetEntries();
+	Int_t nGoodPrimaryTracks = 0;
+	for (int iNode = 0; iNode < nPrimary; iNode++ ){
+		StMuTrack*	tPrimary 	= (StMuTrack*)muDst->primaryTracks(iNode);
+
+		if ( !tPrimary ) continue;
+        UShort_t ndEdx = tPrimary->nHitsDedx();
+        Float_t nHitsFit = (Float_t)tPrimary->nHitsFit();
+        Float_t nHitsPoss = (Float_t)tPrimary->nHitsPoss(kTpcId);
+
+        if( (ndEdx > 0) && (nHitsFit / nHitsPoss > 0.52) ) {nGoodPrimaryTracks++;}
+
+	}
+
+	return nGoodPrimaryTracks;
 
 }
 
