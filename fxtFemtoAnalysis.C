@@ -18,20 +18,19 @@ void fxtFemtoAnalysis(const TString fileList = "muDst.list"
     const Float_t Vx[2] = {-4,2};
     const Float_t Vy[2] = {-4,0};
     const Float_t Vz[2] = {210,212};
-    const Float_t multCut[2] = {122,1000}; // 0-25
-//    const Float_t multCut[2] = {22.5,31.5}; // 25-50
-//   const Float_t multCut[2] = {14.5,22.5};
-//    const Float_t multCut[2] = {0.5,14.5}; // 0-25 
-//    const Float_t multCut[2] = {0.5,1000}; // No restriction 
+    const Float_t multCut[2] = {122,1000}; // 10% cut
+//    const Float_t multCut[2] = {0,1000}; // Wide open cut
 
     // Track Cuts
     const Float_t piMass =  0.13957018; // From PDG
     const Float_t rapidity[2] = {-999,999};
     const Float_t nSigma[2] = {-2,2};
-//    const Float_t pt[2] = {0.10,0.30};
-    const Float_t pt[2] = {0.15,0.80};
+    const Float_t pt[2] = {0.10,0.30};
+//    const Float_t pt[2] = {0.15,0.80};
     const Float_t nHitsTpc[2] = {15,50};
     const Float_t dcaGlobal[2] = {0.0, 3.0};
+    const Float_t dEdxHits[2] = {1, 60};
+    const Float_t hitsRatio[2] = {0.52, 1};
 
     // Pair Cuts
     const Float_t kt[2] = {0.15,0.60};
@@ -90,6 +89,8 @@ void fxtFemtoAnalysis(const TString fileList = "muDst.list"
         trackCut[i]->SetNSigmaElectron(-1000,nSigma[0]);
         trackCut[i]->SetPt(pt[0],pt[1]);
         trackCut[i]->SetNHits(nHitsTpc[0],nHitsTpc[1]);
+        trackCut[i]->SetHitsRatio(hitsRatio[0],hitsRatio[1]);
+        trackCut[i]->SetNdEdxHits(dEdxHits[0],dEdxHits[1]);
         trackCut[i]->SetDCAGlobal(dcaGlobal[0],dcaGlobal[1]);
         Int_t charge = i ? 1 : -1;
         trackCut[i]->SetCharge(charge);
@@ -208,24 +209,32 @@ void fxtFemtoAnalysis(const TString fileList = "muDst.list"
     trackPiPlusPass->DCA()->Write();
     trackPiPlusPass->DCAGlobal()->Write();
     trackPiPlusPass->Nhits()->Write();
+    trackPiPlusPass->NhitsDedx()->Write();
+    trackPiPlusPass->HitsRatio()->Write();
     trackPiPlusPass->Pt()->Write();
     trackPiPlusPass->NsigmaPion()->Write();
     trackPiPlusPass->ChiSqr()->Write();
     trackPiPlusFail->DCA()->Write();
     trackPiPlusFail->DCAGlobal()->Write();
     trackPiPlusFail->Nhits()->Write();
+    trackPiPlusFail->NhitsDedx()->Write();
+    trackPiPlusFail->HitsRatio()->Write();
     trackPiPlusFail->Pt()->Write();
     trackPiPlusFail->NsigmaPion()->Write();
     trackPiPlusFail->ChiSqr()->Write();
     trackPiMinusPass->DCA()->Write();
     trackPiMinusPass->DCAGlobal()->Write();
     trackPiMinusPass->Nhits()->Write();
+    trackPiMinusFail->NhitsDedx()->Write();
+    trackPiMinusFail->HitsRatio()->Write();
     trackPiMinusPass->Pt()->Write();
     trackPiMinusPass->NsigmaPion()->Write();
     trackPiMinusPass->ChiSqr()->Write();
     trackPiMinusFail->DCA()->Write();
     trackPiMinusFail->DCAGlobal()->Write();
     trackPiMinusFail->Nhits()->Write();
+    trackPiMinusFail->NhitsDedx()->Write();
+    trackPiMinusFail->HitsRatio()->Write();
     trackPiMinusFail->Pt()->Write();
     trackPiMinusFail->NsigmaPion()->Write();
     trackPiMinusFail->ChiSqr()->Write();
