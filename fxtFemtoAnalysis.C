@@ -5,21 +5,22 @@
 // Then only thing that's special about this macro is that it uses fxtEventCut and fxtEventCutMonitor 
 // objects. The former simply cuts on Vx,Vy,Vz, and the number of Tof matched tracks.
 
-void fxtFemtoAnalysis(const TString fileList = "muDst.list" 
-					   , const TString outFile = "fxtTestOut.root"
-					   , const Int_t nEvents = 999
+void fxtFemtoAnalysis(const TString fileList = "muDst.list",  
+					   const TString outFile = "fxtTestOut.root",
+                       const Int_t multBin = = -1, 
+					   const Int_t nEvents = 999
                        )
 {
 	//------------------- Define Cut Values ------------------//
 
     // Event cuts
     const Int_t mult[2] = {0,1000};
-    const Int_t minNumberOfTofMatches = 2;
+    const Int_t minNumberOfTofMatches = -1;
     const Float_t Vx[2] = {-4,2};
     const Float_t Vy[2] = {-4,0};
     const Float_t Vz[2] = {210,212};
-    const Float_t multCut[2] = {122,1000}; // 10% cut
-//    const Float_t multCut[2] = {0,1000}; // Wide open cut
+    const Float_t multCut[7] = {47.5, 60.5, 76.5, 96.5, 120.5, 153.5, 1000}; // Include high multiplicity tracks
+//    const Float_t multCut[7] = {47.5, 60.5, 76.5, 96.5, 120.5, 153.5, 200}; // Exclude high multiplicity tracks
 
     // Track Cuts
     const Float_t piMass =  0.13957018; // From PDG
@@ -62,7 +63,15 @@ void fxtFemtoAnalysis(const TString fileList = "muDst.list"
     for(Int_t i = 0; i <= 1; i++)
     {
         eventCut[i] = new fxtEventCut();
-        eventCut[i]->SetMult(multCut[0],multCut[1]);
+        if( multBin == -1 ) {
+            eventCut[i]->SetMult(multCut[0],multCut[6]);
+        } else if( multBin <= 5 ) {
+            eventCut[i]->SetMult(multCut[multBin],multCut[multBin + 1]);
+        } else {
+            cout << "multBin " << multBin << " is out of range. Exiting." << endl;
+            return;
+        }
+
         eventCut[i]->SetMinTofMatches(minNumberOfTofMatches);
         eventCut[i]->SetVx(Vx[0],Vx[1]);
         eventCut[i]->SetVy(Vy[0],Vy[1]);
@@ -83,10 +92,10 @@ void fxtFemtoAnalysis(const TString fileList = "muDst.list"
         trackCut[i] = new franksTrackCut;
         trackCut[i]->SetMass(piMass);
         trackCut[i]->SetEta(rapidity[0],rapidity[1]);
-        trackCut[i]->SetNSigmaProton(-1000,nSigma[0]);
-        trackCut[i]->SetNSigmaKaon(-1000,nSigma[0]);
         trackCut[i]->SetNSigmaPion(nSigma[0],nSigma[1]);
-        trackCut[i]->SetNSigmaElectron(-1000,nSigma[0]);
+        trackCut[i]->SetNSigmaAntiProton(nSigma[0],nSigma[1]);
+        trackCut[i]->SetNSigmaAntiKaon(nSigma[0],nSigma[1]);
+        trackCut[i]->SetNSigmaAntiElectron(nSigma[0],nSigma[1]);
         trackCut[i]->SetPt(pt[0],pt[1]);
         trackCut[i]->SetNHits(nHitsTpc[0],nHitsTpc[1]);
         trackCut[i]->SetHitsRatio(hitsRatio[0],hitsRatio[1]);
