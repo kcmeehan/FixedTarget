@@ -15,6 +15,7 @@ void fxtFemtoAnalysis(const TString fileList = "muDst.list",
 
     // Event cuts
     const Int_t mult[2] = {0,1000};
+    const Int_t triggerId = 1;
     const Int_t minNumberOfTofMatches = -1;
     const Float_t Vx[2] = {-4,2};
     const Float_t Vy[2] = {-4,0};
@@ -64,7 +65,7 @@ void fxtFemtoAnalysis(const TString fileList = "muDst.list",
     {
         eventCut[i] = new fxtEventCut();
         if( multBin == -1 ) {
-            eventCut[i]->SetMult(multCut[0],multCut[6]);
+            eventCut[i]->SetMult(-1,10000); // No multiplicity cut
         } else if( multBin <= 5 ) {
             eventCut[i]->SetMult(multCut[multBin],multCut[multBin + 1]);
         } else {
@@ -73,6 +74,7 @@ void fxtFemtoAnalysis(const TString fileList = "muDst.list",
         }
 
         eventCut[i]->SetMinTofMatches(minNumberOfTofMatches);
+        eventCut[i]->SetTriggerId(triggerId);
         eventCut[i]->SetVx(Vx[0],Vx[1]);
         eventCut[i]->SetVy(Vy[0],Vy[1]);
         eventCut[i]->SetVz(Vz[0],Vz[1]);
@@ -206,11 +208,13 @@ void fxtFemtoAnalysis(const TString fileList = "muDst.list",
     eventPass->RefMult()->Write();
     eventPass->NPrimary()->Write();
     eventPass->NumberOfTofMatches()->Write();
+    eventPass->TriggerId()->Write();
     eventFail->VertexYvsVertexX()->Write();
     eventFail->VertexZ()->Write();
     eventFail->RefMult()->Write();
     eventFail->NPrimary()->Write();
     eventFail->NumberOfTofMatches()->Write();
+    eventFail->TriggerId()->Write();
 
     histoOutput.cd("../");
     histoOutput.mkdir("TrackCuts");

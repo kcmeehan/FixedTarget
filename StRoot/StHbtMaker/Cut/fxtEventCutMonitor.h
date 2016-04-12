@@ -14,6 +14,7 @@ private:
   StHbt1DHisto*  mRefMult;
   StHbt1DHisto*  mNPrimary;
   StHbt1DHisto*  mNumberOfTofMatches;
+  StHbt1DHisto*  mTriggerId;
 
 public:
   fxtEventCutMonitor();
@@ -40,6 +41,7 @@ public:
   StHbt1DHisto* RefMult() {return mRefMult;}
   StHbt1DHisto* NPrimary() {return mNPrimary;}
   StHbt1DHisto* NumberOfTofMatches() {return mNumberOfTofMatches;}
+  StHbt1DHisto* TriggerId() {return mTriggerId;}
   
 #ifdef __ROOT__ 
  ClassDef(fxtEventCutMonitor, 1)

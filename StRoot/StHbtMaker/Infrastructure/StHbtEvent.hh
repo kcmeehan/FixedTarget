@@ -131,6 +131,7 @@ public:
   unsigned short NumberOfGoodTracks() const;
   unsigned short NumberOfPrimaryTracks() const;
   unsigned short NumberOfGoodPrimaryTracks() const;
+  unsigned short TriggerId() const;
   unsigned int UncorrectedNumberOfPositivePrimaries() const;
   unsigned int UncorrectedNumberOfNegativePrimaries() const;
   unsigned int UncorrectedNumberOfPrimaries() const;
@@ -183,6 +184,7 @@ private:
   unsigned short mNumberOfGoodTracks; // number of "good" tracks
   unsigned short mNumberOfPrimaryTracks; // number of "good primary" tracks
   unsigned short mNumberOfGoodPrimaryTracks; // number of "good primary" tracks which pass cuts
+  unsigned short mTriggerId; // number of "good primary" tracks which pass cuts
   unsigned int mUncorrectedNumberOfPositivePrimaries;
   unsigned int mUncorrectedNumberOfNegativePrimaries;
   unsigned int mUncorrectedNumberOfPrimaries;

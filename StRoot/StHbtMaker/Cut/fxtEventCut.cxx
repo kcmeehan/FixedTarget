@@ -10,8 +10,8 @@ fxtEventCut::fxtEventCut(){
 } 
 
 Bool_t fxtEventCut::Pass(const StHbtEvent* event){
-//  Int_t mult = event->UncorrectedNumberOfPrimaries();
-  Int_t mult = event->NumberOfPrimaryTracks();
+  Int_t triggerId = event->TriggerId();
+  Int_t mult = event->NumberOfGoodPrimaryTracks();
   Int_t nTofMatches = event->NumberOfTofMatches();
   Float_t Vx = event->PrimVertPos().x();
   Float_t Vy = event->PrimVertPos().y();
@@ -21,6 +21,7 @@ Bool_t fxtEventCut::Pass(const StHbtEvent* event){
     ((mult >= mMult[0]) && 
      (mult < mMult[1]) && 
      (nTofMatches >= mMinTofMatches) && 
+     (triggerId == mTriggerId) && 
      (Vx > mVx[0]) &&
      (Vx < mVx[1]) &&
      (Vy > mVy[0]) &&
@@ -37,6 +38,8 @@ StHbtString fxtEventCut::Report(){
   char Ctemp[300];
   sprintf(Ctemp,"\nMultiplicity:\t %E-%E",mMult[0],mMult[1]);
   Stemp = Ctemp;
+  sprintf(Ctemp,"\nTrigger Id:\t %d",mTriggerId);
+  Stemp += Ctemp;
   sprintf(Ctemp,"\nMin Tof Matches:\t %d",mMinTofMatches);
   Stemp += Ctemp;
   sprintf(Ctemp,"\nVertex X-position:\t %E-%E",mVx[0],mVx[1]);

@@ -210,6 +210,7 @@ StHbtEvent::StHbtEvent(const StMuDst* dst, int trackType) {
   mTpcNhits = 0;
   mNumberOfTofMatches = calcNumberOfTofMatches(dst);
   mNumberOfGoodPrimaryTracks = calcNumberOfGoodPrimaryTracks(dst);
+  mTriggerId = ev->triggerIdCollection().nominal().triggerId(0);
   mNumberOfTracks = ev->eventSummary().numberOfTracks();
   mNumberOfGoodTracks = ev->eventSummary().numberOfGoodTracks();
   mNumberOfPrimaryTracks = dst->primaryTracks()->GetEntries();
@@ -291,6 +292,7 @@ StHbtEvent::StHbtEvent(const StMuDst* dst, int trackType, bool readV0Daughters) 
   mNumberOfTracks = ev->eventSummary().numberOfTracks();
   mNumberOfTofMatches = calcNumberOfTofMatches(dst);
   mNumberOfGoodPrimaryTracks = calcNumberOfGoodPrimaryTracks(dst);
+  mTriggerId = ev->triggerIdCollection().nominal().triggerId(0);
   mNumberOfGoodTracks = ev->eventSummary().numberOfGoodTracks();
   mCtbMultiplicity = (unsigned short) ev->ctbMultiplicity();
   mZdcAdc[0] = (unsigned short) ev->zdcAdcAttentuatedSumWest();
@@ -574,6 +576,7 @@ unsigned short StHbtEvent::NumberOfTracks() const {return mNumberOfTracks;}
 unsigned short StHbtEvent::NumberOfGoodTracks() const {return mNumberOfGoodTracks;}
 unsigned short StHbtEvent::NumberOfPrimaryTracks() const {return mNumberOfPrimaryTracks;}
 unsigned short StHbtEvent::NumberOfGoodPrimaryTracks() const {return mNumberOfGoodPrimaryTracks;}
+unsigned short StHbtEvent::TriggerId() const {return mTriggerId;}
 unsigned int StHbtEvent::UncorrectedNumberOfPositivePrimaries() const {return mUncorrectedNumberOfPositivePrimaries;}
 unsigned int StHbtEvent::UncorrectedNumberOfNegativePrimaries() const {return mUncorrectedNumberOfNegativePrimaries;}
 unsigned int StHbtEvent::UncorrectedNumberOfPrimaries() const {return mUncorrectedNumberOfPrimaries;}

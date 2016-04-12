@@ -33,6 +33,9 @@ fxtEventCutMonitor::fxtEventCutMonitor(const char* title1, const char* title2){
   sprintf(tit1,"%s%s_NumberOfTofMatches",title1,title2);
   mNumberOfTofMatches= new StHbt1DHisto(tit1, "NumberOfTofMatches", 500, 0., 500.);
 
+  sprintf(tit1,"%s%s_TriggerId",title1,title2);
+  mTriggerId= new StHbt1DHisto(tit1, "TriggerId", 66, -1, 65.);
+
 }
 //------------------------------
 fxtEventCutMonitor::~fxtEventCutMonitor(){
@@ -42,6 +45,7 @@ fxtEventCutMonitor::~fxtEventCutMonitor(){
   delete mRefMult;
   delete mNPrimary;
   delete mNumberOfTofMatches;
+  delete mTriggerId;
 }
 
 //------------------------------
@@ -50,8 +54,9 @@ void fxtEventCutMonitor::Fill(const StHbtEvent* event){
   mVertexYvsVertexX->Fill( event->PrimVertPos().x(), event->PrimVertPos().y(), 1.);
   mVertexZ->Fill( event->PrimVertPos().z(), 1.);
   mRefMult->Fill( event->UncorrectedNumberOfPrimaries(), 1.);
-  mNPrimary->Fill( event->NumberOfPrimaryTracks(), 1.);
+  mNPrimary->Fill( event->NumberOfGoodPrimaryTracks(), 1.);
   mNumberOfTofMatches->Fill( event->NumberOfTofMatches(), 1.);
+  mTriggerId->Fill( event->TriggerId(), 1.);
 
 }
 
@@ -62,6 +67,7 @@ void fxtEventCutMonitor::Finish(){
   cout << " entries in histogram mRefMult : " << mRefMult->Integral() << endl;
   cout << " entries in histogram mNPrimary : " << mNPrimary->Integral() << endl;
   cout << " entries in histogram mNumberOfTofMatches : " << mNumberOfTofMatches->Integral() << endl;
+  cout << " entries in histogram mTriggerId : " << mTriggerId->Integral() << endl;
 }
 
 //------------------------------
