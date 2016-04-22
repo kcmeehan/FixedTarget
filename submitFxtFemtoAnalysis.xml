@@ -15,8 +15,8 @@
     </SandBox>
 
     <stdout discard="true" />
-        <input URL="catalog:star.bnl.gov?path~/data19,trgsetupname=fixedTarget2015,production=P16ia,filetype=daq_reco_MuDst,storage=nfs,runnumber[]16140033-16140038" nFiles="10" />
-        <input URL="catalog:star.bnl.gov?path~/data23,trgsetupname=fixedTarget2015,production=P16ia,filetype=daq_reco_MuDst,storage=nfs,runnumber[]16140033-16140038" nFiles="10" />
+        <input URL="catalog:star.bnl.gov?path~/data19,trgsetupname=fixedTarget2015,production=P16ia,filetype=daq_reco_MuDst,storage=nfs,runnumber[]16140033-16140038" nFiles="all" />
+        <input URL="catalog:star.bnl.gov?path~/data23,trgsetupname=fixedTarget2015,production=P16ia,filetype=daq_reco_MuDst,storage=nfs,runnumber[]16140033-16140038" nFiles="all" />
         <output fromScratch="*.root" toURL="file:/gpfs/mnt/gpfs01/star/scratch/campbell/fxt/output/" />     <!-- Change Path -->
         <output fromScratch="*.log" toURL="file:/gpfs/mnt/gpfs01/star/scratch/campbell/fxt/logs/" />        <!-- Change Path -->
     <stderr URL="file:/gpfs/mnt/gpfs01/star/scratch/campbell/fxt/logs/$JOBID.err"/>                         <!-- Change Path -->
