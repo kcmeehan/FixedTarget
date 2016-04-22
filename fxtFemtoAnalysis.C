@@ -20,15 +20,15 @@ void fxtFemtoAnalysis(const TString fileList = "muDst.list",
     const Float_t Vx[2] = {-4,2};
     const Float_t Vy[2] = {-4,0};
     const Float_t Vz[2] = {210,212};
-    const Float_t multCut[7] = {47.5, 60.5, 76.5, 96.5, 120.5, 153.5, 1000}; // Include high multiplicity tracks
-//    const Float_t multCut[7] = {47.5, 60.5, 76.5, 96.5, 120.5, 153.5, 200}; // Exclude high multiplicity tracks
+    // const Float_t multCut[7] = {47.5, 60.5, 76.5, 96.5, 120.5, 153.5, 1000}; // Include high multiplicity tracks
+    const Float_t multCut[7] = {47.5, 60.5, 76.5, 96.5, 120.5, 153.5, 200}; // Exclude high multiplicity tracks
 
     // Track Cuts
     const Float_t piMass =  0.13957018; // From PDG
     const Float_t rapidity[2] = {-999,999};
     const Float_t nSigma[2] = {-2,2};
     const Float_t pt[2] = {0.10,0.30};
-//    const Float_t pt[2] = {0.15,0.80};
+    // const Float_t pt[2] = {0.15,0.80};
     const Float_t nHitsTpc[2] = {15,50};
     const Float_t dcaGlobal[2] = {0.0, 3.0};
     const Float_t dEdxHits[2] = {1, 60};
