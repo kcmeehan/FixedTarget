@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<job maxFilesPerProcess="10" simulateSubmission="false" fileListSyntax="xrootd">
+<job maxEvents="250000" simulateSubmission="false" fileListSyntax="xrootd">
+<!--<job maxFilesPerProcess="25" simulateSubmission="false" fileListSyntax="xrootd">-->
 
-  <stdout URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAu_7_7/logs/DataExtract_$JOBINDEX.out" />
-  <stderr URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAu_7_7/logs/DataExtract_$JOBINDEX.err" />
+  <stdout URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAu_19_6/logs/DataExtract_$JOBINDEX.out" />
+  <stderr URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAu_19_6/logs/DataExtract_$JOBINDEX.err" />
 
   <Generator><Location>
-      /star/data05/scratch/cflores/DavisDSTs/AuAu_7_7/sched/
+      /star/data05/scratch/cflores/DavisDSTs/AuAu_19_6/sched/
   </Location></Generator>
 
-  <input URL="catalog:star.bnl.gov?production=P10ih,filetype=daq_reco_MuDst,tpx=1,trgsetupname=AuAu7_production,filename~st_physics,runnumber>=11114024 -distinct" nFiles="all" />
+  <input URL="filelist:/star/data05/scratch/cflores/DavisDSTs/AuAu_19_6/sched/evictedRunFiles_54A30E596499DBFE3488617BAE5A6423.list" />
+  <!--<input URL="catalog:star.bnl.gov?production=P11id,filetype=daq_reco_MuDst,tpx=1,trgsetupname=AuAu19_production,filename~st_physics,collision=auau19.6,runnumber>=12108026 -distinct" nFiles="all" /> -->
   
   <SandBox installer="ZIP">
     <Package name="sched">
@@ -33,8 +35,8 @@
     set maxVx = -999         
     set minVy = -999         
     set maxVy = -999         
-    set beamSpotX = .20
-    set beamSpotY = -0.25
+    set beamSpotX = .37
+    set beamSpotY = -0.03
     set minPrimaryTracks = 2 
     set maxVertices = 1
 
@@ -44,6 +46,6 @@
 
   </command>
   
-  <output fromScratch="*.root" toURL="file:/star/data05/scratch/cflores/DavisDSTs/AuAu_7_7/data/"/>
+  <output fromScratch="*.root" toURL="file:/star/data05/scratch/cflores/DavisDSTs/AuAu_19_6/data/"/>
   
 </job>
