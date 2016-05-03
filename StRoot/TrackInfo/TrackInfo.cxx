@@ -56,8 +56,8 @@ void TrackInfo::SetTrackInfo(StMuTrack *track, Int_t vertexIndex){
   
   parentVertex      = vertexIndex;
   nHits             = track->nHits();
-  nHitsFit          = track->nHitsFit();
-  nHitsPoss         = track->nHitsPoss();
+  nHitsFit          = track->nHitsFit(kTpcId);
+  nHitsPoss         = track->nHitsPoss(kTpcId);
   dEdxHits          = track->nHitsDedx();
   flag              = track->flag();
   pZ                = track->p().z();
