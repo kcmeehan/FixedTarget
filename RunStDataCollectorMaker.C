@@ -32,8 +32,6 @@ void RunStDataCollectorMaker(Int_t nEvents=1,char *fileList,char *outDir="./",ch
   muDstMaker->SetStatus("GlobalTracks",1);
   muDstMaker->SetStatus("BTof*",1);
 
-  //St_db_Maker *dbMaker = new St_db_Maker("StarDb","MySQL:StarDb");
-
   StDataCollectionMaker *davisDstMaker = new StDataCollectionMaker("StDataCollectionMaker");
   davisDstMaker->SetOutDir(outDir);
   davisDstMaker->SetFileIndex(index);

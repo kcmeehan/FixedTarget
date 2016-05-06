@@ -68,7 +68,7 @@ void PrimaryVertexInfo::SetPrimaryVertexInfo(StMuDst *dst){
   //Also count them as contributing to the refMultUser and ntofMatches
   //if they satisfy the respective conditions
   for (Int_t trackIndex=0; trackIndex < nPrimaryTracks; trackIndex++){
-   
+
     //Add the Track to the Track Tree
     AddTrack(dst->primaryTracks(trackIndex),vertexArray->GetEntries()-1);
    
@@ -111,7 +111,8 @@ void PrimaryVertexInfo::SetPrimaryVertexInfo(StMuDst *dst){
 //____________________________________________________________________________
 void PrimaryVertexInfo::AddTrack(StMuTrack *stTrack, Int_t vertexIndex){
 
-  track = (TrackInfo *)trackArray->ConstructedAt(trackArray->GetEntries());
+  track = new((*trackArray)[trackArray->GetEntriesFast()]) TrackInfo();
+  //track = (TrackInfo *)trackArray->ConstructedAt(trackArray->GetEntriesFast());
 
   if (!track){
     fputs("ERROR: PrimaryVertexInfo::AddTrack() - Pointer to track not obtained from track array.", stderr);

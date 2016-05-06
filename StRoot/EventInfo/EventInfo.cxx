@@ -160,10 +160,6 @@ void EventInfo::SetEventInfo(StMuDst *dst,StDataCollectionMaker *dataCollector){
     if (!IsInterestingVertex(dst,dataCollector))
       continue;
 
-    //Set the tack pointers in the vertex
-    //vertex->SetTrackPtr(track);
-    //vertex->SetTrackArrayPtr(trackArray);
-
     //Add the vertex 
     AddPrimaryVertex(dst);
     nPrimaryVertices++;
@@ -176,7 +172,8 @@ void EventInfo::AddPrimaryVertex(StMuDst *dst){
 
   //Add the current primary vertex to the end of the primary
   //vertex array.
-  vertex = (PrimaryVertexInfo *)vertexArray->ConstructedAt(vertexArray->GetEntries());
+  vertex = new((*vertexArray)[vertexArray->GetEntriesFast()]) PrimaryVertexInfo();
+  //vertex = (PrimaryVertexInfo *)vertexArray->ConstructedAt(vertexArray->GetEntriesFast());
   
   if (!vertex){
     fputs("ERROR: EventInfo::AddPrimaryVertex() - Pointer to vertex not obtained from Vertex Array.\n",stderr);
