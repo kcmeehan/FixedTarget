@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<job maxEvents="300000" simulateSubmission="false" fileListSyntax="xrootd">
-<!--<job maxFilesPerProcess="25" simulateSubmission="false" fileListSyntax="xrootd">-->
+<job inputOrder="runnumber" maxFilesPerProcess="10" simulateSubmission="false" fileListSyntax="xrootd">
 
   <stdout URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAu_14_5/logs/DataExtract_$JOBINDEX.out" />
   <stderr URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAu_14_5/logs/DataExtract_$JOBINDEX.err" />
@@ -10,8 +9,7 @@
       /star/data05/scratch/cflores/DavisDSTs/AuAu_14_5/sched/
   </Location></Generator>
 
-  <input URL="filelist:/star/data05/scratch/cflores/DavisDSTs/AuAu_14_5/sched/evictedRunFiles_6874E65D7123393EA5D5D3C79DA8DC0F.list" />
-  <!--<input URL="catalog:star.bnl.gov?production=P14ii,filetype=daq_reco_MuDst,tpx=1,trgsetupname=production_15GeV_2014,filename~st_physics,runnumber>15053000 -distinct" nFiles="all" />-->
+  <input URL="catalog:star.bnl.gov?production=P14ii,filetype=daq_reco_MuDst,tpx=1,trgsetupname=production_15GeV_2014,filename~st_physics_adc,runnumber[]15053000-15070021,storage!=HPSS," nFiles="all" />
 
   
   <SandBox installer="ZIP">
@@ -23,7 +21,7 @@
   
   <command>
     
-    starver SL15e 
+    starver SL14i 
     
     cons
 

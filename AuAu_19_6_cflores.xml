@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<job maxEvents="250000" simulateSubmission="false" fileListSyntax="xrootd">
-<!--<job maxFilesPerProcess="25" simulateSubmission="false" fileListSyntax="xrootd">-->
+<job inputOrder="runnumber" maxFilesPerProcess="10" simulateSubmission="false" fileListSyntax="xrootd">
 
   <stdout URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAu_19_6/logs/DataExtract_$JOBINDEX.out" />
   <stderr URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAu_19_6/logs/DataExtract_$JOBINDEX.err" />
@@ -10,8 +9,7 @@
       /star/data05/scratch/cflores/DavisDSTs/AuAu_19_6/sched/
   </Location></Generator>
 
-  <input URL="filelist:/star/data05/scratch/cflores/DavisDSTs/AuAu_19_6/sched/evictedRunFiles_54A30E596499DBFE3488617BAE5A6423.list" />
-  <!--<input URL="catalog:star.bnl.gov?production=P11id,filetype=daq_reco_MuDst,tpx=1,trgsetupname=AuAu19_production,filename~st_physics,collision=auau19.6,runnumber>=12108026 -distinct" nFiles="all" /> -->
+  <input URL="catalog:star.bnl.gov?production=P11id,filetype=daq_reco_MuDst,tpx=1,trgsetupname=AuAu19_production,filename~st_physics_adc,runnumber[]12113079-12122019,storage!=HPSS" nFiles="all" />
   
   <SandBox installer="ZIP">
     <Package name="sched">
@@ -22,9 +20,9 @@
   
   <command>
     
-    starver SL15e 
+    starver SL11d
     
-    cons
+    cons EXTRA_CPPFLAGS=-fpermissive
 
     <!-- Use -999 to not set a cut -->
     set minVr = 0.0            
