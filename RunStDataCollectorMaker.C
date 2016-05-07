@@ -39,7 +39,7 @@ void RunStDataCollectorMaker(Int_t nEvents=1,char *fileList,char *outDir="./",ch
   davisDstMaker->SetFileIndex(index);
 
   //By default the values of these cut variables in StDataCollectionMaker are set
-  //so that they will not imped on data taking if the user chooses not to set them,
+  //so that they will not impede on data taking if the user chooses not to set them,
   //but if the User has passed in values for the vertex cuts then set them here
   if (minVr != -999)
     davisDstMaker->SetMinVr(minVr);
