@@ -9,7 +9,7 @@
       /star/data05/scratch/cflores/DavisDSTs/AuAu_11_5/sched/
   </Location></Generator>
 
-  <input URL="catalog:star.bnl.gov?production=P10ih,filetype=daq_reco_MuDst,tpx=1,trgsetupname=AuAu11_production,filename~st_physics_adc,runnumber[]11148039-11158044,storage!=HPSS" nFiles="all" />
+  <input URL="catalog:star.bnl.gov?production=P10ih,filetype=daq_reco_MuDst,tpx=1,trgsetupname=AuAu11_production,filename~st_physics_11,runnumber[]11148039-11158044,storage!=HPSS" nFiles="all" />
   
   <SandBox installer="ZIP">
     <Package name="sched">
@@ -37,10 +37,11 @@
     set beamSpotY = -0.23
     set minPrimaryTracks = 2 
     set maxVertices = 1
+    set badRunRejection = 1
 
     set nEvents = 999999
 
-    root4star -q -b RunStDataCollectorMaker.C\($nEvents,\"$FILELIST\",\"$SCRATCH/\",\"$JOBID\",$minVr,$maxVr,$minVz,$maxVz,$minVx,$maxVx,$minVy,$maxVy,$beamSpotX,$beamSpotY,$minPrimaryTracks,$maxVertices\)
+    root4star -q -b RunStDataCollectorMaker.C\($nEvents,\"$FILELIST\",\"$SCRATCH/\",\"$JOBID\",$minVr,$maxVr,$minVz,$maxVz,$minVx,$maxVx,$minVy,$maxVy,$beamSpotX,$beamSpotY,$minPrimaryTracks,$maxVertices,$badRunRejection\)
 
   </command>
   

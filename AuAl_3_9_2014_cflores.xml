@@ -2,14 +2,14 @@
 
 <job maxEvents="150000"  simulateSubmission="true" fileListSyntax="xrootd">
 
-  <stdout URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAl_3_0/logs/DataExtract_$JOBINDEX.out" />
-  <stderr URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAl_3_0/logs/DataExtract_$JOBINDEX.err" />
+  <stdout URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAl_3_9/logs/DataExtract_$JOBINDEX.out" />
+  <stderr URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAl_3_9/logs/DataExtract_$JOBINDEX.err" />
 
   <Generator><Location>
-      /star/data05/scratch/cflores/DavisDSTs/AuAl_3_0/sched/
+      /star/data05/scratch/cflores/DavisDSTs/AuAl_3_9/sched/
   </Location></Generator>
 
-  <input URL="catalog:star.bnl.gov?filetype=daq_reco_MuDst,trgsetupname=AuAu7_production,production=P10ih,filename~physics,sanity=1,tpx=1 -distinct" nFiles="all"  />
+  <input URL="catalog:star.bnl.gov?filetype=daq_reco_MuDst,trgsetupname=production_15GeV_2014,production=P14ii,filename~physics,sanity=1,tpx=1,storage!=HPSS,runnumber>15053000 -distinct" nFiles="all"  />
 
   <SandBox installer="ZIP">
     <Package name="sched">
@@ -20,21 +20,21 @@
 
   <command>
   
-    starver SL10h
+    starver SL14i
 
-    cons EXTRA_CPPFLAGS=-fpermissive
+    cons
 
-    <!-- Selecting events on the 2010/2011 beampipe -->
-    set minVr = 2            
+    <!-- Selecting events on the 2014 beampipe -->
+    set minVr = 0.5            
     set maxVr = 5            
-    set minVz = 150         
-    set maxVz = 200         
+    set minVz = -200         
+    set maxVz = -150         
     set minVx = -999         
     set maxVx = -999         
     set minVy = -999         
     set maxVy = -999         
-    set beamSpotX = -999
-    set beamSpotY = -999
+    set beamSpotX = 0.0
+    set beamSpotY = -0.9
     set minPrimaryTracks = -999 
     set maxVertices = 1
  
@@ -43,6 +43,6 @@
 
   </command>
   
-  <output fromScratch="*.root" toURL="file:/star/data05/scratch/cflores/DavisDSTs/AuAl_3_0/data/"/>
+  <output fromScratch="*.root" toURL="file:/star/data05/scratch/cflores/DavisDSTs/AuAl_3_9/data/"/>
   
 </job>

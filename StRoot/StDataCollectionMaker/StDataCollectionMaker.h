@@ -47,6 +47,7 @@ class StDataCollectionMaker : public StMaker {
   void SetBeamSpot(Double_t xVal, Double_t yVal);
   void SetMinNumberOfPrimaryTracks(Int_t val);
   void SetMaxNumberOfVertices(Int_t val);
+  void UseStRefMultCorrBadRunRejection(Int_t val);
 
   Double_t GetMinVr(){return minVr;}
   Double_t GetMaxVr(){return maxVr;}
@@ -93,6 +94,7 @@ class StDataCollectionMaker : public StMaker {
   Double_t beamSpotX, beamSpotY;
   Int_t minNumberOfPrimaryTracks;
   Int_t maxNumberOfVertices;
+  Bool_t useStRefMultCorrBadRunRejection;
 
   ClassDef(StDataCollectionMaker, 1);
   

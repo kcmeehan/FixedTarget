@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<job inputOrder="runnumber" maxFilesPerProcess="10" simulateSubmission="false" fileListSyntax="xrootd">
+<job inputOrder="runnumber" maxFilesPerProcess="3" simulateSubmission="false" fileListSyntax="xrootd">
 
   <stdout URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAu_27_0/logs/DataExtract_$JOBINDEX.out" />
   <stderr URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAu_27_0/logs/DataExtract_$JOBINDEX.err" />
@@ -9,7 +9,7 @@
       /star/data05/scratch/cflores/DavisDSTs/AuAu_27_0/sched/
   </Location></Generator>
 
-  <input URL="catalog:star.bnl.gov?production=P11id,filetype=daq_reco_MuDst,tpx=1,trgsetupname=AuAu27_production_2011,filename~st_physics_adc,runnumber[]12172043-12179097,storage!=HPSS" nFiles="all" />
+  <input URL="catalog:star.bnl.gov?production=P11id,filetype=daq_reco_MuDst,tpx=1,trgsetupname=AuAu27_production_2011,filename~st_physics_12,runnumber[]12172043-12179097,storage!=HPSS" nFiles="all" />
   
   <SandBox installer="ZIP">
     <Package name="sched">
@@ -37,10 +37,11 @@
     set beamSpotY = -.07
     set minPrimaryTracks = 2 
     set maxVertices = 1
+    set badRunRejection = 1
 
     set nEvents = 999999
 
-    root4star -q -b RunStDataCollectorMaker.C\($nEvents,\"$FILELIST\",\"$SCRATCH/\",\"$JOBID\",$minVr,$maxVr,$minVz,$maxVz,$minVx,$maxVx,$minVy,$maxVy,$beamSpotX,$beamSpotY,$minPrimaryTracks,$maxVertices\)
+    root4star -q -b RunStDataCollectorMaker.C\($nEvents,\"$FILELIST\",\"$SCRATCH/\",\"$JOBID\",$minVr,$maxVr,$minVz,$maxVz,$minVx,$maxVx,$minVy,$maxVy,$beamSpotX,$beamSpotY,$minPrimaryTracks,$maxVertices,$badRunRejection\)
 
   </command>
   

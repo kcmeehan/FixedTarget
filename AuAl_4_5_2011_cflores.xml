@@ -20,9 +20,9 @@
 
   <command>
   
-    starver pro 
+    starver SL11d 
     
-    cons
+    cons EXTRA_CPPFLAGS=-fpermissive
 
     <!-- Selecting events on the 2010/2011 beampipe -->
     set minVr = 2            
