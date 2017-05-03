@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<job maxFilesPerProcess="2" simulateSubmission="false" fileListSyntax="xrootd">
-  <Generator><Location>/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/noCuts/schedFiles/</Location></Generator>
+<job maxFilesPerProcess="2" simulateSubmission="false" fileListSyntax="paths">
+  <Generator><Location>/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/runnumberSelected/schedFiles/</Location></Generator>
 
-<stdout URL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/noCuts/logs/DataExtract_$JOBINDEX.out" />
-<stderr URL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/noCuts/logs/DataExtract_$JOBINDEX.err" />
+<stdout URL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/runnumberSelected/logs/DataExtract_$JOBINDEX.out" />
+<stderr URL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/runnumberSelected/logs/DataExtract_$JOBINDEX.err" />
 
 
-<input URL="catalog:star.bnl.gov?path~/140/,trgsetupname=fixedTarget2015,production=P16ia,filetype=daq_reco_MuDst,storage=nfs -limit 0 -onefile" nFiles="all" />
+<input URL="filelist:/star/u/kmeehan/FixedTarget/davisdstmaker/stdatacollector/AuAu_4_5_2015_official_runnumberSelected.list" />
 
 <SandBox installer="ZIP">
   <Package name="sched">
@@ -32,7 +32,7 @@ set minVy = -999
 set maxVy = -999
 set beamSpotX = -999
 set beamSpotY = -999
-set minPrimaryTracks = 2
+set minPrimaryTracks = -999
 
 set nEvents = 999999
 
@@ -40,6 +40,6 @@ root4star -q -b RunStDataCollectorMaker.C\($nEvents,\"$FILELIST\",\"$SCRATCH/\",
 
 </command>
 
-<output fromScratch="*.root" toURL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/noCuts/"/>
+<output fromScratch="*.root" toURL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/runnumberSelected/"/>
 
 </job>
