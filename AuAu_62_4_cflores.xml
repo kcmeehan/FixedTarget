@@ -8,8 +8,10 @@
   <Generator><Location>
       /star/data05/scratch/cflores/DavisDSTs/AuAu_62_4/sched/
   </Location></Generator>
-
+<!--
   <input URL="catalog:star.bnl.gov?production=P10ik,filetype=daq_reco_MuDst,tpx=1,trgsetupname=AuAu62_production,filename~st_physics_11,runnumber[]11080054-11098056,storage!=HPSS" nFiles="all" />
+-->
+<input URL="catalog:star.bnl.gov?production=P10ik,filetype=daq_reco_MuDst,tpx=1,trgsetupname=AuAu62_production,filename~st_physics_adc,runnumber=11085008,storage!=HPSS" nFiles="all" />
   
   <SandBox installer="ZIP">
     <Package name="sched">

@@ -34,6 +34,8 @@ ClassImp(StDataCollectionMaker);
 //__________________________________________________________________________ 
 StDataCollectionMaker::StDataCollectionMaker(char *name): StMaker(name){
 
+  fileNameBase = name;
+
   //By Default set the status of the cut booleans to false
   isMinVrSet = false;
   isMaxVrSet = false;
@@ -45,6 +47,7 @@ StDataCollectionMaker::StDataCollectionMaker(char *name): StMaker(name){
   isMaxVySet = false;
   isBeamSpotSet = false;
   isMinNumberOfPrimaryTracksSet = false;
+  isMaxNumberOfVerticesSet = false;
   useStRefMultCorrBadRunRejection = false;
 
   //Set default values for the cuts in such away that they won't 
