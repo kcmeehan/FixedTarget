@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<!--<job maxEvents="300000" eventsPerHour="100000" simulateSubmission="false" fileListSyntax="xrootd"> -->
-<job maxFilesPerProcess="30" simulateSubmission="false" fileListSyntax="xrootd">
+<job maxEvents="150000" simulateSubmission="false" fileListSyntax="xrootd">
 
   <stdout URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAl_3_5/logs/DataExtract_$JOBINDEX.out" />
   <stderr URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAl_3_5/logs/DataExtract_$JOBINDEX.err" />
@@ -21,25 +20,26 @@
 
   <command>
   
-    starver SL15e 
+    starver SL10h 
     
-    cons
+    cons EXTRA_CPPFLAGS=-fpermissive
 
     <!-- Selecting events on the 2010/2011 beampipe -->
     set minVr = 2            
     set maxVr = 5            
     set minVz = -200         
-    set maxVz = -150         
+    set maxVz = -150        
     set minVx = -999         
     set maxVx = -999         
     set minVy = -999         
     set maxVy = -999         
     set beamSpotX = -999
     set beamSpotY = -999
-    set minPrimaryTracks = 2 
+    set minPrimaryTracks = -999 
+    set maxVertices = 1
  
     set nEvents = 999999
-    root4star -q -b RunStDataCollectorMaker.C\($nEvents,\"$FILELIST\",\"$SCRATCH/\",\"$JOBID\",$minVr,$maxVr,$minVz,$maxVz,$minVx,$maxVx,$minVy,$maxVy,$beamSpotX,$beamSpotY,$minPrimaryTracks\)
+    root4star -q -b RunStDataCollectorMaker.C\($nEvents,\"$FILELIST\",\"$SCRATCH/\",\"$JOBID\",$minVr,$maxVr,$minVz,$maxVz,$minVx,$maxVx,$minVy,$maxVy,$beamSpotX,$beamSpotY,$minPrimaryTracks,$maxVertices\)
 
   </command>
   

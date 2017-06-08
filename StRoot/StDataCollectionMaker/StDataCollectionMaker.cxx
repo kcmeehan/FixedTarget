@@ -20,6 +20,9 @@
 #include "StTriggerIdCollection.h"
 #include "StRunInfo.h"
 
+#include "StRoot/StRefMultCorr/StRefMultCorr.h"
+#include "StRoot/StRefMultCorr/CentralityMaker.h"
+
 #include "StRoot/TrackInfo/TrackInfo.h"
 #include "StRoot/PrimaryVertexInfo/PrimaryVertexInfo.h"
 #include "StRoot/EventInfo/EventInfo.h"
@@ -30,6 +33,8 @@ ClassImp(StDataCollectionMaker);
 
 //__________________________________________________________________________ 
 StDataCollectionMaker::StDataCollectionMaker(char *name): StMaker(name){
+
+  fileNameBase = name;
 
   //By Default set the status of the cut booleans to false
   isMinVrSet = false;
@@ -42,6 +47,8 @@ StDataCollectionMaker::StDataCollectionMaker(char *name): StMaker(name){
   isMaxVySet = false;
   isBeamSpotSet = false;
   isMinNumberOfPrimaryTracksSet = false;
+  isMaxNumberOfVerticesSet = false;
+  useStRefMultCorrBadRunRejection = false;
 
   //Set default values for the cuts in such away that they won't 
   //interfere with data taking.
@@ -125,12 +132,19 @@ Int_t StDataCollectionMaker::Make(){
     fputs("ERROR: StDataCollectionMaker::Init() - Can't get pointer to StMuDstMaker!", stderr);
     return kStFATAL;
   }
-  cout <<muDstMaker <<endl;
+
   StMuDst *mMuDst = NULL;
   mMuDst = muDstMaker->muDst();
   if (!mMuDst){
     fputs("ERROR: StDataCollectionMaker::Init() - Can't get pointer to StMuDst!", stderr);
     return kStFATAL;
+  }
+
+  //If StRefMultCorr Bad Run Rejection is enabled check for bad run here
+  if (useStRefMultCorrBadRunRejection){
+    StRefMultCorr *refMultCorr = CentralityMaker::instance()->getRefMultCorr();
+    if (refMultCorr->isBadRun(mMuDst->event()->runNumber()))
+      return kStOK;
   }
 
   //CHECK TO MAKE SURE THE EVENT IS INTERESTING
@@ -253,6 +267,19 @@ void StDataCollectionMaker::SetMinNumberOfPrimaryTracks(Int_t val){
   isMinNumberOfPrimaryTracksSet = true;
 }
 
+//__________________________________________________________________________
+void StDataCollectionMaker::SetMaxNumberOfVertices(Int_t val){
 
+  maxNumberOfVertices = val;
+  isMaxNumberOfVerticesSet = true;
+}
 
+//__________________________________________________________________________
+void StDataCollectionMaker::UseStRefMultCorrBadRunRejection(Int_t val){
 
+  if (val == 1)
+    useStRefMultCorrBadRunRejection = true;
+  else
+    useStRefMultCorrBadRunRejection = false;
+
+}

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<job inputOrder="runnumber" maxFilesPerProcess="3" simulateSubmission="true" fileListSyntax="xrootd">
+
+  <stdout URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAu_14_5/logs/DataExtract_$JOBINDEX.out" />
+  <stderr URL="file:/star/data05/scratch/cflores/DavisDSTs/AuAu_14_5/logs/DataExtract_$JOBINDEX.err" />
+
+  <Generator><Location>
+      /star/data05/scratch/cflores/DavisDSTs/AuAu_14_5/sched/
+  </Location></Generator>
+
+  <input URL="catalog:star.bnl.gov?production=P14ii,filetype=daq_reco_MuDst,tpx=1,trgsetupname=production_15GeV_2014,filename~st_physics_15,runnumber[]15053000-15070021,storage!=HPSS" nFiles="all" />
+
+  
+  <SandBox installer="ZIP">
+    <Package name="sched">
+      <File>file:/star/u/cflores/StDataCollector/RunStDataCollectorMaker.C</File>
+      <File>file:/star/u/cflores/StDataCollector/StRoot/</File>
+    </Package>
+  </SandBox>
+  
+  <command>
+    
+    starver SL14i 
+    
+    cons
+
+    <!-- Use -999 to not set a cut -->
+    set minVr = 0.0            
+    set maxVr = 0.5            
+    set minVz = -200         
+    set maxVz = 200         
+    set minVx = -999         
+    set maxVx = -999         
+    set minVy = -999         
+    set maxVy = -999         
+    set beamSpotX = 0.0
+    set beamSpotY = -0.9
+    set minPrimaryTracks = 2 
+    set maxVertices = 1
+    set badRunRejection = 1
+    set runTime = 280
+
+    set nEvents = 999999
+
+    root4star -q -b RunStDataCollectorMaker.C\($nEvents,\"$FILELIST\",\"$SCRATCH/\",\"$JOBID\",$minVr,$maxVr,$minVz,$maxVz,$minVx,$maxVx,$minVy,$maxVy,$beamSpotX,$beamSpotY,$minPrimaryTracks,$maxVertices,$badRunRejection,$runTime\)
+
+  </command>
+  
+  <output fromScratch="*.root" toURL="file:/star/data05/scratch/cflores/DavisDSTs/AuAu_14_5/data/"/>
+  
+</job>
