@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<job minFilesPerProcess="1" maxFilesPerProcess="25" filesPerHour="5" fileListSyntax="xrootd" simulateSubmission="false">
+    
+<command>
+    starver SL16a
+    cons
+    root4star -q -b -l FxtAnalysis.C\(1e7,$INPUTFILECOUNT,\"$FILELIST\",\"$SCRATCH\",\"$JOBID\",1\)
+</command>
+    
+<SandBox installer="ZIP">
+    <Package>
+        <File>file:/[PLACEHOLDER]/FxtAnalysis.C</File>
+        <!--File>file:/star/u/ywu27/fxt_res/bbc_ep_result.C</File-->
+        <File>file:/[PLACEHOLDER]/StRoot</File>
+        <!--File>file:/star/u/ywu27/fxt_res/.sl64_gcc482</File-->
+        <!--File>file:/star/u/ywu27/fxt_res/profile.root</File-->
+    </Package>
+</SandBox>
+
+<input URL="filelist:/[PLACEHOLDER]/fxt_file.list" nFiles="all" />
+
+<stdout URL="file:/[PLACEHOLDER]/scheduler/out/sched$JOBID.out"/>
+<stderr URL="file:/[PLACEHOLDER]/scheduler/out/sched$JOBID.err"/>
+<!--output fromScratch="*.root" toURL="file:/star/data05/scratch/ywu27/Fxt/results/" /-->
+<output fromScratch="*.root" toURL="file:/[PLACEHOLDER]/results/" />
+
+</job>
