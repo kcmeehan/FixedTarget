@@ -257,40 +257,36 @@ StHbtEventWriter* StHbtManager::EventWriter( int n ){  // return pointer to n-th
 }
  //____________________________
 int StHbtManager::ProcessEvent(){
-    Int_t nVertices = mEventReader->numberOfPrimaryVertices();
-    for(Int_t vertexIndex = 0; vertexIndex <= (nVertices - 1); vertexIndex++)
-    {
-      // NOTE - this ReturnHbtEvent makes a *new* StHbtEvent - delete it when done!
-      StHbtEvent* currentHbtEvent = mEventReader->ReturnHbtEvent(vertexIndex);
-      
-      // if no HbtEvent is returned, then we abort processing.
-      // the question is now: do we try again next time (i.e. there may be an HbtEvent next time)
-      // or are we at EOF or something?  If Reader says Status=0, then that means try again later.
-      // so, we just return the Reader's Status.
-      if (!currentHbtEvent){
-        cout << "StHbtManager::ProcessEvent() - Reader::ReturnHbtEvent() has returned null pointer\n";
-        return mEventReader->Status();
-      }
-      
-      // loop over all the EventWriters
-      StHbtEventWriterIterator EventWriterIter;
-      for (EventWriterIter=mEventWriterCollection->begin();EventWriterIter!=mEventWriterCollection->end();EventWriterIter++){
+  // NOTE - this ReturnHbtEvent makes a *new* StHbtEvent - delete it when done!
+  StHbtEvent* currentHbtEvent = mEventReader->ReturnHbtEvent();
+  
+  // if no HbtEvent is returned, then we abort processing.
+  // the question is now: do we try again next time (i.e. there may be an HbtEvent next time)
+  // or are we at EOF or something?  If Reader says Status=0, then that means try again later.
+  // so, we just return the Reader's Status.
+  if (!currentHbtEvent){
+    cout << "StHbtManager::ProcessEvent() - Reader::ReturnHbtEvent() has returned null pointer\n";
+    return mEventReader->Status();
+  }
+  
+  // loop over all the EventWriters
+  StHbtEventWriterIterator EventWriterIter;
+  for (EventWriterIter=mEventWriterCollection->begin();EventWriterIter!=mEventWriterCollection->end();EventWriterIter++){
 #ifdef STHBRDEBUG
-        cout << " *EventWriterIter " <<  *EventWriterIter << endl;
+    cout << " *EventWriterIter " <<  *EventWriterIter << endl;
 #endif
-        (*EventWriterIter)->WriteHbtEvent(currentHbtEvent);
-      } 
+    (*EventWriterIter)->WriteHbtEvent(currentHbtEvent);
+  } 
 
-      // loop over all the Analysis
-      StHbtAnalysisIterator AnalysisIter;
-      for (AnalysisIter=mAnalysisCollection->begin();AnalysisIter!=mAnalysisCollection->end();AnalysisIter++){
-        (*AnalysisIter)->ProcessEvent(currentHbtEvent);
-      } 
+  // loop over all the Analysis
+  StHbtAnalysisIterator AnalysisIter;
+  for (AnalysisIter=mAnalysisCollection->begin();AnalysisIter!=mAnalysisCollection->end();AnalysisIter++){
+    (*AnalysisIter)->ProcessEvent(currentHbtEvent);
+  } 
 
-      if (currentHbtEvent) delete currentHbtEvent;
+  if (currentHbtEvent) delete currentHbtEvent;
 #ifdef STHBRDEBUG
-      cout << "StHbtManager::ProcessEvent() - return to caller ... " << endl;
+  cout << "StHbtManager::ProcessEvent() - return to caller ... " << endl;
 #endif
-    }
   return 0;    // 0 = "good return"
 }       // ProcessEvent
