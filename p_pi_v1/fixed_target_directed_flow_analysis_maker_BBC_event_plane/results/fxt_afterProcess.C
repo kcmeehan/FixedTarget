@@ -49,7 +49,7 @@ void fxt_afterProcess() {
     
     TFile *outputFile = new TFile("result00.root","recreate");
     // flow histograms
-    int Ncentralities = 7;
+    const int Ncentralities = 7;
     // set rapidity/pseudorapidity range
     int rapidityBins = 20; double rapidityLow = -2.0, rapidityHigh = 0.0;
     // set transverse momentum range
