@@ -3,7 +3,7 @@
 
     <command>
         starver SL16a
-        root4star -l -b fxtFemtoAnalysis.C\(\"$FILELIST\",\"&fileTag;_multBin_&multBin;_${JOBID}.root\",&multBin;,999999\) &gt;&amp; &fileTag;_multBin_&multBin;_${JOBID}.log
+        root4star -l -b fxtFemtoAnalysis.C\(\"$FILELIST\",\"&fileTag;_multBin_&multBin;_${JOBID}.root\",&multBin;,&minPt;,&maxPt;,999999\) &gt;&amp; &fileTag;_multBin_&multBin;_${JOBID}.log
     </command> 
 
     <SandBox installer="ZIP">
@@ -17,12 +17,12 @@
     <stdout discard="true" />
         <input URL="catalog:star.bnl.gov?path~/data19,trgsetupname=fixedTarget2015,production=P16ia,filetype=daq_reco_MuDst,storage=nfs,runnumber[]16140033-16140038" nFiles="all" />
         <input URL="catalog:star.bnl.gov?path~/data23,trgsetupname=fixedTarget2015,production=P16ia,filetype=daq_reco_MuDst,storage=nfs,runnumber[]16140033-16140038" nFiles="all" />
-        <output fromScratch="*.root" toURL="file:/gpfs/mnt/gpfs01/star/scratch/campbell/fxt/output/" />     <!-- Change Path -->
-        <output fromScratch="*.log" toURL="file:/gpfs/mnt/gpfs01/star/scratch/campbell/fxt/logs/" />        <!-- Change Path -->
-    <stderr URL="file:/gpfs/mnt/gpfs01/star/scratch/campbell/fxt/logs/$JOBID.err"/>                         <!-- Change Path -->
+        <output fromScratch="*.root" toURL="file:/gpfs/mnt/gpfs01/star/scratch/campbell/fxtHbt/output/" />     <!-- Change Path -->
+        <output fromScratch="*.log" toURL="file:/gpfs/mnt/gpfs01/star/scratch/campbell/fxtHbt/logs/" />        <!-- Change Path -->
+    <stderr URL="file:/gpfs/mnt/gpfs01/star/scratch/campbell/fxtHbt/logs/$JOBID.err"/>                         <!-- Change Path -->
 
     <Generator>
-        <Location>/gpfs/mnt/gpfs01/star/scratch/campbell/fxt/schedulerFiles</Location>
-        <ReportLocation>/gpfs/mnt/gpfs01/star/scratch/campbell/fxt/schedulerFiles</ReportLocation>                   <!-- Change Path -->
+        <Location>/gpfs/mnt/gpfs01/star/scratch/campbell/fxtHbt/schedulerFiles</Location>
+        <ReportLocation>/gpfs/mnt/gpfs01/star/scratch/campbell/fxtHbt/schedulerFiles</ReportLocation>                   <!-- Change Path -->
     </Generator>
 </job>

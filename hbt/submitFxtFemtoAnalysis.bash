@@ -1,7 +1,11 @@
 #!/bin/bash
-tag=4x5GeVFemto_widePt_excludeHighMult
+lowPtTag=4x5GeVFemto_lowPt
+highPtTag=4x5GeVFemto_highPt
+# tag=4x5GeVFemto_widePt_excludeHighMult
 
-for((i=5; i<=5; i++))
+# Loop over centrality bins
+for((i=0; i<=5; i++))
 do
-    star-submit-template -template submitFxtFemtoAnalysis.xml -entities multBin=$i,fileTag=$tag
+    star-submit-template -template submitFxtFemtoAnalysis.xml -entities multBin=$i,fileTag=$lowPtTag,minPt=0.1,maxPt=0.3
+    star-submit-template -template submitFxtFemtoAnalysis.xml -entities multBin=$i,fileTag=$highPtTag,minPt=0.15,maxPt=0.8
 done
