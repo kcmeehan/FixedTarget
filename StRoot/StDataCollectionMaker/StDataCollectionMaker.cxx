@@ -105,7 +105,7 @@ Int_t StDataCollectionMaker::Init(){
   eventInfo->SetVertexArrayPtr(vertexArray);
   eventInfo->SetTrackArrayPtr(trackArray);
 
-  //Set the Range of RefMult User
+  //Set the Range of RefMult User -- This class is not used for the FXT analysis
   //This will be set depending on the +- zVertex location
   eventInfo->SetRefMultUser(0,1.8);
 
@@ -140,17 +140,14 @@ Int_t StDataCollectionMaker::Make(){
     return kStFATAL;
   }
 
-  //If StRefMultCorr Bad Run Rejection is enabled check for bad run here
+  //If StRefMultCorr Bad Run Rejection is enabled check for bad run here -- NOT USED FOR FXT ANALYSIS
   if (useStRefMultCorrBadRunRejection){
     StRefMultCorr *refMultCorr = CentralityMaker::instance()->getRefMultCorr();
     if (refMultCorr->isBadRun(mMuDst->event()->runNumber()))
       return kStOK;
   }
 
-  //CHECK TO MAKE SURE THE EVENT IS INTERESTING
-  //This function makes sure that this event passes some
-  //very simple cuts. You can use this to prevent your DavisDSTs
-  //from filling up with lots of events that are not useful.
+  //CHECK TO MAKE SURE THE EVENT IS INTERESTING -- FOR FXT ANALYSIS THIS REMOVES EVENTS WITH NO PRIMARY VERTICES (SEE StRoot/EventInfo/EventInfo.cxx)
   if (!eventInfo->IsInterestingEvent(mMuDst))
     return kStOK;
 

@@ -21,7 +21,7 @@ void RunStDataCollectorMaker(Int_t nEvents=1,char *fileList,char *outDir="./",ch
   gROOT->LoadMacro("loadMuDst.C");
   loadMuDst();
 
-  //Load the StRefMutCorr Module for optional bad run rejection
+  //Load the StRefMutCorr Module for optional bad run rejection -- THIS IS NOT USED FOR FXT ANALYSIS
   gSystem->Load("StRefMultCorr");
 
   //Load Our Maker
