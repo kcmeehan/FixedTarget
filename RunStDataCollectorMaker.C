@@ -82,6 +82,7 @@ void RunStDataCollectorMaker(Int_t nEvents=1,char *fileList,char *outDir="./",ch
 
   Int_t istat, iev=1;
   Bool_t timeStatus = true;
+  //Run over the events
  EventLoop: if (iev<=nEvents && istat!=2 && timeStatus==true){
     chain->Clear();
     cout << "---------------------- Processing Event : " << iev << " ----------------------" << endl;
