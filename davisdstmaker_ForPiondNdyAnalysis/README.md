@@ -34,6 +34,12 @@ The StRoot directory containts the heart of the code used to make the DavisDsts 
 
 ***
 
+The rest of the pion dN/dy analysis was run on the UC Davis Nuclear Physics Group's computer cluster. The computer used had 6 cores, so some of the analysis code was optimized to run in parallel over the 6 cores. To assist with this, the DavisDsts produced were combined, using hadd, into 6 roughly equally sized files. The script that combines the Davisdsts into these 6 final files is groupSizeHadder.bash. This code was run like this:
+./groupSizeHadder.bash 3000  <output file name suffix> *.root
+This would combine all the DavisDst root files into six files with roughly 3 GB (the 3000 is in units of MB) each, named with the suffix that was given in place of <output file name suffix>. 3 GB was chosen by finding out the total size of the Davisdsts with the command "du -ch" and then dividing by 6. 
+
+***
+
 
 
 
