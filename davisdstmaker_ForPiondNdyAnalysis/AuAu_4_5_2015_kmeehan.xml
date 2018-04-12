@@ -10,13 +10,13 @@
 
 
 <!-- INTPUT THE FILE LIST OF MUDSTS TO RUN OVER--!>
-<input URL="filelist:/star/u/kmeehan/FixedTarget/davisdstmaker/chrisstdatacollector/AuAu_4_5_2015_official_runnumberSelected.list" />
+<input URL="filelist:/star/u/kmeehan/FixedTarget/davisdstmaker/finaldatacollector/davisdstmaker_ForPiondNdyAnalysis/AuAu_4_5_2015_official_runnumberSelected.list" />
 
 <!-- SANDBOX THE CODE TO BE COMPILED--!>
 <SandBox installer="ZIP">
   <Package name="sched">
-    <File>file:/star/u/kmeehan/FixedTarget/davisdstmaker/stdatacollector/RunStDataCollectorMaker.C</File>
-    <File>file:/star/u/kmeehan/FixedTarget/davisdstmaker/stdatacollector/StRoot/</File>
+    <File>file:/star/u/kmeehan/FixedTarget/davisdstmaker/finaldatacollector/davisdstmaker_ForPiondNdyAnalysis/RunStDataCollectorMaker.C</File>
+    <File>file:/star/u/kmeehan/FixedTarget/davisdstmaker/finaldatacollector/davisdstmaker_ForPiondNdyAnalysis/StRoot/</File>
   </Package>
 </SandBox>
 
