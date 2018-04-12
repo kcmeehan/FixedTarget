@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<!-- PUT THE SCHEDULER FILES SOMEWHERE MORE CONVENIENT --!>
+<!-- PUT THE SCHEDULER FILES SOMEWHERE MORE CONVENIENT -->
 <job maxFilesPerProcess="2" simulateSubmission="false" fileListSyntax="paths">
   <Generator><Location>/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/finalTest/schedFiles/</Location></Generator>
 
-<!-- PUT THE ERROR AND OUTPUT FILES IN A LOG DIRECTORY--!>
+<!-- PUT THE ERROR AND OUTPUT FILES IN A LOG DIRECTORY-->
 <stdout URL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/finalTest/logs/DataExtract_$JOBINDEX.out" />
 <stderr URL="file:/star/data01/pwg/kmeehan/AuAuProd/4_5GeV/davisdsts/finalTest/logs/DataExtract_$JOBINDEX.err" />
 
 
-<!-- INTPUT THE FILE LIST OF MUDSTS TO RUN OVER--!>
+<!-- INTPUT THE FILE LIST OF MUDSTS TO RUN OVER-->
 <input URL="filelist:/star/u/kmeehan/FixedTarget/davisdstmaker/finaldatacollector/davisdstmaker_ForPiondNdyAnalysis/AuAu_4_5_2015_official_runnumberSelected.list" />
 
-<!-- SANDBOX THE CODE TO BE COMPILED--!>
+<!-- SANDBOX THE CODE TO BE COMPILED-->
 <SandBox installer="ZIP">
   <Package name="sched">
     <File>file:/star/u/kmeehan/FixedTarget/davisdstmaker/finaldatacollector/davisdstmaker_ForPiondNdyAnalysis/RunStDataCollectorMaker.C</File>
@@ -20,11 +20,11 @@
   </Package>
 </SandBox>
 
-<!-- SET THE STAR LIBRARY TO BE USED: SL15e IS NO LONGER ON RCF BUT SL15e_embed CAN STILL BE USED --!>
+<!-- SET THE STAR LIBRARY TO BE USED: SL15e IS NO LONGER ON RCF BUT SL15e_embed CAN STILL BE USED -->
 <command>
 starver SL15e
 
-<!-- COMPILE !-->
+<!-- COMPILE -->
 cons
 
 <!-- Selecting events: For the pion analysis none of these are used and are thus set to -999 the default value -->
