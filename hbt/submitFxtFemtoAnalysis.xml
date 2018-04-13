@@ -10,7 +10,7 @@
         <Package>
             <File>file:./fxtFemtoAnalysis.C</File>
             <File>file:./StRoot</File>
-            <File>file:./.sl64_gcc482</File>
+            <File>file:./.sl73_gcc485</File>
         </Package>
     </SandBox>
 
