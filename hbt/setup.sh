@@ -1,8 +1,8 @@
-#! /usr/bin/sh
+#! /usr/bin/tcsh
 
 
 # Make scratch directories
-scratchRoot=/gpfs/mnt/gpfs01/star/scratch/$USER/fxtHbt
+set scratchRoot=/gpfs/mnt/gpfs01/star/scratch/$USER/fxtHbt
 
 mkdir -p $scratchRoot/output
 mkdir -p $scratchRoot/logs
