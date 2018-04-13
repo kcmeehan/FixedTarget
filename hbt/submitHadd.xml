@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<job simulateSubmission="false">
+
+	<stdout discard="true" />
+    <stderr URL="file:&scratchRoot;/logs/&fileGlob;.err"/>
+
+	<Generator>
+		<Location>&scratchRoot;/schedulerFiles/</Location>
+		<ReportLocation>&scratchRoot;/schedulerFiles/</ReportLocation>
+	</Generator>
+
+	<command>
+        cp &scratchRoot;/output/&fileGlob;*.root ./
+        hadd temp.root *.root
+        cp temp.root &scratchRoot;/&fileGlob;.root
+	</command>
+
+</job>
