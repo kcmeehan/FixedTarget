@@ -7,9 +7,8 @@
     </command> 
 
     <SandBox installer="ZIP">
-        <Package>
+        <Package name="hbtCode">
             <File>file:./fxtFemtoAnalysis.C</File>
-            <File>file:./StRoot</File>
             <File>file:./.sl73_gcc485</File>
         </Package>
     </SandBox>
@@ -17,12 +16,12 @@
     <stdout discard="true" />
         <input URL="catalog:star.bnl.gov?path~/data19,trgsetupname=fixedTarget2015,production=P16ia,filetype=daq_reco_MuDst,storage=nfs,runnumber[]16140033-16140038" nFiles="all" />
         <input URL="catalog:star.bnl.gov?path~/data23,trgsetupname=fixedTarget2015,production=P16ia,filetype=daq_reco_MuDst,storage=nfs,runnumber[]16140033-16140038" nFiles="all" />
-        <output fromScratch="*.root" toURL="file:/gpfs/mnt/gpfs01/star/scratch/campbell/fxtHbt/output/" />     <!-- Change Path -->
-        <output fromScratch="*.log" toURL="file:/gpfs/mnt/gpfs01/star/scratch/campbell/fxtHbt/logs/" />        <!-- Change Path -->
-    <stderr URL="file:/gpfs/mnt/gpfs01/star/scratch/campbell/fxtHbt/logs/$JOBID.err"/>                         <!-- Change Path -->
+        <output fromScratch="*.root" toURL="file:&scratchRoot;/output/" />
+        <output fromScratch="*.log" toURL="file:&scratchRoot;/logs/" />
+    <stderr URL="file:&scratchRoot;/logs/$JOBID.err"/>
 
     <Generator>
-        <Location>/gpfs/mnt/gpfs01/star/scratch/campbell/fxtHbt/schedulerFiles</Location>
-        <ReportLocation>/gpfs/mnt/gpfs01/star/scratch/campbell/fxtHbt/schedulerFiles</ReportLocation>                   <!-- Change Path -->
+        <Location>/&scratchRoot;/schedulerFiles</Location>
+        <ReportLocation>/&scratchRoot;/schedulerFiles</ReportLocation>
     </Generator>
 </job>
