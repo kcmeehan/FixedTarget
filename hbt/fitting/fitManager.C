@@ -20,7 +20,8 @@ void fitManager(
     const Double_t initRl = 49.9, 
     const Double_t initRos = -0.259, 
     const Double_t initRol = 0, 
-    const Double_t initRsl = 0 
+    const Double_t initRsl = 0,
+    const Bool_t ktDifferential = kFALSE
     )
 {
 
@@ -64,8 +65,11 @@ void fitManager(
     const Float_t multCut[7] = {54, 67, 87, 109, 137, 160}; // Super unofficial bin averages
     const Float_t ktCut[4] = {0.173,0.215,0.263,0.341};
     gDirectory->cd("..");
-    // writeTGraphs(minuit, ktBin, ktCut[ktBin]);
-    writeTGraphs(minuit, multBin, multCut[multBin]);
+    if (ktDifferential) {
+        writeTGraphs(minuit, ktBin, ktCut[ktBin]);
+    } else {
+        writeTGraphs(minuit, multBin, multCut[multBin]);
+    }
 
     outFile->Close();
 }
