@@ -46,7 +46,7 @@ do
     logFile=${fileTag}_${i}.log
     multBin=$i
     echo "Fitting highPt multBin $i - kt integrated"
-    # fit $inFile $outFile $pm $ktBin $multBin $ktDifferential >& $logFile
+    fit $inFile $outFile $pm $ktBin $multBin $ktDifferential >& $logFile
 done
 
 # 0-5% central - lowest kt bin
@@ -57,16 +57,16 @@ multBin=5
 ktBin=0
 ktDifferential=0
 echo "Fitting widePt multBin 5 - lowKt"
-# fit $inFile $outFile $pm $ktBin $multBin $ktDifferential >& $logFile
+fit $inFile $outFile $pm $ktBin $multBin $ktDifferential >& $logFile
 
-# 0-10% central - kt differential
+# 0-15% central - kt differential
 multbin=0
-inFile=$directory/0to10percentCentral_widePt.root
-outFile=0to10percentCentral_widePt_FitResults.root
+inFile=$directory/${fileTag}_multBins_3to5.root
+outFile=${fileTag}_kt_FitResults.root
 ktDifferential=1
 for((i=0; i <= 3; i++))
 do
-    logFile=0to10percentCentral_widePt_kt_${i}.log
+    logFile=0to15percentCentral_widePt_kt_${i}.log
     ktBin=$i
     echo "Fitting widePt - 0-10% - ktBin $i"
     fit $inFile $outFile $pm $ktBin $multBin $ktDifferential >& $logFile
@@ -83,7 +83,7 @@ ktBin=4
 pm=-1       # Only pi- pairs
 ktDifferential=0
 echo "Fitting narrowPt - kt integrated"
-# fit $inFile $outFile $pm $ktBin $multBin $ktDifferential >& $logFile
+fit $inFile $outFile $pm $ktBin $multBin $ktDifferential >& $logFile
 
 # Fit narrowPt results for each kt bin
 ktDifferential=1
@@ -94,7 +94,7 @@ do
     logFile=${fileTag}_ktBin_${i}.log
     ktBin=$i
     echo "Fitting narrowPt - ktBin $i"
-    # fit $inFile $outFile $pm $ktBin $multBin $ktDifferential >& $logFile
+    fit $inFile $outFile $pm $ktBin $multBin $ktDifferential >& $logFile
 done
 
 
