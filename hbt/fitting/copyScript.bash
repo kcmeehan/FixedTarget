@@ -20,6 +20,10 @@ do
     scp $rcfName@$rcfUrl:$rcfDirectory/$fileName output_histograms/$fileName
 done
 
+# Copy the output file for the 0-15% central widePt analysis
+fileName=4x5GeVFemto_highPt_multBins_3to5.root
+scp $rcfName@$rcfUrl:$rcfDirectory/$fileName output_histograms/$fileName
+
 # Copy the output files for the low-pt analysis
 fileName=4x5GeVFemto_lowPt.root
 scp $rcfName@$rcfUrl:$rcfDirectory/$fileName output_histograms/$fileName

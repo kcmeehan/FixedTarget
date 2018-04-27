@@ -38,10 +38,13 @@ You can `hadd` the files together with the `submitHadd.bash` script, which will 
 
 In the next section you'll copy the files to your local machine to fit the histograms.
 Once the `hadd` jobs have finished, move the output files to a temporary location in your home directory for easy `scp`'ing.
+Finally, there's one manual `hadd` to do to get a combined 0-15% centrality file for the widePt analysis.
 
 ```shell
 mkdir ~/tempHbtOutput
 cp /gpfs/mnt/gpfs01/star/scratch/$USER/fxtHbt/*root ~/tempHbtOutput
+cd ~/tempHbtOutput
+hadd 4x5GeVFemto_highPt_multBins_3to5.root 4x5GeVFemto_highPt_multBin_{3..5}.root
 ```
 
 ## Fitting the histograms
