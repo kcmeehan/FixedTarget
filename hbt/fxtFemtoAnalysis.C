@@ -7,7 +7,9 @@
 
 void fxtFemtoAnalysis(const TString fileList = "muDst.list",  
 					   const TString outFile = "fxtTestOut.root",
-                       const Int_t multBin = = -1, 
+                       const Int_t multBin = -1,
+                       const Float_t minPt = 0.15,
+                       const Float_t maxPt = 0.8,
 					   const Int_t nEvents = 999
                        )
 {
@@ -27,7 +29,8 @@ void fxtFemtoAnalysis(const TString fileList = "muDst.list",
     const Float_t piMass =  0.13957018; // From PDG
     const Float_t rapidity[2] = {-999,999};
     const Float_t nSigma[2] = {-2,2};
-    const Float_t pt[2] = {0.10,0.30};
+    const Float_t pt[2] = {minPt, maxPt};
+    // const Float_t pt[2] = {0.10,0.30};
     // const Float_t pt[2] = {0.15,0.80};
     const Float_t nHitsTpc[2] = {15,50};
     const Float_t dcaGlobal[2] = {0.0, 3.0};
