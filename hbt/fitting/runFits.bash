@@ -68,7 +68,7 @@ for((i=0; i <= 3; i++))
 do
     logFile=0to15percentCentral_widePt_kt_${i}.log
     ktBin=$i
-    echo "Fitting widePt - 0-10% - ktBin $i"
+    echo "Fitting widePt - 0-15% - ktBin $i"
     fit $inFile $outFile $pm $ktBin $multBin $ktDifferential >& $logFile
 done
 
