@@ -16,14 +16,14 @@ rcfUrl=rftpexp.rhic.bnl.gov
 # Copy the output files for each multiplicity bin of the high-pt analysis
 for((mult=0; mult<=5; mult++))
 do
-    fileName=4x5GeVFemto_highPt_multBin_$mult.root
+    fileName=4x5GeVFemto_widePt_multBin_$mult.root
     scp $rcfName@$rcfUrl:$rcfDirectory/$fileName output_histograms/$fileName
 done
 
 # Copy the output file for the 0-15% central widePt analysis
-fileName=4x5GeVFemto_highPt_multBins_3to5.root
+fileName=4x5GeVFemto_widePt_multBins_3to5.root
 scp $rcfName@$rcfUrl:$rcfDirectory/$fileName output_histograms/$fileName
 
 # Copy the output files for the low-pt analysis
-fileName=4x5GeVFemto_lowPt.root
+fileName=4x5GeVFemto_narrowPt.root
 scp $rcfName@$rcfUrl:$rcfDirectory/$fileName output_histograms/$fileName

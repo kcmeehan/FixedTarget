@@ -23,7 +23,7 @@ void drawRsideVsRlong()
 
     // Grab the FXT data from some fit file
     TFile* fIn = new TFile("4x5GeVFemto_widePt_lowKt_FitResults.root");
-    // TFile* fIn = new TFile("4x5GeVFemto_highPt_FitResults.root"  );
+    // TFile* fIn = new TFile("4x5GeVFemto_widePt_FitResults.root"  );
     Double_t* tempRs = ((TGraphErrors*)fIn->Get("Rs"))->GetY();
     Double_t* tempRl = ((TGraphErrors*)fIn->Get("Rl"))->GetY();
     Double_t STAR_FXT_Rs[1] = {tempRs[5]};

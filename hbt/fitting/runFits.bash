@@ -45,7 +45,7 @@ do
     inFile=$directory/${fileTag}_multBin_${i}.root
     logFile=${fileTag}_${i}.log
     multBin=$i
-    echo "Fitting highPt multBin $i - kt integrated"
+    echo "Fitting widePt multBin $i - kt integrated"
     fit $inFile $outFile $pm $ktBin $multBin $ktDifferential >& $logFile
 done
 

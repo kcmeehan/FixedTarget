@@ -44,7 +44,7 @@ Finally, there's one manual `hadd` to do to get a combined 0-15% centrality file
 mkdir ~/tempHbtOutput
 cp /gpfs/mnt/gpfs01/star/scratch/$USER/fxtHbt/*root ~/tempHbtOutput
 cd ~/tempHbtOutput
-hadd 4x5GeVFemto_highPt_multBins_3to5.root 4x5GeVFemto_highPt_multBin_{3..5}.root
+hadd 4x5GeVFemto_widePt_multBins_3to5.root 4x5GeVFemto_widePt_multBin_{3..5}.root
 ```
 
 ## Fitting the histograms
