@@ -1,5 +1,5 @@
 #include "src/plot.cxx"
-void formatTGraph(TGraphErrors* graph, Color_t color, Style_t mStyle, Size_t mSize, Style_t lStyle);
+void formatTGraphExcitation(TGraphErrors* graph, Color_t color, Style_t mStyle, Size_t mSize, Style_t lStyle);
 void formatTMGraph(TMultiGraph* graph);
 void drawExcitationFunction(const TString inFileName = "4x5GeVFemto_narrowPt_FitResults.root" )
 {
@@ -91,20 +91,20 @@ void drawExcitationFunction(const TString inFileName = "4x5GeVFemto_narrowPt_Fit
     // -------------------- Format things -----------------//
 
     Float_t markerSize = 3;
-    formatTGraph(e895TgLambda, kGreen+2, kFullCross, markerSize, 1);
-    formatTGraph(e895TgRout, kGreen+2, kFullCross, markerSize, 1);
-    formatTGraph(e895TgRside, kGreen+2, kFullCross, markerSize, 1);
-    formatTGraph(e895TgRlong, kGreen+2, kFullCross, markerSize, 1);
+    formatTGraphExcitation(e895TgLambda, kGreen+2, kFullCross, markerSize, 1);
+    formatTGraphExcitation(e895TgRout, kGreen+2, kFullCross, markerSize, 1);
+    formatTGraphExcitation(e895TgRside, kGreen+2, kFullCross, markerSize, 1);
+    formatTGraphExcitation(e895TgRlong, kGreen+2, kFullCross, markerSize, 1);
 
-    formatTGraph(e866TgLambda, kBlack, kFullTriangleUp, markerSize, 1);
-    formatTGraph(e866TgRout, kBlack, kFullTriangleUp, markerSize, 1);
-    formatTGraph(e866TgRside, kBlack, kFullTriangleUp, markerSize, 1);
-    formatTGraph(e866TgRlong, kBlack, kFullTriangleUp, markerSize, 1);
+    formatTGraphExcitation(e866TgLambda, kBlack, kFullTriangleUp, markerSize, 1);
+    formatTGraphExcitation(e866TgRout, kBlack, kFullTriangleUp, markerSize, 1);
+    formatTGraphExcitation(e866TgRside, kBlack, kFullTriangleUp, markerSize, 1);
+    formatTGraphExcitation(e866TgRlong, kBlack, kFullTriangleUp, markerSize, 1);
 
-    formatTGraph(sTgLambda, kRed, kFullStar, markerSize+1, 1);
-    formatTGraph(sTgRout, kRed, kFullStar, markerSize+1, 1);
-    formatTGraph(sTgRside, kRed, kFullStar, markerSize+1, 1);
-    formatTGraph(sTgRlong, kRed, kFullStar, markerSize+1, 1);
+    formatTGraphExcitation(sTgLambda, kRed, kFullStar, markerSize+1, 1);
+    formatTGraphExcitation(sTgRout, kRed, kFullStar, markerSize+1, 1);
+    formatTGraphExcitation(sTgRside, kRed, kFullStar, markerSize+1, 1);
+    formatTGraphExcitation(sTgRlong, kRed, kFullStar, markerSize+1, 1);
 
     // -------------------- Put TMultiGraphs Together -----------------//
     
@@ -129,7 +129,7 @@ void drawExcitationFunction(const TString inFileName = "4x5GeVFemto_narrowPt_Fit
     tmLambda->Add(sTgLambda);
 
     // -------------------- Create Canvas -----------------//
-    TCanvas *cRad = new TCanvas("cRad","Comparison of E895 to STAR",1000,700);
+    TCanvas *cRad = new TCanvas("cRadExcitation","Comparison of E895 to STAR",1000,700);
     cRad->Clear();
     cRad->Divide(3,1,0);
 
@@ -212,7 +212,7 @@ void drawExcitationFunction(const TString inFileName = "4x5GeVFemto_narrowPt_Fit
 
 }
 
-void formatTGraph(TGraphErrors* graph, Color_t color, Style_t mStyle, Size_t mSize, Style_t lStyle)
+void formatTGraphExcitation(TGraphErrors* graph, Color_t color, Style_t mStyle, Size_t mSize, Style_t lStyle)
 {
 	graph->SetMarkerColor(color);
 	graph->SetLineColor(color);

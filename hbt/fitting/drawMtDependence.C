@@ -1,6 +1,6 @@
 #include "src/plot.cxx"
 void change_x_axis(TGraphErrors* graph, Float_t* xPoints);
-void formatTGraph(TGraphErrors* graph, Color_t color, Style_t mStyle, Size_t mSize, Style_t lStyle);
+void formatTGraphMtDependence(TGraphErrors* graph, Color_t color, Style_t mStyle, Size_t mSize, Style_t lStyle);
 // void drawMtDependence(const TString inFileName = "4x5GeVFemto_narrowPt_kt_FitResults.root")
 void drawMtDependence(const TString inFileName = "4x5GeVFemto_widePt_kt_FitResults.root")
 {
@@ -79,20 +79,20 @@ void drawMtDependence(const TString inFileName = "4x5GeVFemto_widePt_kt_FitResul
     // -------------------- Format things -----------------//
 
     Float_t markerSize = 3;
-    formatTGraph(sTgRout, kRed, kFullStar, markerSize, 1);
-    formatTGraph(sTgRside, kRed, kFullStar, markerSize, 1);
-    formatTGraph(sTgRlong, kRed, kFullStar, markerSize, 1);
+    formatTGraphMtDependence(sTgRout, kRed, kFullStar, markerSize, 1);
+    formatTGraphMtDependence(sTgRside, kRed, kFullStar, markerSize, 1);
+    formatTGraphMtDependence(sTgRlong, kRed, kFullStar, markerSize, 1);
 
-    formatTGraph(e802TgRo, kBlack, kFullTriangleUp, markerSize, 1);
-    formatTGraph(e802TgRs, kBlack, kFullTriangleUp, markerSize, 1);
-    formatTGraph(e802TgRl, kBlack, kFullTriangleUp, markerSize, 1);
+    formatTGraphMtDependence(e802TgRo, kBlack, kFullTriangleUp, markerSize, 1);
+    formatTGraphMtDependence(e802TgRs, kBlack, kFullTriangleUp, markerSize, 1);
+    formatTGraphMtDependence(e802TgRl, kBlack, kFullTriangleUp, markerSize, 1);
 
-    formatTGraph(e895TgRo, kGreen+2, kFullCross, markerSize, 1);
-    formatTGraph(e895TgRs, kGreen+2, kFullCross, markerSize, 1);
-    formatTGraph(e895TgRl, kGreen+2, kFullCross, markerSize, 1);
+    formatTGraphMtDependence(e895TgRo, kGreen+2, kFullCross, markerSize, 1);
+    formatTGraphMtDependence(e895TgRs, kGreen+2, kFullCross, markerSize, 1);
+    formatTGraphMtDependence(e895TgRl, kGreen+2, kFullCross, markerSize, 1);
 
     // -------------------- Create Canvas -----------------//
-    TCanvas* cRad = new TCanvas("cRad","Comparison of E802 to STAR",700,700);
+    TCanvas* cRad = new TCanvas("cRadMtDependence","Comparison of E802 to STAR",700,700);
     cRad->Clear();
     cRad->Divide(1,3,0);
 
@@ -165,7 +165,7 @@ void drawMtDependence(const TString inFileName = "4x5GeVFemto_widePt_kt_FitResul
 
 }
 
-void formatTGraph(TGraphErrors* graph, Color_t color, Style_t mStyle, Size_t mSize, Style_t lStyle)
+void formatTGraphMtDependence(TGraphErrors* graph, Color_t color, Style_t mStyle, Size_t mSize, Style_t lStyle)
 {
 	graph->SetMarkerColor(color);
 	graph->SetLineColor(color);
