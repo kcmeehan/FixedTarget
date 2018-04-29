@@ -1,5 +1,46 @@
 # Instructions for Running the FXT Femtoscopy Analysis
 
+## Overview
+There are four separate sets of analysis cut used to make the various figures for the HBT section.
+
+### Narrow pt, integrated kt, pi-pi- pairs
+In order to match with the E895 data, the following cuts are used for the correlation function figure and the excitation function figure:
+
+ * Pion p_T: 0.1 GeV - 0.3 GeV
+ * Only pi-pi- pairs
+ * Pair k_T: 0.15 GeV to 0.6 GeV
+ * Centrality: 0-10%
+
+### Wide pt, integrated kt, pi-pi- pairs
+In order to match with the E866 data, the following cuts are used for the m_T dependence figure:
+
+ * Pion p_T: 0.1 GeV - 0.8 GeV (E866 had an upper cut of p < 1.85 GeV, but pion spectrum is negligable after 0.8 GeV)
+ * Only pi-pi- pairs
+ * Pair k_T: 0.15 GeV to 0.6 GeV in 4 bins
+ * Centrality: 0-15%
+
+### Wide pt, integrated kt, pi-pi- and pi+pi+ pairs
+The figure that shows the centrality dependence of the radii doesn't compare with other experiments, so we use standard STAR HBT cuts:
+
+ * Pion p_T: 0.1 GeV - 0.8 GeV
+ * pi-pi- and pi+pi+ pairs
+ * Pair k_T: 0.15 GeV to 0.6 GeV
+ * Centrality: 0-30% in 5% bins
+
+### Wide pt, low kt, pi-pi- and pi+pi+ pairs
+In order to match the STAR BES and ALICE data, the following cuts are used for the R_side vs. R_long figure:
+
+ * Pion p_T: 0.1 GeV - 0.8 GeV
+ * pi-pi- and pi+pi+ pairs
+ * Pair k_T: 0.15 GeV to 0.25 GeV
+ * Centrality: 0-5%
+
+ The analysis is done in two main steps.
+ First you must run over the data on RCF to create the HBT higtogram files.
+ Second you must fit the histograms to extract the HBT radii.
+ This second step should be done on your local laptop or workstation.
+
+
 ## Making Histograms
 The steps in this section should be performed on RCF.
 Download the code from the github repository.
