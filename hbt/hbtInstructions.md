@@ -36,7 +36,7 @@ In order to match the STAR BES and ALICE data, the following cuts are used for t
  * Centrality: 0-5%
 
  The analysis is done in two main steps.
- First you must run over the data on RCF to create the HBT higtogram files.
+ First you must run over the data on RCF to create the HBT histogram files.
  Second you must fit the histograms to extract the HBT radii.
  This second step should be done on your local laptop or workstation.
 
@@ -44,19 +44,12 @@ In order to match the STAR BES and ALICE data, the following cuts are used for t
 ## Making Histograms
 The steps in this section should be performed on RCF.
 Download the code from the github repository.
-(You may first need to start an ssh-agent and add a key to it.)
-
-```shell
-eval `ssh-agent`                    # May not be necessary, depending
-ssh-add ~/.ssh/[github key file]    # on how your ssh agent is setup.
-git clone https://github.com/DavidTlusty/FixedTarget 
-```
-
 Move to the directory where the hbt code is stored and run the `setup.sh` script.
 This will create some directories in your scratch space and compile the code.
 The code should take several minutes to compile.
 
 ```shell
+git clone https://github.com/DavidTlusty/FixedTarget 
 cd FixedTarget/hbt
 ./setup.sh
 ```
@@ -71,7 +64,7 @@ This script starts 8 batches of jobs on RCF: one batch for each of six centralit
 The job submission should take 5-10 minutes, and the jobs will take several hours to complete.
 Once the jobs have completed, the output and logs will be stored in the scratch directories created by the `setup.sh` script.
 
-You can `hadd` the files together with the `submitHadd.bash` script, which will combine the two centrality bins for the low pT analysis, and give six seperate output files for the high pT analysis.
+You can `hadd` the files together with the `submitHadd.bash` script, which will combine the two centrality bins for the narrow pT analysis, and give six seperate output files for the wide pT analysis.
 
 ```shell
 ./submitHadd.bash
@@ -94,8 +87,6 @@ Fitting the histograms to get the HBT radii is not very computationally intensiv
 Clone the github repository to a local directory, and copy the HBT histogram files from RCF.
 
 ```shell
-eval `ssh-agent`                    # May not be necessary, depending
-ssh-add ~/.ssh/[github key file]    # on how your ssh agent is setup.
 git clone https://github.com/DavidTlusty/FixedTarget 
 cd FixedTarget/hbt/fitting
 ./copyScript.bash [RCF username] tempHbtOutput
@@ -107,4 +98,10 @@ You may then fit the histograms using the `runFits.bash` script.
 
 ```shell
 ./runFits.bash
+```
+
+After you've run the fits, you can make the HBT plots with the `drawAllFigures.C` script.
+
+```shell
+root drawAllFigures.C
 ```
