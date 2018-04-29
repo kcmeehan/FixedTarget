@@ -14,7 +14,7 @@ In order to match with the E895 data, the following cuts are used for the correl
 ### Wide pt, integrated kt, pi-pi- pairs
 In order to match with the E866 data, the following cuts are used for the m_T dependence figure:
 
- * Pion p_T: 0.1 GeV - 0.8 GeV (E866 had an upper cut of p < 1.85 GeV, but pion spectrum is negligable after 0.8 GeV)
+ * Pion p_T: 0.15 GeV - 0.8 GeV (E866 had an upper cut of p < 1.85 GeV, but pion spectrum is negligable after 0.8 GeV)
  * Only pi-pi- pairs
  * Pair k_T: 0.15 GeV to 0.6 GeV in 4 bins
  * Centrality: 0-15%
@@ -22,7 +22,7 @@ In order to match with the E866 data, the following cuts are used for the m_T de
 ### Wide pt, integrated kt, pi-pi- and pi+pi+ pairs
 The figure that shows the centrality dependence of the radii doesn't compare with other experiments, so we use standard STAR HBT cuts:
 
- * Pion p_T: 0.1 GeV - 0.8 GeV
+ * Pion p_T: 0.15 GeV - 0.8 GeV
  * pi-pi- and pi+pi+ pairs
  * Pair k_T: 0.15 GeV to 0.6 GeV
  * Centrality: 0-30% in 5% bins
@@ -30,7 +30,7 @@ The figure that shows the centrality dependence of the radii doesn't compare wit
 ### Wide pt, low kt, pi-pi- and pi+pi+ pairs
 In order to match the STAR BES and ALICE data, the following cuts are used for the R_side vs. R_long figure:
 
- * Pion p_T: 0.1 GeV - 0.8 GeV
+ * Pion p_T: 0.15 GeV - 0.8 GeV
  * pi-pi- and pi+pi+ pairs
  * Pair k_T: 0.15 GeV to 0.25 GeV
  * Centrality: 0-5%
