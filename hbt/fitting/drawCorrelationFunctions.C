@@ -35,7 +35,7 @@ TCanvas* makeCanvas(TString fileName, Int_t folder){
     qSide[1] = (TH1D*)gDirectory->Get("qSideFit");
     qLong[1] = (TH1D*)gDirectory->Get("qLongFit");
 
-    TCanvas* cTest = new TCanvas("cTest","cTest",1000,700);
+    TCanvas* cTest = new TCanvas("cTest","Projections of the Correlation Function",1000,700);
     cTest->Clear();
     cTest->Divide(3,1,0,0);
     Float_t bottomMargin = 0.15, leftMargin = 0.10;

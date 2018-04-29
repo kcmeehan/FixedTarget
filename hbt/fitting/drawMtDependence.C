@@ -5,7 +5,7 @@ void formatTGraphMtDependence(TGraphErrors* graph, Color_t color, Style_t mStyle
 void drawMtDependence(const TString inFileName = "4x5GeVFemto_widePt_kt_FitResults.root")
 {
 
-    Int_t n802Points = 3;
+    Int_t n866Points = 3;
     Float_t mtStar[3] = {0.294, 0.400, 0.539};
     Float_t dummyErr[3] = {0,0,0};
 
@@ -18,9 +18,9 @@ void drawMtDependence(const TString inFileName = "4x5GeVFemto_widePt_kt_FitResul
     Float_t Ro[3] = {5.57, 4.39, 4.21 };
     Float_t RoErr[3] = {0.41, 0.44, 0.54};
 
-    TGraphErrors* e802TgRl = new TGraphErrors(n802Points, mtStar, Rl, dummyErr, RlErr);
-    TGraphErrors* e802TgRs = new TGraphErrors(n802Points, mtStar, Rs, dummyErr, RsErr);
-    TGraphErrors* e802TgRo = new TGraphErrors(n802Points, mtStar, Ro, dummyErr, RoErr);
+    TGraphErrors* e866TgRl = new TGraphErrors(n866Points, mtStar, Rl, dummyErr, RlErr);
+    TGraphErrors* e866TgRs = new TGraphErrors(n866Points, mtStar, Rs, dummyErr, RsErr);
+    TGraphErrors* e866TgRo = new TGraphErrors(n866Points, mtStar, Ro, dummyErr, RoErr);
 
     // -------------------- Get STAR results -----------------//
 
@@ -62,17 +62,17 @@ void drawMtDependence(const TString inFileName = "4x5GeVFemto_widePt_kt_FitResul
     // -------------------- Put TMultiGraphs Together -----------------//
     
     TMultiGraph* tmRout = new TMultiGraph();
-    tmRout->Add(e802TgRo);
+    tmRout->Add(e866TgRo);
     tmRout->Add(e895TgRo);
     tmRout->Add(sTgRout);
 
     TMultiGraph* tmRside = new TMultiGraph();
-    tmRside->Add(e802TgRs);
+    tmRside->Add(e866TgRs);
     tmRside->Add(e895TgRs);
     tmRside->Add(sTgRside);
 
     TMultiGraph* tmRlong = new TMultiGraph();
-    tmRlong->Add(e802TgRl);
+    tmRlong->Add(e866TgRl);
     tmRlong->Add(e895TgRl);
     tmRlong->Add(sTgRlong);
 
@@ -83,16 +83,16 @@ void drawMtDependence(const TString inFileName = "4x5GeVFemto_widePt_kt_FitResul
     formatTGraphMtDependence(sTgRside, kRed, kFullStar, markerSize, 1);
     formatTGraphMtDependence(sTgRlong, kRed, kFullStar, markerSize, 1);
 
-    formatTGraphMtDependence(e802TgRo, kBlack, kFullTriangleUp, markerSize, 1);
-    formatTGraphMtDependence(e802TgRs, kBlack, kFullTriangleUp, markerSize, 1);
-    formatTGraphMtDependence(e802TgRl, kBlack, kFullTriangleUp, markerSize, 1);
+    formatTGraphMtDependence(e866TgRo, kBlack, kFullTriangleUp, markerSize, 1);
+    formatTGraphMtDependence(e866TgRs, kBlack, kFullTriangleUp, markerSize, 1);
+    formatTGraphMtDependence(e866TgRl, kBlack, kFullTriangleUp, markerSize, 1);
 
     formatTGraphMtDependence(e895TgRo, kGreen+2, kFullCross, markerSize, 1);
     formatTGraphMtDependence(e895TgRs, kGreen+2, kFullCross, markerSize, 1);
     formatTGraphMtDependence(e895TgRl, kGreen+2, kFullCross, markerSize, 1);
 
     // -------------------- Create Canvas -----------------//
-    TCanvas* cRad = new TCanvas("cRadMtDependence","Comparison of E802 to STAR",700,700);
+    TCanvas* cRad = new TCanvas("cRadMtDependence","mT Dependence",700,700);
     cRad->Clear();
     cRad->Divide(1,3,0);
 
@@ -154,7 +154,7 @@ void drawMtDependence(const TString inFileName = "4x5GeVFemto_widePt_kt_FitResul
     leg->SetMargin(0.2);
     leg->AddEntry(e895TgRl,"E895 - 4.3 GeV","p");
     leg->AddEntry(sTgRout,"STAR - 4.5 GeV","p");
-    leg->AddEntry(e802TgRo,"E866 - 4.9 GeV","p");
+    leg->AddEntry(e866TgRo,"E866 - 4.9 GeV","p");
     leg->SetFillColor(0);
     leg->SetBorderSize(1);
     leg->SetTextSize(.08);

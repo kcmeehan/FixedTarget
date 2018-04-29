@@ -51,7 +51,7 @@ void drawCentrality()
     }
 
     // -------------------- Create Canvas -----------------//
-    TCanvas* cRad = new TCanvas("cRad","Centrality Dependence of Radii",1000,700);
+    TCanvas* cRad = new TCanvas("cRad","Centrality Dependence",1000,700);
     cRad->Clear();
 
     tmGraph->Draw("ap");

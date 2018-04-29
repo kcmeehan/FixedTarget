@@ -66,13 +66,13 @@ void drawRsideVsRlong()
         tmGraph->Add(graphs[i]); 
     }
 
-    // I guess for Quark Matter it's super important the the E866 triangle bu
+    // I guess for Quark Matter it's super important the the E866 triangle be
     // *slightly smaller* than the rest. So here we go
     graphs[1]->SetMarkerSize(4.0);
 
     // --- Plot stuff --- //
     Float_t xLow = 2.5, xHigh = 9.5;
-    TCanvas* canvas = new TCanvas("c1","c1",1000,1000);
+    TCanvas* canvas = new TCanvas("c1","R_side vs. R_long",1000,1000);
     tmGraph->Draw("ap");
     tmGraph->GetXaxis()->SetLimits(xLow,xHigh);
     tmGraph->SetMinimum(xLow);

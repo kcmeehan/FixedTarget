@@ -129,7 +129,7 @@ void drawExcitationFunction(const TString inFileName = "4x5GeVFemto_narrowPt_Fit
     tmLambda->Add(sTgLambda);
 
     // -------------------- Create Canvas -----------------//
-    TCanvas *cRad = new TCanvas("cRadExcitation","Comparison of E895 to STAR",1000,700);
+    TCanvas *cRad = new TCanvas("cRadExcitation","Excitation Function",1000,700);
     cRad->Clear();
     cRad->Divide(3,1,0);
 
