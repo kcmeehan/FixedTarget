@@ -1,79 +1,78 @@
-// class header file
+// Class header file
 #include "FxtMaker.h"
 
-// class implementation in CINT
+// Class implementation in CINT
 ClassImp(FxtMaker)
 
-// constructor
+// Constructor
 FxtMaker::FxtMaker(StMuDstMaker *Maker, TString JobId, Int_t EventsNumber, Double_t inputParameter1, Double_t inputParameter2) : StMaker() {
-    // use input parameters to initialize
-    mMuDstMaker = Maker;
-    nEvents = EventsNumber;
+    // Use input parameters to initialize
+    mMuDstMaker      = Maker;
+    nEvents          = EventsNumber;
     nEventsProcessed = 0;
-    // systematic analysis parameters
+    // Systematic analysis parameters
     cutTest1 = inputParameter1;
     cutTest2 = inputParameter2;
-    // name output file by assigned Job ID
+    // Name output file by assigned Job ID
     JobIdName = JobId;
     JobIdName.Append(".root");
-    // set particle masses
-    Mass_Pion = 0.139568;
-    Mass_Kaon = 0.493646;
-    Mass_Proton = 0.938272;
-    Mass_Deuteron = 1.87612;
-    // choose which EP for flow analysis
+    // Set particle masses
+    Mass_Pion     = 0.139568;
+    Mass_Kaon     = 0.493646;
+    Mass_Proton   = 0.938272;
+    // Choose which EP for flow analysis
     chooseBBCeastEP = kTRUE; chooseTPCEP = kFALSE;
     //chooseBBCeastEP = kFALSE; chooseTPCEP = kTRUE;
-    // set rapidity/pseudorapidity range
-    rapidityBins = 20; rapidityLow = -2.0; rapidityHigh = 0.0;
-    // set transverse momentum range
-    ptBins = 50; ptLow = 0.0; ptHigh = 5.0;
-    // initialize BBC ADC gain parameters
+    // Set rapidity/pseudorapidity range
+    rapidityBins = 8; rapidityLow = -1.72; rapidityHigh = -0.12;
+    // Set transverse momentum range
+    ptBins = 15; ptLow = 0.0; ptHigh = 3.0;
+    // Initialize BBC ADC gain parameters
     for(Int_t i=0;i<16;i++) {
         egain[i] = 1.0; emean[i] = 0.0; esum[i] = 0.0; emean_c[i] = 0.0; esum_c[i] = 0.0;
         wgain[i] = 1.0; wmean[i] = 0.0; wsum[i] = 0.0; wmean_c[i] = 0.0; wsum_c[i] = 0.0;
     }
-    // read input file
+    // Read input files
     //eventPlanes_input = new TFile("/star/u/ywu27/fxt_res/results/profile.root","read");
     eventPlanes_input = new TFile("./profile.root","read");
     if(!eventPlanes_input->IsOpen()) std::cout<<"No EP file!"<<std::endl;
     if( eventPlanes_input->IsOpen()) {
         std::cout<<"EP file loaded successfully!"<<std::endl;
-        // read TPC EP histograms
-        profile3D_tpc_east_Qx_Qy_input = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_east_Qx_Qy");
+        // Read TPC EP histograms
+        profile3D_tpc_east_Qx_Qy_input    = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_east_Qx_Qy");
         profile3D_tpc_east_psiShift_input = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_east_psiShift");
-        profile3D_tpc_west_Qx_Qy_input = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_west_Qx_Qy");
+        profile3D_tpc_west_Qx_Qy_input    = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_west_Qx_Qy");
         profile3D_tpc_west_psiShift_input = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_west_psiShift");
-        profile3D_tpc_full_Qx_Qy_input = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_full_Qx_Qy");
+        profile3D_tpc_full_Qx_Qy_input    = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_full_Qx_Qy");
         profile3D_tpc_full_psiShift_input = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_full_psiShift");
-        profile3D_thirdEP_Qx_Qy_input = (TProfile3D*)eventPlanes_input->Get("profile3D_thirdEP_Qx_Qy");
-        profile3D_thirdEP_psiShift_input = (TProfile3D*)eventPlanes_input->Get("profile3D_thirdEP_psiShift");
-        // individual TPC EP
+        profile3D_thirdEP_Qx_Qy_input     = (TProfile3D*)eventPlanes_input->Get("profile3D_thirdEP_Qx_Qy");
+        profile3D_thirdEP_psiShift_input  = (TProfile3D*)eventPlanes_input->Get("profile3D_thirdEP_psiShift");
+        // Individual TPC EP
 #if indTPCepIndicator > 0
-        /*profile3D_tpc_ind_east_Qx_Qy_input = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_ind_east_Qx_Qy");
+        /*profile3D_tpc_ind_east_Qx_Qy_input    = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_ind_east_Qx_Qy");
         profile3D_tpc_ind_east_psiShift_input = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_ind_east_psiShift");
-        profile3D_tpc_ind_west_Qx_Qy_input = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_ind_west_Qx_Qy");
+        profile3D_tpc_ind_west_Qx_Qy_input    = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_ind_west_Qx_Qy");
         profile3D_tpc_ind_west_psiShift_input = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_ind_west_psiShift");
-        profile3D_tpc_ind_full_Qx_Qy_input = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_ind_full_Qx_Qy");
+        profile3D_tpc_ind_full_Qx_Qy_input    = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_ind_full_Qx_Qy");
         profile3D_tpc_ind_full_psiShift_input = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_ind_full_psiShift");*/
         
-        profile3D_tpc_ind_east_Qx_Qy_input = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_east_Qx_Qy");
+        profile3D_tpc_ind_east_Qx_Qy_input    = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_east_Qx_Qy");
         profile3D_tpc_ind_east_psiShift_input = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_east_psiShift");
-        profile3D_tpc_ind_west_Qx_Qy_input = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_west_Qx_Qy");
+        profile3D_tpc_ind_west_Qx_Qy_input    = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_west_Qx_Qy");
         profile3D_tpc_ind_west_psiShift_input = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_west_psiShift");
-        profile3D_tpc_ind_full_Qx_Qy_input = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_full_Qx_Qy");
+        profile3D_tpc_ind_full_Qx_Qy_input    = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_full_Qx_Qy");
         profile3D_tpc_ind_full_psiShift_input = (TProfile3D*)eventPlanes_input->Get("profile3D_tpc_full_psiShift");
 #endif
-        // read BBC EP histograms
-        bbc_east_adc_profile_input = (TH1D*)eventPlanes_input->Get("bbc_east_adc_profile");
-        profile3D_bbc_east_Qx_Qy_input = (TProfile3D*)eventPlanes_input->Get("profile3D_bbc_east_Qx_Qy");
+        // Read BBC EP histograms
+        bbc_east_adc_profile_input        = (TH1D*)eventPlanes_input->Get("bbc_east_adc_profile");
+        profile3D_bbc_east_Qx_Qy_input    = (TProfile3D*)eventPlanes_input->Get("profile3D_bbc_east_Qx_Qy");
         profile3D_bbc_east_psiShift_input = (TProfile3D*)eventPlanes_input->Get("profile3D_bbc_east_psiShift");
-        bbc_west_adc_profile_input = (TH1D*)eventPlanes_input->Get("bbc_west_adc_profile");
-        profile3D_bbc_west_Qx_Qy_input = (TProfile3D*)eventPlanes_input->Get("profile3D_bbc_west_Qx_Qy");
+        bbc_west_adc_profile_input        = (TH1D*)eventPlanes_input->Get("bbc_west_adc_profile");
+        profile3D_bbc_west_Qx_Qy_input    = (TProfile3D*)eventPlanes_input->Get("profile3D_bbc_west_Qx_Qy");
         profile3D_bbc_west_psiShift_input = (TProfile3D*)eventPlanes_input->Get("profile3D_bbc_west_psiShift");
-        profile3D_bbc_full_Qx_Qy_input = (TProfile3D*)eventPlanes_input->Get("profile3D_bbc_full_Qx_Qy");
+        profile3D_bbc_full_Qx_Qy_input    = (TProfile3D*)eventPlanes_input->Get("profile3D_bbc_full_Qx_Qy");
         profile3D_bbc_full_psiShift_input = (TProfile3D*)eventPlanes_input->Get("profile3D_bbc_full_psiShift");
-        // compute BBC ADC gain parameters
+        // Compute BBC ADC gain parameters
         if(bbc_east_adc_profile_input && bbc_east_adc_profile_input->GetEntries() > 0) {
             Double_t ADCtotal_inner = 0.0, ADCtotal_outer1 = 0.0, ADCtotal_outer2 = 0.0;
             for(Int_t i=1;i<=16;i++) {
@@ -107,7 +106,7 @@ FxtMaker::FxtMaker(StMuDstMaker *Maker, TString JobId, Int_t EventsNumber, Doubl
             }
         }
     }
-	// read particle efficiency table
+	// Read particle efficiency table
     PiPlusEffTableFile = new TFile("/star/u/ywu27/Fxt/results/PiPlusEffTable.root","read");
     if( !PiPlusEffTableFile->IsOpen() ) std::cout<<"No Pi+ efficiency table input!"<<std::endl;
     if(  PiPlusEffTableFile->IsOpen() ) {
@@ -144,16 +143,24 @@ FxtMaker::FxtMaker(StMuDstMaker *Maker, TString JobId, Int_t EventsNumber, Doubl
     if(  TPC_PID_efficiency_file->IsOpen() ) {
         std::cout<<"TPC efficiency table loaded successfully!"<<std::endl;
         Proton_TPC_efficiency_table = (TH2D*)TPC_PID_efficiency_file->Get("ProtonTPCeffTable");
-        Deuteron_TPC_efficiency_table = (TH2D*)TPC_PID_efficiency_file->Get("DeuteronTPCeffTable");
-        Pion_TPC_efficiency_table = (TH2D*)TPC_PID_efficiency_file->Get("PionTPCeffTable");
-        Electron_TPC_efficiency_table = (TH2D*)TPC_PID_efficiency_file->Get("ElectronTPCeffTable");
+        //Deuteron_TPC_efficiency_table = (TH2D*)TPC_PID_efficiency_file->Get("DeuteronTPCeffTable");
+        //Pion_TPC_efficiency_table = (TH2D*)TPC_PID_efficiency_file->Get("PionTPCeffTable");
+        //Electron_TPC_efficiency_table = (TH2D*)TPC_PID_efficiency_file->Get("ElectronTPCeffTable");
     }
+    // Read Phi TProfile from file
+    phi_input = new TFile("/star/u/ywu27/fxt_res/results/phi_weight.root","READ");
+    if( !phi_input->IsOpen() ) std::cout<<"No Phi histogram!"<<std::endl;
+    if(  phi_input->IsOpen() )
+      {
+        std::cout<<"Phi histogram loaded successfully!"<<std::endl;
+        Hist_Phi = (TH1D*)phi_input->Get("phi_weight");
+      }
 }
 
-// destructor
+// Destructor
 FxtMaker::~FxtMaker() {/*automatically done by ROOT*/}
 
-// run once at beginning to create output file and histograms
+// Run once at beginning to create output file and histograms
 Int_t FxtMaker::Init() {
     outputFile = new TFile(JobIdName,"recreate");
     // QA plots
@@ -261,10 +268,10 @@ Int_t FxtMaker::Init() {
     hist_gDCA->GetXaxis()->SetTitle("Global DCA [cm]");
     hist_gDCA->GetYaxis()->SetTitle("# of tracks");
     
-    hist_cent = new TH1D("hist_cent","Centrality",Ncentralities,-0.5,Ncentralities+0.5);
+    hist_cent = new TH1D("hist_cent","Centrality",Ncentralities+1,-0.5,Ncentralities+0.5);
     hist_cent->GetXaxis()->SetTitle("Centrality bin");
     hist_cent->GetYaxis()->SetTitle("# of events");
-    // track histograms
+    // Track histograms
     hist_pt = new TH1D("hist_pt","p_{T} [GeV/c]",1000,0.0,5.0);
     hist_pt->GetXaxis()->SetTitle("p_{T} [GeV/c]");
     hist_pt->GetYaxis()->SetTitle("# of tracks");
@@ -301,9 +308,17 @@ Int_t FxtMaker::Init() {
     hist_y_proton->GetXaxis()->SetTitle("Rapidity y");
     hist_y_proton->GetYaxis()->SetTitle("# of tracks");
     
+    hist_rap_eta_proton = new TH2D("hist_rap_eta_proton","proton y versus #eta",250,-2.5,0,250,-2.5,0);
+    hist_rap_eta_proton->GetXaxis()->SetTitle("Pseudorapidity #eta");
+    hist_rap_eta_proton->GetYaxis()->SetTitle("Rapidity y");
+    
     hist_pt_y_proton = new TH2D("hist_pt_y_proton","p_{T} [GeV/c] vs. y",500,-3.0,0.5,500,0.0,3.5);
     hist_pt_y_proton->GetXaxis()->SetTitle("y");
     hist_pt_y_proton->GetYaxis()->SetTitle("p_{T} [GeV/c]");
+    
+    hist_pt_eta_proton = new TH2D("hist_pt_eta_proton","p_{T} [GeV/c] vs. #eta",500,-3.0,0.5,500,0.0,3.5);
+    hist_pt_eta_proton->GetXaxis()->SetTitle("#eta");
+    hist_pt_eta_proton->GetYaxis()->SetTitle("p_{T} [GeV/c]");
     
     hist_phi_proton = new TH1D("hist_phi_proton","#phi [Radian]",1000,-0.5*TMath::Pi(),2.5*TMath::Pi());
     hist_phi_proton->GetXaxis()->SetTitle("#phi [Radian]");
@@ -325,42 +340,6 @@ Int_t FxtMaker::Init() {
     hist_mass_proton->GetXaxis()->SetTitle("q*|p| (GeV/c)");
     hist_mass_proton->GetYaxis()->SetTitle("m^{2} (GeV/c^{2})^{2}");
     
-    hist_pt_deuteron = new TH1D("hist_pt_deuteron","p_{T} [GeV/c]",1000,0.0,5.0);
-    hist_pt_deuteron->GetXaxis()->SetTitle("p_{T} [GeV/c]");
-    hist_pt_deuteron->GetYaxis()->SetTitle("# of tracks");
-    
-    hist_eta_deuteron = new TH1D("hist_eta_deuteron","#eta",200,-3.0,0.5);
-    hist_eta_deuteron->GetXaxis()->SetTitle("#eta");
-    hist_eta_deuteron->GetYaxis()->SetTitle("# of tracks");
-    
-    hist_y_deuteron = new TH1D("hist_y_deuteron","y",200,-3.0,0.5);
-    hist_y_deuteron->GetXaxis()->SetTitle("Rapidity y");
-    hist_y_deuteron->GetYaxis()->SetTitle("# of tracks");
-    
-    hist_pt_y_deuteron = new TH2D("hist_pt_y_deuteron","p_{T} [GeV/c] vs. y",500,-3.0,0.5,500,0.0,3.5);
-    hist_pt_y_deuteron->GetXaxis()->SetTitle("y");
-    hist_pt_y_deuteron->GetYaxis()->SetTitle("p_{T} [GeV/c]");
-    
-    hist_phi_deuteron = new TH1D("hist_phi_deuteron","#phi [Radian]",1000,-0.5*TMath::Pi(),2.5*TMath::Pi());
-    hist_phi_deuteron->GetXaxis()->SetTitle("#phi [Radian]");
-    hist_phi_deuteron->GetYaxis()->SetTitle("# of tracks");
-    
-    hist_trackmult_deuteron = new TH1D("hist_trackmult_deuteron","Deuteron track multiplicity",1001,-0.5,1000.5);
-    hist_trackmult_deuteron->GetXaxis()->SetTitle("Deuteron #");
-    hist_trackmult_deuteron->GetXaxis()->SetTitle("# of events");
-    
-    hist_dEdx_deuteron = new TH2D("hist_dEdx_deuteron","dE/dx vs q*|p|",500,-3.0,3.0,500,0.0,10.0);
-    hist_dEdx_deuteron->GetXaxis()->SetTitle("q*|p| (GeV/c)");
-    hist_dEdx_deuteron->GetYaxis()->SetTitle("dE/dx (keV/cm)");
-    
-    hist_beta_deuteron = new TH2D("hist_beta_deuteron","1/#beta vs q*|p|",1000,-5.0,5.0,500,0.0,5.0);
-    hist_beta_deuteron->GetXaxis()->SetTitle("q*|p| (GeV/c)");
-    hist_beta_deuteron->GetYaxis()->SetTitle("1/#beta");
-    
-    hist_mass_deuteron = new TH2D("hist_mass_deuteron","m^{2} vs q*|p|",1000,-5.0,5.0,1000,-0.6,4.0);
-    hist_mass_deuteron->GetXaxis()->SetTitle("q*|p| (GeV/c)");
-    hist_mass_deuteron->GetYaxis()->SetTitle("m^{2} (GeV/c^{2})^{2}");
-    
     hist_pt_pionPlus = new TH1D("hist_pt_pionPlus","p_{T} [GeV/c]",1000,0.0,5.0);
     hist_pt_pionPlus->GetXaxis()->SetTitle("p_{T} [GeV/c]");
     hist_pt_pionPlus->GetYaxis()->SetTitle("# of tracks");
@@ -373,9 +352,17 @@ Int_t FxtMaker::Init() {
     hist_y_pionPlus->GetXaxis()->SetTitle("Rapidity y");
     hist_y_pionPlus->GetYaxis()->SetTitle("# of tracks");
     
+    hist_rap_eta_pionPlus = new TH2D("hist_rap_eta_pionPlus","pionPlus y versus #eta",250,-2.5,0,250,-2.5,0);
+    hist_rap_eta_pionPlus->GetXaxis()->SetTitle("Pseudorapidity #eta");
+    hist_rap_eta_pionPlus->GetYaxis()->SetTitle("Rapidity y");
+    
     hist_pt_y_pionPlus = new TH2D("hist_pt_y_pionPlus","p_{T} [GeV/c] vs. y",500,-3.0,0.5,500,0.0,3.5);
     hist_pt_y_pionPlus->GetXaxis()->SetTitle("y");
     hist_pt_y_pionPlus->GetYaxis()->SetTitle("p_{T} [GeV/c]");
+    
+    hist_pt_eta_pionPlus = new TH2D("hist_pt_eta_pionPlus","p_{T} [GeV/c] vs. #eta",500,-3.0,0.5,500,0.0,3.5);
+    hist_pt_eta_pionPlus->GetXaxis()->SetTitle("#eta");
+    hist_pt_eta_pionPlus->GetYaxis()->SetTitle("p_{T} [GeV/c]");
     
     hist_phi_pionPlus = new TH1D("hist_phi_pionPlus","#phi [Radian]",1000,-0.5*TMath::Pi(),2.5*TMath::Pi());
     hist_phi_pionPlus->GetXaxis()->SetTitle("#phi [Radian]");
@@ -409,9 +396,17 @@ Int_t FxtMaker::Init() {
     hist_y_pionMinus->GetXaxis()->SetTitle("Rapidity y");
     hist_y_pionMinus->GetYaxis()->SetTitle("# of tracks");
     
+    hist_rap_eta_pionMinus = new TH2D("hist_rap_eta_pionMinus","pionMinus y versus #eta",250,-2.5,0,250,-2.5,0);
+    hist_rap_eta_pionMinus->GetXaxis()->SetTitle("Pseudorapidity #eta");
+    hist_rap_eta_pionMinus->GetYaxis()->SetTitle("Rapidity y");
+    
     hist_pt_y_pionMinus = new TH2D("hist_pt_y_pionMinus","p_{T} [GeV/c] vs. y",500,-3.0,0.5,500,0.0,3.5);
     hist_pt_y_pionMinus->GetXaxis()->SetTitle("y");
     hist_pt_y_pionMinus->GetYaxis()->SetTitle("p_{T} [GeV/c]");
+    
+    hist_pt_eta_pionMinus = new TH2D("hist_pt_eta_pionMinus","p_{T} [GeV/c] vs. #eta",500,-3.0,0.5,500,0.0,3.5);
+    hist_pt_eta_pionMinus->GetXaxis()->SetTitle("#eta");
+    hist_pt_eta_pionMinus->GetYaxis()->SetTitle("p_{T} [GeV/c]");
     
     hist_phi_pionMinus = new TH1D("hist_phi_pionMinus","#phi [Radian]",1000,-0.5*TMath::Pi(),2.5*TMath::Pi());
     hist_phi_pionMinus->GetXaxis()->SetTitle("#phi [Radian]");
@@ -445,9 +440,17 @@ Int_t FxtMaker::Init() {
     hist_y_kaonPlus->GetXaxis()->SetTitle("Rapidity y");
     hist_y_kaonPlus->GetYaxis()->SetTitle("# of tracks");
     
+    hist_rap_eta_kaonPlus = new TH2D("hist_rap_eta_kaonPlus","kaonPlus y versus #eta",250,-2.5,0,250,-2.5,0);
+    hist_rap_eta_kaonPlus->GetXaxis()->SetTitle("Pseudorapidity #eta");
+    hist_rap_eta_kaonPlus->GetYaxis()->SetTitle("Rapidity y");
+    
     hist_pt_y_kaonPlus = new TH2D("hist_pt_y_kaonPlus","p_{T} [GeV/c] vs. y",500,-3.0,0.5,500,0.0,3.5);
     hist_pt_y_kaonPlus->GetXaxis()->SetTitle("y");
     hist_pt_y_kaonPlus->GetYaxis()->SetTitle("p_{T} [GeV/c]");
+    
+    hist_pt_eta_kaonPlus = new TH2D("hist_pt_eta_kaonPlus","p_{T} [GeV/c] vs. #eta",500,-3.0,0.5,500,0.0,3.5);
+    hist_pt_eta_kaonPlus->GetXaxis()->SetTitle("#eta");
+    hist_pt_eta_kaonPlus->GetYaxis()->SetTitle("p_{T} [GeV/c]");
     
     hist_phi_kaonPlus = new TH1D("hist_phi_kaonPlus","#phi [Radian]",1000,-0.5*TMath::Pi(),2.5*TMath::Pi());
     hist_phi_kaonPlus->GetXaxis()->SetTitle("#phi [Radian]");
@@ -481,9 +484,17 @@ Int_t FxtMaker::Init() {
     hist_y_kaonMinus->GetXaxis()->SetTitle("Rapidity y");
     hist_y_kaonMinus->GetYaxis()->SetTitle("# of tracks");
     
+    hist_rap_eta_kaonMinus = new TH2D("hist_rap_eta_kaonMinus","kaonMinus y versus #eta",250,-2.5,0,250,-2.5,0);
+    hist_rap_eta_kaonMinus->GetXaxis()->SetTitle("Pseudorapidity #eta");
+    hist_rap_eta_kaonMinus->GetYaxis()->SetTitle("Rapidity y");
+    
     hist_pt_y_kaonMinus = new TH2D("hist_pt_y_kaonMinus","p_{T} [GeV/c] vs. y",500,-3.0,0.5,500,0.0,3.5);
     hist_pt_y_kaonMinus->GetXaxis()->SetTitle("y");
     hist_pt_y_kaonMinus->GetYaxis()->SetTitle("p_{T} [GeV/c]");
+    
+    hist_pt_eta_kaonMinus = new TH2D("hist_pt_eta_kaonMinus","p_{T} [GeV/c] vs. #eta",500,-3.0,0.5,500,0.0,3.5);
+    hist_pt_eta_kaonMinus->GetXaxis()->SetTitle("#eta");
+    hist_pt_eta_kaonMinus->GetYaxis()->SetTitle("p_{T} [GeV/c]");
     
     hist_phi_kaonMinus = new TH1D("hist_phi_kaonMinus","#phi [Radian]",1000,-0.5*TMath::Pi(),2.5*TMath::Pi());
     hist_phi_kaonMinus->GetXaxis()->SetTitle("#phi [Radian]");
@@ -504,19 +515,19 @@ Int_t FxtMaker::Init() {
     hist_mass_kaonMinus = new TH2D("hist_mass_kaonMinus","m^{2} vs q*|p|",1000,-5.0,5.0,1000,-0.6,4.0);
     hist_mass_kaonMinus->GetXaxis()->SetTitle("q*|p| (GeV/c)");
     hist_mass_kaonMinus->GetYaxis()->SetTitle("m^{2} (GeV/c^{2})^{2}");
-    
-    //hist_pt_rap_proton = new TH2D("hist_pt_rap_proton","hist_pt_rap_proton",250,-2.5,0,250,0,2.5);
-    //hist_pt_rap_pionPlus = new TH2D("hist_pt_rap_pionPlus","hist_pt_rap_pionPlus",125,-2.5,0,125,0,2.5);
-    //hist_pt_rap_pionMinus = new TH2D("hist_pt_rap_pionMinus","hist_pt_rap_pionMinus",125,-2.5,0,125,0,2.5);
-    //hist_pt_rap_kaonPlus = new TH2D("hist_pt_rap_kaonPlus","hist_pt_rap_kaonPlus",125,-2.5,0,125,0,2.5);
-    //hist_pt_rap_kaonMinus = new TH2D("hist_pt_rap_kaonMinus","hist_pt_rap_kaonMinus",125,-2.5,0,125,0,2.5);
-    
-    // flow histograms
+    // Flow histograms
     profile3D_proton_v1 = new TProfile3D("profile3D_proton_v1","Proton v_{1}",Ncentralities,0.5,Ncentralities+0.5,ptBins,ptLow,ptHigh,rapidityBins,rapidityLow,rapidityHigh,"");
-    profile3D_proton_v1->BuildOptions(-1.0,1.0,"");
+    profile3D_proton_v1->BuildOptions(-1,1,"");
     profile3D_proton_v1->GetXaxis()->SetTitle("Centrality bin");
     profile3D_proton_v1->GetYaxis()->SetTitle("p_{T} [GeV/c]");
     profile3D_proton_v1->GetZaxis()->SetTitle("y");
+    profile3D_proton_v1->Sumw2();
+    profile3D_proton_v1_tpc = new TProfile3D("profile3D_proton_v1_tpc","Proton v_{1}",Ncentralities,0.5,Ncentralities+0.5,ptBins,ptLow,ptHigh,rapidityBins,rapidityLow,rapidityHigh,"");
+    profile3D_proton_v1_tpc->BuildOptions(-1,1,"");
+    profile3D_proton_v1_tpc->GetXaxis()->SetTitle("Centrality bin");
+    profile3D_proton_v1_tpc->GetYaxis()->SetTitle("p_{T} [GeV/c]");
+    profile3D_proton_v1_tpc->GetZaxis()->SetTitle("y");
+    profile3D_proton_v1_tpc->Sumw2();
     Char_t name[100], description[200];
     for(Int_t icent=0;icent<Ncentralities;icent++) {
         sprintf(name,"hist_proton_v1y_cent%d",icent+1);
@@ -533,28 +544,18 @@ Int_t FxtMaker::Init() {
     proton_v1_10_30_averaged->GetXaxis()->SetTitle("Rapidity y");
     proton_v1_10_30_averaged->GetYaxis()->SetTitle("v_{1}");
     
-    profile3D_deuteron_v1 = new TProfile3D("profile3D_deuteron_v1","Proton v_{1}",Ncentralities,0.5,Ncentralities+0.5,ptBins,ptLow,ptHigh,rapidityBins,rapidityLow,rapidityHigh,"");
-    profile3D_deuteron_v1->BuildOptions(-1.0,1.0,"");
-    profile3D_deuteron_v1->GetXaxis()->SetTitle("Centrality bin");
-    profile3D_deuteron_v1->GetYaxis()->SetTitle("p_{T} [GeV/c]");
-    profile3D_deuteron_v1->GetZaxis()->SetTitle("y");
-    for(Int_t icent=0;icent<Ncentralities;icent++) {
-        sprintf(name,"hist_deuteron_v1y_cent%d",icent+1);
-        if(icent < 1) sprintf(description,"UrQMD FXT 4.5 GeV, centrality >30%%, Proton v_{1}(y)");
-        if(icent > 0) sprintf(description,"UrQMD FXT 4.5 GeV, centrality %d - %d%%, Proton v_{1}(y)",30-5*icent,35-5*icent);
-        deuteron_v1_cent[icent] = new TH1D(name,description,rapidityBins,rapidityLow,rapidityHigh);
-        deuteron_v1_cent[icent]->GetXaxis()->SetTitle("Rapidity y");
-        deuteron_v1_cent[icent]->GetYaxis()->SetTitle("v_{1}");
-    }
-    deuteron_v1_10_30_averaged = new TH1D("hist_deuteron_v1y_averaged","10-30% Deuteron v_{1}(y)",rapidityBins,rapidityLow,rapidityHigh);
-    deuteron_v1_10_30_averaged->GetXaxis()->SetTitle("Rapidity y");
-    deuteron_v1_10_30_averaged->GetYaxis()->SetTitle("v_{1}");
-    
     profile3D_pionPlus_v1 = new TProfile3D("profile3D_pionPlus_v1","#pi^{#plus} v_{1}",Ncentralities,0.5,Ncentralities+0.5,ptBins,ptLow,ptHigh,rapidityBins,rapidityLow,rapidityHigh,"");
-    profile3D_pionPlus_v1->BuildOptions(-1.0,1.0,"");
+    profile3D_pionPlus_v1->BuildOptions(-1,1,"");
     profile3D_pionPlus_v1->GetXaxis()->SetTitle("Centrality bin");
     profile3D_pionPlus_v1->GetYaxis()->SetTitle("p_{T} [GeV/c]");
     profile3D_pionPlus_v1->GetZaxis()->SetTitle("y");
+    profile3D_pionPlus_v1->Sumw2();
+    profile3D_pionPlus_v1_tpc = new TProfile3D("profile3D_pionPlus_v1_tpc","#pi^{#plus} v_{1}",Ncentralities,0.5,Ncentralities+0.5,ptBins,ptLow,ptHigh,rapidityBins,rapidityLow,rapidityHigh,"");
+    profile3D_pionPlus_v1_tpc->BuildOptions(-1,1,"");
+    profile3D_pionPlus_v1_tpc->GetXaxis()->SetTitle("Centrality bin");
+    profile3D_pionPlus_v1_tpc->GetYaxis()->SetTitle("p_{T} [GeV/c]");
+    profile3D_pionPlus_v1_tpc->GetZaxis()->SetTitle("y");
+    profile3D_pionPlus_v1_tpc->Sumw2();
     for(Int_t icent=0;icent<Ncentralities;icent++) {
         sprintf(name,"hist_pionPlus_v1y_cent%d",icent+1);
         if(icent < 1) sprintf(description,"UrQMD FXT 4.5 GeV, centrality >30%%, #pi^{#plus} v_{1}(y)");
@@ -568,10 +569,17 @@ Int_t FxtMaker::Init() {
     pionPlus_v1_10_30_averaged->GetYaxis()->SetTitle("v_{1}");
     
     profile3D_pionMinus_v1 = new TProfile3D("profile3D_pionMinus_v1","#pi^{#minus} v_{1}",Ncentralities,0.5,Ncentralities+0.5,ptBins,ptLow,ptHigh,rapidityBins,rapidityLow,rapidityHigh,"");
-    profile3D_pionMinus_v1->BuildOptions(-1.0,1.0,"");
+    profile3D_pionMinus_v1->BuildOptions(-1,1,"");
     profile3D_pionMinus_v1->GetXaxis()->SetTitle("Centrality bin");
     profile3D_pionMinus_v1->GetYaxis()->SetTitle("p_{T} [GeV/c]");
     profile3D_pionMinus_v1->GetZaxis()->SetTitle("y");
+    profile3D_pionMinus_v1->Sumw2();
+    profile3D_pionMinus_v1_tpc = new TProfile3D("profile3D_pionMinus_v1_tpc","#pi^{#minus} v_{1}",Ncentralities,0.5,Ncentralities+0.5,ptBins,ptLow,ptHigh,rapidityBins,rapidityLow,rapidityHigh,"");
+    profile3D_pionMinus_v1_tpc->BuildOptions(-1,1,"");
+    profile3D_pionMinus_v1_tpc->GetXaxis()->SetTitle("Centrality bin");
+    profile3D_pionMinus_v1_tpc->GetYaxis()->SetTitle("p_{T} [GeV/c]");
+    profile3D_pionMinus_v1_tpc->GetZaxis()->SetTitle("y");
+    profile3D_pionMinus_v1_tpc->Sumw2();
     for(Int_t icent=0;icent<Ncentralities;icent++) {
         sprintf(name,"hist_pionMinus_v1y_cent%d",icent+1);
         if(icent < 1) sprintf(description,"UrQMD FXT 4.5 GeV, centrality >30%%, #pi^{#minus} v_{1}(y)");
@@ -585,10 +593,17 @@ Int_t FxtMaker::Init() {
     pionMinus_v1_10_30_averaged->GetYaxis()->SetTitle("v_{1}");
     
     profile3D_kaonPlus_v1 = new TProfile3D("profile3D_kaonPlus_v1","K^{#plus} v_{1}",Ncentralities,0.5,Ncentralities+0.5,ptBins,ptLow,ptHigh,rapidityBins,rapidityLow,rapidityHigh,"");
-    profile3D_kaonPlus_v1->BuildOptions(-1.0,1.0,"");
+    profile3D_kaonPlus_v1->BuildOptions(-1,1,"");
     profile3D_kaonPlus_v1->GetXaxis()->SetTitle("Centrality bin");
     profile3D_kaonPlus_v1->GetYaxis()->SetTitle("p_{T} [GeV/c]");
     profile3D_kaonPlus_v1->GetZaxis()->SetTitle("y");
+    profile3D_kaonPlus_v1->Sumw2();
+    profile3D_kaonPlus_v1_tpc = new TProfile3D("profile3D_kaonPlus_v1_tpc","K^{#plus} v_{1}",Ncentralities,0.5,Ncentralities+0.5,ptBins,ptLow,ptHigh,rapidityBins,rapidityLow,rapidityHigh,"");
+    profile3D_kaonPlus_v1_tpc->BuildOptions(-1,1,"");
+    profile3D_kaonPlus_v1_tpc->GetXaxis()->SetTitle("Centrality bin");
+    profile3D_kaonPlus_v1_tpc->GetYaxis()->SetTitle("p_{T} [GeV/c]");
+    profile3D_kaonPlus_v1_tpc->GetZaxis()->SetTitle("y");
+    profile3D_kaonPlus_v1_tpc->Sumw2();
     for(Int_t icent=0;icent<Ncentralities;icent++) {
         sprintf(name,"hist_kaonPlus_v1y_cent%d",icent+1);
         if(icent < 1) sprintf(description,"UrQMD FXT 4.5 GeV, centrality >30%%, K^{#plus} v_{1}(y)");
@@ -602,10 +617,17 @@ Int_t FxtMaker::Init() {
     kaonPlus_v1_10_30_averaged->GetYaxis()->SetTitle("v_{1}");
     
     profile3D_kaonMinus_v1 = new TProfile3D("profile3D_kaonMinus_v1","K^{#minus} v_{1}",Ncentralities,0.5,Ncentralities+0.5,ptBins,ptLow,ptHigh,rapidityBins,rapidityLow,rapidityHigh,"");
-    profile3D_kaonMinus_v1->BuildOptions(-1.0,1.0,"");
+    profile3D_kaonMinus_v1->BuildOptions(-1,1,"");
     profile3D_kaonMinus_v1->GetXaxis()->SetTitle("Centrality bin");
     profile3D_kaonMinus_v1->GetYaxis()->SetTitle("p_{T} [GeV/c]");
     profile3D_kaonMinus_v1->GetZaxis()->SetTitle("y");
+    profile3D_kaonMinus_v1->Sumw2();
+    profile3D_kaonMinus_v1_tpc = new TProfile3D("profile3D_kaonMinus_v1_tpc","K^{#minus} v_{1}",Ncentralities,0.5,Ncentralities+0.5,ptBins,ptLow,ptHigh,rapidityBins,rapidityLow,rapidityHigh,"");
+    profile3D_kaonMinus_v1_tpc->BuildOptions(-1,1,"");
+    profile3D_kaonMinus_v1_tpc->GetXaxis()->SetTitle("Centrality bin");
+    profile3D_kaonMinus_v1_tpc->GetYaxis()->SetTitle("p_{T} [GeV/c]");
+    profile3D_kaonMinus_v1_tpc->GetZaxis()->SetTitle("y");
+    profile3D_kaonMinus_v1_tpc->Sumw2();
     for(Int_t icent=0;icent<Ncentralities;icent++) {
         sprintf(name,"hist_kaonMinus_v1y_cent%d",icent+1);
         if(icent < 1) sprintf(description,"UrQMD FXT 4.5 GeV, centrality >30%%, K^{#minus} v_{1}(y)");
@@ -813,43 +835,43 @@ Int_t FxtMaker::Init() {
     profile3D_bbc_full_psiShift->BuildOptions(-1.0,1.0,"");
     // EP resolutions plots
     Double_t xbin[8] = {0.0,5.0,10.0,15.0,20.0,25.0,30.0,35.0};
-    profile_correlation_tpc_east_tpc_west = new TProfile("profile_correlation_tpc_east_tpc_west","<cos(#psi^{TPC east}_{1} #minus #psi^{TPC west}_{1})>",Ncentralities,xbin,-1.0,1.0,"");
+    profile_correlation_tpc_east_tpc_west = new TProfile("profile_correlation_tpc_east_tpc_west","<cos(#psi^{TPC east}_{1} #minus #psi^{TPC west}_{1})>",Ncentralities,0.5,Ncentralities+0.5,-1.0,1.0,"");
     profile_correlation_tpc_east_tpc_west->GetXaxis()->SetTitle("Centrality (%)");
     profile_correlation_tpc_east_tpc_west->GetYaxis()->SetTitle("Correlation");
     
-    profile_correlation_tpc_east_thirdEP = new TProfile("profile_correlation_tpc_east_thirdEP","<cos(#psi^{TPC east}_{1} #minus #psi^{3rd}_{1})>",Ncentralities,xbin,-1.0,1.0,"");
+    profile_correlation_tpc_east_thirdEP = new TProfile("profile_correlation_tpc_east_thirdEP","<cos(#psi^{TPC east}_{1} #minus #psi^{3rd}_{1})>",Ncentralities,0.5,Ncentralities+0.5,-1.0,1.0,"");
     profile_correlation_tpc_east_thirdEP->GetXaxis()->SetTitle("Centrality (%)");
     profile_correlation_tpc_east_thirdEP->GetYaxis()->SetTitle("Correlation");
     
-    profile_correlation_tpc_east_bbc_east = new TProfile("profile_correlation_tpc_east_bbc_east","<cos(#psi^{TPC east}_{1} #minus #psi^{BBC east}_{1})>",Ncentralities,xbin,-1.0,1.0,"");
+    profile_correlation_tpc_east_bbc_east = new TProfile("profile_correlation_tpc_east_bbc_east","<cos(#psi^{TPC east}_{1} #minus #psi^{BBC east}_{1})>",Ncentralities,0.5,Ncentralities+0.5,-1.0,1.0,"");
     profile_correlation_tpc_east_bbc_east->GetXaxis()->SetTitle("Centrality (%)");
     profile_correlation_tpc_east_bbc_east->GetYaxis()->SetTitle("Correlation");
     
-    profile_correlation_tpc_east_bbc_west = new TProfile("profile_correlation_tpc_east_bbc_west","<cos(#psi^{TPC east}_{1} #minus #psi^{BBC west}_{1})>",Ncentralities,xbin,-1.0,1.0,"");
+    profile_correlation_tpc_east_bbc_west = new TProfile("profile_correlation_tpc_east_bbc_west","<cos(#psi^{TPC east}_{1} #minus #psi^{BBC west}_{1})>",Ncentralities,0.5,Ncentralities+0.5,-1.0,1.0,"");
     profile_correlation_tpc_east_bbc_west->GetXaxis()->SetTitle("Centrality (%)");
     profile_correlation_tpc_east_bbc_west->GetYaxis()->SetTitle("Correlation");
     
-    profile_correlation_tpc_west_thirdEP = new TProfile("profile_correlation_tpc_west_thirdEP","<cos(#psi^{TPC west}_{1} #minus #psi^{3rd}_{1})>",Ncentralities,xbin,-1.0,1.0,"");
+    profile_correlation_tpc_west_thirdEP = new TProfile("profile_correlation_tpc_west_thirdEP","<cos(#psi^{TPC west}_{1} #minus #psi^{3rd}_{1})>",Ncentralities,0.5,Ncentralities+0.5,-1.0,1.0,"");
     profile_correlation_tpc_west_thirdEP->GetXaxis()->SetTitle("Centrality (%)");
     profile_correlation_tpc_west_thirdEP->GetYaxis()->SetTitle("Correlation");
     
-    profile_correlation_tpc_west_bbc_east = new TProfile("profile_correlation_tpc_west_bbc_east","<cos(#psi^{TPC west}_{1} #minus #psi^{BBC east}_{1})>",Ncentralities,xbin,-1.0,1.0,"");
+    profile_correlation_tpc_west_bbc_east = new TProfile("profile_correlation_tpc_west_bbc_east","<cos(#psi^{TPC west}_{1} #minus #psi^{BBC east}_{1})>",Ncentralities,0.5,Ncentralities+0.5,-1.0,1.0,"");
     profile_correlation_tpc_west_bbc_east->GetXaxis()->SetTitle("Centrality (%)");
     profile_correlation_tpc_west_bbc_east->GetYaxis()->SetTitle("Correlation");
     
-    profile_correlation_tpc_west_bbc_west = new TProfile("profile_correlation_tpc_west_bbc_west","<cos(#psi^{TPC west}_{1} #minus #psi^{BBC west}_{1})>",Ncentralities,xbin,-1.0,1.0,"");
+    profile_correlation_tpc_west_bbc_west = new TProfile("profile_correlation_tpc_west_bbc_west","<cos(#psi^{TPC west}_{1} #minus #psi^{BBC west}_{1})>",Ncentralities,0.5,Ncentralities+0.5,-1.0,1.0,"");
     profile_correlation_tpc_west_bbc_west->GetXaxis()->SetTitle("Centrality (%)");
     profile_correlation_tpc_west_bbc_west->GetYaxis()->SetTitle("Correlation");
     
-    profile_correlation_thirdEP_bbc_east = new TProfile("profile_correlation_thirdEP_bbc_east","<cos(#psi^{3rd}_{1} #minus #psi^{BBC east}_{1})>",Ncentralities,xbin,-1.0,1.0,"");
+    profile_correlation_thirdEP_bbc_east = new TProfile("profile_correlation_thirdEP_bbc_east","<cos(#psi^{3rd}_{1} #minus #psi^{BBC east}_{1})>",Ncentralities,0.5,Ncentralities+0.5,-1.0,1.0,"");
     profile_correlation_thirdEP_bbc_east->GetXaxis()->SetTitle("Centrality (%)");
     profile_correlation_thirdEP_bbc_east->GetYaxis()->SetTitle("Correlation");
     
-    profile_correlation_thirdEP_bbc_west = new TProfile("profile_correlation_thirdEP_bbc_west","<cos(#psi^{3rd}_{1} #minus #psi^{BBC west}_{1})>",Ncentralities,xbin,-1.0,1.0,"");
+    profile_correlation_thirdEP_bbc_west = new TProfile("profile_correlation_thirdEP_bbc_west","<cos(#psi^{3rd}_{1} #minus #psi^{BBC west}_{1})>",Ncentralities,0.5,Ncentralities+0.5,-1.0,1.0,"");
     profile_correlation_thirdEP_bbc_west->GetXaxis()->SetTitle("Centrality (%)");
     profile_correlation_thirdEP_bbc_west->GetYaxis()->SetTitle("Correlation");
     
-    profile_correlation_bbc_east_bbc_west = new TProfile("profile_correlation_bbc_east_bbc_west","<cos(#psi^{BBC east}_{1} #minus #psi^{BBC west}_{1})>",Ncentralities,xbin,-1.0,1.0,"");
+    profile_correlation_bbc_east_bbc_west = new TProfile("profile_correlation_bbc_east_bbc_west","<cos(#psi^{BBC east}_{1} #minus #psi^{BBC west}_{1})>",Ncentralities,0.5,Ncentralities+0.5,-1.0,1.0,"");
     profile_correlation_bbc_east_bbc_west->GetXaxis()->SetTitle("Centrality (%)");
     profile_correlation_bbc_east_bbc_west->GetYaxis()->SetTitle("Correlation");
     
@@ -908,7 +930,7 @@ Int_t FxtMaker::Init() {
     resolution_bbc_full = new TH1D("resolution_bbc_full","#sqrt{<cos(#psi^{BBC full}_{1} #minus #psi_{r})>}",Ncentralities,xbin);
     resolution_bbc_full->GetXaxis()->SetTitle("Centrality (%)");
     resolution_bbc_full->GetYaxis()->SetTitle("Resolution");
-    // three-EP method
+    // Three-EP method
     resolution_tpc_east_threeEP = new TH1D("resolution_tpc_east_threeEP","#sqrt{#frac{<cos(#psi^{TPC east}_{1} #minus #psi^{TPC west}_{1})><cos(#psi^{TPC east}_{1} #minus #psi^{BBC east}_{1})>}{<cos(#psi^{TPC west}_{1} #minus #psi^{BBC east}_{1})>}}",Ncentralities,xbin);
     resolution_tpc_east_threeEP->GetXaxis()->SetTitle("Centrality (%)");
     resolution_tpc_east_threeEP->GetYaxis()->SetTitle("Resolution");
@@ -948,12 +970,13 @@ Int_t FxtMaker::Init() {
     correlation2D_bbc_east_tpc_west = new TH2D("correlation2D_bbc_east_tpc_west","#psi^{BBC east}_{1} vs. #psi^{TPC west}_{1}",50,-0.5*TMath::Pi(),2.5*TMath::Pi(),50,-0.5*TMath::Pi(),2.5*TMath::Pi());
     correlation2D_bbc_east_tpc_west->GetXaxis()->SetTitle("#psi^{TPC west}_{1} [Radian]");
     correlation2D_bbc_east_tpc_west->GetYaxis()->SetTitle("#psi^{BBC east}_{1} [Radian]");
+    
     return kStOK;
 }
 
-// run once at the end to do after process
+// Run once at the end to do after process
 Int_t FxtMaker::Finish() {
-    // compute BBC ADCs mean
+    // Compute BBC ADCs mean
     for(Int_t i=0;i<16;i++) {
         if(esum[i] > 0.0) {
             emean[i] /= esum[i];
@@ -972,12 +995,12 @@ Int_t FxtMaker::Finish() {
             bbc_west_gain_corrected_adc_profile->SetBinContent(i+1,wmean_c[i]);
         }
     }
-    // compute EP resolutions
-    for(Int_t icent=1;icent<=Ncentralities;icent++) {
+    // Compute EP resolutions
+    for(int icent=1;icent<=Ncentralities;icent++) {
         // TPC EP
       {
-        Double_t resolution = profile_correlation_tpc_east_tpc_west->GetBinContent(icent);
-        Double_t error = profile_correlation_tpc_east_tpc_west->GetBinError(icent);
+        double resolution = profile_correlation_tpc_east_tpc_west->GetBinContent(icent);
+        double error = profile_correlation_tpc_east_tpc_west->GetBinError(icent);
         if(resolution > 0.0 && error > 0.0) {
             error = (resolution > 0.0 && error > 0.0)? TMath::Abs(0.5*TMath::Power(resolution,-0.5)*error) : 0.0;
             resolution = (resolution > 0.0 && error > 0.0)? TMath::Sqrt(resolution) : 0.0;
@@ -991,12 +1014,12 @@ Int_t FxtMaker::Finish() {
             resolution_tpc_west_threeEP->SetBinContent(icent,resolution);
             resolution_tpc_west_threeEP->SetBinError(icent,error);
             
-            Double_t deltaResSub = 0.005;
-            Double_t chiSub = chi(resolution);
-            Double_t chiSubDelta = chi(resolution + deltaResSub);
-            Double_t mRes = resEventPlane(TMath::Sqrt(2.0) * chiSub);
-            Double_t mResDelta = resEventPlane(TMath::Sqrt(2.0) * chiSubDelta);
-            Double_t mResErr = error * TMath::Abs(mRes - mResDelta) / deltaResSub;
+            double deltaResSub = 0.005;
+            double chiSub = chi(resolution);
+            double chiSubDelta = chi(resolution + deltaResSub);
+            double mRes = resEventPlane(TMath::Sqrt(2.0) * chiSub);
+            double mResDelta = resEventPlane(TMath::Sqrt(2.0) * chiSubDelta);
+            double mResErr = error * TMath::Abs(mRes - mResDelta) / deltaResSub;
             
             resolution_tpc_full->SetBinContent(icent,mRes);
             resolution_tpc_full->SetBinError(icent,mResErr);
@@ -1004,8 +1027,8 @@ Int_t FxtMaker::Finish() {
       }
         // BBC EP
       {
-        Double_t resolution = profile_correlation_bbc_east_bbc_west->GetBinContent(icent);
-        Double_t error = profile_correlation_bbc_east_bbc_west->GetBinError(icent);
+        double resolution = profile_correlation_bbc_east_bbc_west->GetBinContent(icent);
+        double error = profile_correlation_bbc_east_bbc_west->GetBinError(icent);
         if(resolution > 0.0 && error > 0.0) {
             error = (resolution > 0.0 && error > 0.0)? TMath::Abs(0.5*TMath::Power(resolution,-0.5)*error) : 0.0;
             resolution = (resolution > 0.0 && error > 0.0)? TMath::Sqrt(resolution) : 0.0;
@@ -1015,21 +1038,21 @@ Int_t FxtMaker::Finish() {
             resolution_bbc_sub->SetBinContent(icent,resolution);
             resolution_bbc_sub->SetBinError(icent,error);
             
-            Double_t deltaResSub = 0.005;
-            Double_t chiSub = chi(resolution);
-            Double_t chiSubDelta = chi(resolution + deltaResSub);
-            Double_t mRes = resEventPlane(TMath::Sqrt(2.0) * chiSub);
-            Double_t mResDelta = resEventPlane(TMath::Sqrt(2.0) * chiSubDelta);
-            Double_t mResErr = error * TMath::Abs(mRes - mResDelta) / deltaResSub;
+            double deltaResSub = 0.005;
+            double chiSub = chi(resolution);
+            double chiSubDelta = chi(resolution + deltaResSub);
+            double mRes = resEventPlane(TMath::Sqrt(2.0) * chiSub);
+            double mResDelta = resEventPlane(TMath::Sqrt(2.0) * chiSubDelta);
+            double mResErr = error * TMath::Abs(mRes - mResDelta) / deltaResSub;
             
             resolution_bbc_full->SetBinContent(icent,mRes);
             resolution_bbc_full->SetBinError(icent,mResErr);
         }
       }
-      // three-EP method
+        // Three-EP method
       {
-        Double_t resolution = profile_correlation_tpc_east_thirdEP->GetBinContent(icent);
-        Double_t error = profile_correlation_tpc_east_thirdEP->GetBinError(icent);
+        double resolution = profile_correlation_tpc_east_thirdEP->GetBinContent(icent);
+        double error = profile_correlation_tpc_east_thirdEP->GetBinError(icent);
         if(resolution > 0.0 && error > 0.0) {
             error = (resolution > 0.0 && error > 0.0)? TMath::Abs(0.5*TMath::Power(resolution,-0.5)*error) : 0.0;
             resolution = (resolution > 0.0 && error > 0.0)? TMath::Sqrt(resolution) : 0.0;
@@ -1039,8 +1062,8 @@ Int_t FxtMaker::Finish() {
         }
       }
       {
-        Double_t resolution = profile_correlation_tpc_east_bbc_east->GetBinContent(icent);
-        Double_t error = profile_correlation_tpc_east_bbc_east->GetBinError(icent);
+        double resolution = profile_correlation_tpc_east_bbc_east->GetBinContent(icent);
+        double error = profile_correlation_tpc_east_bbc_east->GetBinError(icent);
         if(resolution > 0.0 && error > 0.0) {
             error = (resolution > 0.0 && error > 0.0)? TMath::Abs(0.5*TMath::Power(resolution,-0.5)*error) : 0.0;
             resolution = (resolution > 0.0 && error > 0.0)? TMath::Sqrt(resolution) : 0.0;
@@ -1052,8 +1075,8 @@ Int_t FxtMaker::Finish() {
         }
       }
       {
-        Double_t resolution = profile_correlation_tpc_east_bbc_west->GetBinContent(icent);
-        Double_t error = profile_correlation_tpc_east_bbc_west->GetBinError(icent);
+        double resolution = profile_correlation_tpc_east_bbc_west->GetBinContent(icent);
+        double error = profile_correlation_tpc_east_bbc_west->GetBinError(icent);
         if(resolution > 0.0 && error > 0.0) {
             error = (resolution > 0.0 && error > 0.0)? TMath::Abs(0.5*TMath::Power(resolution,-0.5)*error) : 0.0;
             resolution = (resolution > 0.0 && error > 0.0)? TMath::Sqrt(resolution) : 0.0;
@@ -1063,8 +1086,8 @@ Int_t FxtMaker::Finish() {
         }
       }
       {
-        Double_t resolution = profile_correlation_tpc_west_thirdEP->GetBinContent(icent);
-        Double_t error = profile_correlation_tpc_west_thirdEP->GetBinError(icent);
+        double resolution = profile_correlation_tpc_west_thirdEP->GetBinContent(icent);
+        double error = profile_correlation_tpc_west_thirdEP->GetBinError(icent);
         if(resolution > 0.0 && error > 0.0) {
             error = (resolution > 0.0 && error > 0.0)? TMath::Abs(0.5*TMath::Power(resolution,-0.5)*error) : 0.0;
             resolution = (resolution > 0.0 && error > 0.0)? TMath::Sqrt(resolution) : 0.0;
@@ -1074,8 +1097,8 @@ Int_t FxtMaker::Finish() {
         }
       }
       {
-        Double_t resolution = profile_correlation_tpc_west_bbc_east->GetBinContent(icent);
-        Double_t error = profile_correlation_tpc_west_bbc_east->GetBinError(icent);
+        double resolution = profile_correlation_tpc_west_bbc_east->GetBinContent(icent);
+        double error = profile_correlation_tpc_west_bbc_east->GetBinError(icent);
         if(resolution > 0.0 && error > 0.0) {
             error = (resolution > 0.0 && error > 0.0)? TMath::Abs(0.5*TMath::Power(resolution,-0.5)*error) : 0.0;
             resolution = (resolution > 0.0 && error > 0.0)? TMath::Sqrt(resolution) : 0.0;
@@ -1085,8 +1108,8 @@ Int_t FxtMaker::Finish() {
         }
       }
       {
-        Double_t resolution = profile_correlation_tpc_west_bbc_west->GetBinContent(icent);
-        Double_t error = profile_correlation_tpc_west_bbc_west->GetBinError(icent);
+        double resolution = profile_correlation_tpc_west_bbc_west->GetBinContent(icent);
+        double error = profile_correlation_tpc_west_bbc_west->GetBinError(icent);
         if(resolution > 0.0 && error > 0.0) {
             error = (resolution > 0.0 && error > 0.0)? TMath::Abs(0.5*TMath::Power(resolution,-0.5)*error) : 0.0;
             resolution = (resolution > 0.0 && error > 0.0)? TMath::Sqrt(resolution) : 0.0;
@@ -1096,8 +1119,8 @@ Int_t FxtMaker::Finish() {
         }
       }
       {
-        Double_t resolution = profile_correlation_thirdEP_bbc_east->GetBinContent(icent);
-        Double_t error = profile_correlation_thirdEP_bbc_east->GetBinError(icent);
+        double resolution = profile_correlation_thirdEP_bbc_east->GetBinContent(icent);
+        double error = profile_correlation_thirdEP_bbc_east->GetBinError(icent);
         if(resolution > 0.0 && error > 0.0) {
             error = (resolution > 0.0 && error > 0.0)? TMath::Abs(0.5*TMath::Power(resolution,-0.5)*error) : 0.0;
             resolution = (resolution > 0.0 && error > 0.0)? TMath::Sqrt(resolution) : 0.0;
@@ -1107,8 +1130,8 @@ Int_t FxtMaker::Finish() {
         }
       }
       {
-        Double_t resolution = profile_correlation_thirdEP_bbc_west->GetBinContent(icent);
-        Double_t error = profile_correlation_thirdEP_bbc_west->GetBinError(icent);
+        double resolution = profile_correlation_thirdEP_bbc_west->GetBinContent(icent);
+        double error = profile_correlation_thirdEP_bbc_west->GetBinError(icent);
         if(resolution > 0.0 && error > 0.0) {
             error = (resolution > 0.0 && error > 0.0)? TMath::Abs(0.5*TMath::Power(resolution,-0.5)*error) : 0.0;
             resolution = (resolution > 0.0 && error > 0.0)? TMath::Sqrt(resolution) : 0.0;
@@ -1126,11 +1149,12 @@ Int_t FxtMaker::Finish() {
     
     resolution_bbc_east_threeEP->Multiply(correlation_tpc_west_bbc_east);
     resolution_bbc_east_threeEP->Divide(correlation_tpc_east_tpc_west);
-    // compute flow and apply resolution corrections
+    // Compute flow and apply resolution corrections
     TH1D *psi_resolution_tmp = new TH1D("psi_resolution_tmp","psi_resolution_tmp",rapidityBins,rapidityLow,rapidityHigh);
-    for(Int_t icent=1;icent<=Ncentralities;icent++){
-        for(Int_t bin=1;bin<=rapidityBins;bin++){
-            // prepare resolutions to divide
+    TH1D *psi_resolution_tmp_half = new TH1D("psi_resolution_tmp_half","psi_resolution_tmp_half",rapidityBins,rapidityLow,rapidityHigh);
+    for(int icent=1;icent<=Ncentralities;icent++){
+        for(int bin=1;bin<=rapidityBins;bin++){
+            // Prepare resolutions to divide
             if(chooseBBCeastEP) {
                 psi_resolution_tmp->SetBinContent(bin,resolution_bbc_east_threeEP->GetBinContent(Ncentralities-icent+1));
                 psi_resolution_tmp->SetBinError(bin,resolution_bbc_east_threeEP->GetBinError(Ncentralities-icent+1));
@@ -1139,192 +1163,176 @@ Int_t FxtMaker::Finish() {
                 psi_resolution_tmp->SetBinContent(bin,resolution_tpc_west_threeEP->GetBinContent(Ncentralities-icent+1));
                 psi_resolution_tmp->SetBinError(bin,resolution_tpc_west_threeEP->GetBinError(Ncentralities-icent+1));
             }
-            // average over momentum region
-            // proton
+            // Average over momentum region
+            // Proton
           {
-            Int_t momentumBottomBin = profile3D_proton_v1->GetYaxis()->FindBin(0.4);
-            Int_t momentumTopBin = profile3D_proton_v1->GetYaxis()->FindBin(2.0);
-            Double_t content = 0.0, contentS = 0.0, error = 0.0;
-            Int_t entry = 0;
-            for(Int_t momentumBin=momentumBottomBin;momentumBin<=momentumTopBin;momentumBin++) {
+            int momentumBottomBin = profile3D_proton_v1->GetYaxis()->FindBin(0.5);
+            int momentumTopBin = profile3D_proton_v1->GetYaxis()->FindBin(2.0);
+            double content = 0.0, contentS = 0.0, error = 0.0;
+            int entry = 0;
+            for(int momentumBin=momentumBottomBin;momentumBin<=momentumTopBin;momentumBin++) {
                 if(profile3D_proton_v1->GetBinError(icent,momentumBin,bin) > 0.0) {
-                    Int_t currentBin = profile3D_proton_v1->GetBin(icent,momentumBin,bin);
+                    int currentBin = profile3D_proton_v1->GetBin(icent,momentumBin,bin);
                     if(profile3D_proton_v1->GetBinEntries(currentBin) >= 5) {
-                        Double_t binContent = profile3D_proton_v1->GetBinContent(currentBin);
-                        Double_t binEntry = profile3D_proton_v1->GetBinEntries(currentBin);
-                        Double_t binError = profile3D_proton_v1->GetBinError(currentBin);
-                        Double_t ss = binError*TMath::Sqrt((Double_t)binEntry);
+                        double binContent = profile3D_proton_v1->GetBinContent(currentBin);
+                        double binEntry = profile3D_proton_v1->GetBinEntries(currentBin);
+                        double binError = profile3D_proton_v1->GetBinError(currentBin);
+                        double ss = binError*TMath::Sqrt((double)binEntry);
                         content += binContent*binEntry;
                         contentS+= (ss*ss+binContent*binContent)*binEntry;
-                        entry   += (Int_t)binEntry;
+                        entry   += (int)binEntry;
                     }
                 }
             }
             if(entry > 0.0) {
-                content /= (Double_t)entry;
-                error = (contentS/(Double_t)entry < content*content)? 0.0 : TMath::Sqrt(contentS/(Double_t)entry-content*content);
-                error   /= TMath::Sqrt((Double_t)entry);
+                content /= (double)entry;
+                error = (contentS/(double)entry < content*content)? 0.0 : TMath::Sqrt(contentS/(double)entry-content*content);
+                error   /= TMath::Sqrt((double)entry);
                 proton_v1_cent[icent-1]->SetBinContent(bin,content);
                 proton_v1_cent[icent-1]->SetBinError(bin,error);
             }
           }
-            // deuteron
-          {
-            Int_t momentumBottomBin = profile3D_deuteron_v1->GetYaxis()->FindBin(0.0);
-            Int_t momentumTopBin = profile3D_deuteron_v1->GetYaxis()->FindBin(5.0);
-            Double_t content = 0.0, contentS = 0.0, error = 0.0;
-            Int_t entry = 0;
-            for(Int_t momentumBin=momentumBottomBin;momentumBin<=momentumTopBin;momentumBin++) {
-                if(profile3D_deuteron_v1->GetBinError(icent,momentumBin,bin) > 0.0) {
-                    Int_t currentBin = profile3D_deuteron_v1->GetBin(icent,momentumBin,bin);
-                    if(profile3D_deuteron_v1->GetBinEntries(currentBin) >= 5) {
-                        Double_t binContent = profile3D_deuteron_v1->GetBinContent(currentBin);
-                        Double_t binEntry = profile3D_deuteron_v1->GetBinEntries(currentBin);
-                        Double_t binError = profile3D_deuteron_v1->GetBinError(currentBin);
-                        Double_t ss = binError*TMath::Sqrt((Double_t)binEntry);
-                        content += binContent*binEntry;
-                        contentS+= (ss*ss+binContent*binContent)*binEntry;
-                        entry   += (Int_t)binEntry;
-                    }
-                }
-            }
-            if(entry > 0.0) {
-                content /= (Double_t)entry;
-                error = (contentS/(Double_t)entry < content*content)? 0.0 : TMath::Sqrt(contentS/(Double_t)entry-content*content);
-                error   /= TMath::Sqrt((Double_t)entry);
-                deuteron_v1_cent[icent-1]->SetBinContent(bin,content);
-                deuteron_v1_cent[icent-1]->SetBinError(bin,error);
-            }
-          }
+            
             // pionPlus
           {
-            Int_t momentumBottomBin = profile3D_pionPlus_v1->GetYaxis()->FindBin(0.0);
-            Int_t momentumTopBin = profile3D_pionPlus_v1->GetYaxis()->FindBin(5.0);
-            Double_t content = 0.0, contentS = 0.0, error = 0.0;
-            Int_t entry = 0;
-            for(Int_t momentumBin=momentumBottomBin;momentumBin<=momentumTopBin;momentumBin++) {
+            int momentumBottomBin = profile3D_pionPlus_v1->GetYaxis()->FindBin(0.2);
+            int momentumTopBin = profile3D_pionPlus_v1->GetYaxis()->FindBin(1.6);
+            double content = 0.0, contentS = 0.0, error = 0.0;
+            int entry = 0;
+            for(int momentumBin=momentumBottomBin;momentumBin<=momentumTopBin;momentumBin++) {
                 if(profile3D_pionPlus_v1->GetBinError(icent,momentumBin,bin) > 0.0) {
-                    Int_t currentBin = profile3D_pionPlus_v1->GetBin(icent,momentumBin,bin);
+                    int currentBin = profile3D_pionPlus_v1->GetBin(icent,momentumBin,bin);
                     if(profile3D_pionPlus_v1->GetBinEntries(currentBin) >= 5) {
-                        Double_t binContent = profile3D_pionPlus_v1->GetBinContent(currentBin);
-                        Double_t binEntry = profile3D_pionPlus_v1->GetBinEntries(currentBin);
-                        Double_t binError = profile3D_pionPlus_v1->GetBinError(currentBin);
-                        Double_t ss = binError*TMath::Sqrt((Double_t)binEntry);
+                        double binContent = profile3D_pionPlus_v1->GetBinContent(currentBin);
+                        double binEntry = profile3D_pionPlus_v1->GetBinEntries(currentBin);
+                        double binError = profile3D_pionPlus_v1->GetBinError(currentBin);
+                        double ss = binError*TMath::Sqrt((double)binEntry);
                         content += binContent*binEntry;
                         contentS+= (ss*ss+binContent*binContent)*binEntry;
-                        entry   += (Int_t)binEntry;
+                        entry   += (int)binEntry;
                     }
                 }
             }
             if(entry > 0.0) {
-                content /= (Double_t)entry;
-                error = (contentS/(Double_t)entry < content*content)? 0.0 : TMath::Sqrt(contentS/(Double_t)entry-content*content);
-                error   /= TMath::Sqrt((Double_t)entry);
+                content /= (double)entry;
+                error = (contentS/(double)entry < content*content)? 0.0 : TMath::Sqrt(contentS/(double)entry-content*content);
+                error   /= TMath::Sqrt((double)entry);
                 pionPlus_v1_cent[icent-1]->SetBinContent(bin,content);
                 pionPlus_v1_cent[icent-1]->SetBinError(bin,error);
             }
           }
+        }
+        for(int bin=1;bin<=rapidityBins;bin++){
+            // Prepare resolutions to divide
+            if(chooseBBCeastEP) {
+                psi_resolution_tmp_half->SetBinContent(bin,resolution_bbc_east_threeEP->GetBinContent(Ncentralities-icent+1));
+                psi_resolution_tmp_half->SetBinError(bin,resolution_bbc_east_threeEP->GetBinError(Ncentralities-icent+1));
+            }
+            if(chooseTPCEP) {
+                psi_resolution_tmp_half->SetBinContent(bin,resolution_tpc_west_threeEP->GetBinContent(Ncentralities-icent+1));
+                psi_resolution_tmp_half->SetBinError(bin,resolution_tpc_west_threeEP->GetBinError(Ncentralities-icent+1));
+            }
+            // Average over momentum region
             // pionMinus
           {
-            Int_t momentumBottomBin = profile3D_pionMinus_v1->GetYaxis()->FindBin(0.0);
-            Int_t momentumTopBin = profile3D_pionMinus_v1->GetYaxis()->FindBin(5.0);
-            Double_t content = 0.0, contentS = 0.0, error = 0.0;
-            Int_t entry = 0;
-            for(Int_t momentumBin=momentumBottomBin;momentumBin<=momentumTopBin;momentumBin++) {
+            int momentumBottomBin = profile3D_pionMinus_v1->GetYaxis()->FindBin(0.2);
+            int momentumTopBin = profile3D_pionMinus_v1->GetYaxis()->FindBin(1.6);
+            double content = 0.0, contentS = 0.0, error = 0.0;
+            int entry = 0;
+            for(int momentumBin=momentumBottomBin;momentumBin<=momentumTopBin;momentumBin++) {
                 if(profile3D_pionMinus_v1->GetBinError(icent,momentumBin,bin) > 0.0) {
-                    Int_t currentBin = profile3D_pionMinus_v1->GetBin(icent,momentumBin,bin);
+                    int currentBin = profile3D_pionMinus_v1->GetBin(icent,momentumBin,bin);
                     if(profile3D_pionMinus_v1->GetBinEntries(currentBin) >= 5) {
-                        Double_t binContent = profile3D_pionMinus_v1->GetBinContent(currentBin);
-                        Double_t binEntry = profile3D_pionMinus_v1->GetBinEntries(currentBin);
-                        Double_t binError = profile3D_pionMinus_v1->GetBinError(currentBin);
-                        Double_t ss = binError*TMath::Sqrt((Double_t)binEntry);
+                        double binContent = profile3D_pionMinus_v1->GetBinContent(currentBin);
+                        double binEntry = profile3D_pionMinus_v1->GetBinEntries(currentBin);
+                        double binError = profile3D_pionMinus_v1->GetBinError(currentBin);
+                        double ss = binError*TMath::Sqrt((double)binEntry);
                         content += binContent*binEntry;
                         contentS+= (ss*ss+binContent*binContent)*binEntry;
-                        entry   += (Int_t)binEntry;
+                        entry   += (int)binEntry;
                     }
                 }
             }
             if(entry > 0.0) {
-                content /= (Double_t)entry;
-                error = (contentS/(Double_t)entry < content*content)? 0.0 : TMath::Sqrt(contentS/(Double_t)entry-content*content);
-                error   /= TMath::Sqrt((Double_t)entry);
+                content /= (double)entry;
+                error = (contentS/(double)entry < content*content)? 0.0 : TMath::Sqrt(contentS/(double)entry-content*content);
+                error   /= TMath::Sqrt((double)entry);
                 pionMinus_v1_cent[icent-1]->SetBinContent(bin,content);
                 pionMinus_v1_cent[icent-1]->SetBinError(bin,error);
             }
           }
             // kaonPlus
           {
-            Int_t momentumBottomBin = profile3D_kaonPlus_v1->GetYaxis()->FindBin(0.0);
-            Int_t momentumTopBin = profile3D_kaonPlus_v1->GetYaxis()->FindBin(5.0);
-            Double_t content = 0.0, contentS = 0.0, error = 0.0;
-            Int_t entry = 0;
-            for(Int_t momentumBin=momentumBottomBin;momentumBin<=momentumTopBin;momentumBin++) {
+            int momentumBottomBin = profile3D_kaonPlus_v1->GetYaxis()->FindBin(0.2);
+            int momentumTopBin = profile3D_kaonPlus_v1->GetYaxis()->FindBin(1.6);
+            double content = 0.0, contentS = 0.0, error = 0.0;
+            int entry = 0;
+            for(int momentumBin=momentumBottomBin;momentumBin<=momentumTopBin;momentumBin++) {
                 if(profile3D_kaonPlus_v1->GetBinError(icent,momentumBin,bin) > 0.0) {
-                    Int_t currentBin = profile3D_kaonPlus_v1->GetBin(icent,momentumBin,bin);
+                    int currentBin = profile3D_kaonPlus_v1->GetBin(icent,momentumBin,bin);
                     if(profile3D_kaonPlus_v1->GetBinEntries(currentBin) >= 5) {
-                        Double_t binContent = profile3D_kaonPlus_v1->GetBinContent(currentBin);
-                        Double_t binEntry = profile3D_kaonPlus_v1->GetBinEntries(currentBin);
-                        Double_t binError = profile3D_kaonPlus_v1->GetBinError(currentBin);
-                        Double_t ss = binError*TMath::Sqrt((Double_t)binEntry);
+                        double binContent = profile3D_kaonPlus_v1->GetBinContent(currentBin);
+                        double binEntry = profile3D_kaonPlus_v1->GetBinEntries(currentBin);
+                        double binError = profile3D_kaonPlus_v1->GetBinError(currentBin);
+                        double ss = binError*TMath::Sqrt((double)binEntry);
                         content += binContent*binEntry;
                         contentS+= (ss*ss+binContent*binContent)*binEntry;
-                        entry   += (Int_t)binEntry;
+                        entry   += (int)binEntry;
                     }
                 }
             }
             if(entry > 0.0) {
-                content /= (Double_t)entry;
-                error = (contentS/(Double_t)entry < content*content)? 0.0 : TMath::Sqrt(contentS/(Double_t)entry-content*content);
-                error   /= TMath::Sqrt((Double_t)entry);
+                content /= (double)entry;
+                error = (contentS/(double)entry < content*content)? 0.0 : TMath::Sqrt(contentS/(double)entry-content*content);
+                error   /= TMath::Sqrt((double)entry);
                 kaonPlus_v1_cent[icent-1]->SetBinContent(bin,content);
                 kaonPlus_v1_cent[icent-1]->SetBinError(bin,error);
             }
           }
             // kaonMinus
           {
-            Int_t momentumBottomBin = profile3D_kaonMinus_v1->GetYaxis()->FindBin(0.0);
-            Int_t momentumTopBin = profile3D_kaonMinus_v1->GetYaxis()->FindBin(5.0);
-            Double_t content = 0.0, contentS = 0.0, error = 0.0;
-            Int_t entry = 0;
-            for(Int_t momentumBin=momentumBottomBin;momentumBin<=momentumTopBin;momentumBin++) {
+            int momentumBottomBin = profile3D_kaonMinus_v1->GetYaxis()->FindBin(0.2);
+            int momentumTopBin = profile3D_kaonMinus_v1->GetYaxis()->FindBin(1.6);
+            double content = 0.0, contentS = 0.0, error = 0.0;
+            int entry = 0;
+            for(int momentumBin=momentumBottomBin;momentumBin<=momentumTopBin;momentumBin++) {
                 if(profile3D_kaonMinus_v1->GetBinError(icent,momentumBin,bin) > 0.0) {
-                    Int_t currentBin = profile3D_kaonMinus_v1->GetBin(icent,momentumBin,bin);
+                    int currentBin = profile3D_kaonMinus_v1->GetBin(icent,momentumBin,bin);
                     if(profile3D_kaonMinus_v1->GetBinEntries(currentBin) >= 5) {
-                        Double_t binContent = profile3D_kaonMinus_v1->GetBinContent(currentBin);
-                        Double_t binEntry = profile3D_kaonMinus_v1->GetBinEntries(currentBin);
-                        Double_t binError = profile3D_kaonMinus_v1->GetBinError(currentBin);
-                        Double_t ss = binError*TMath::Sqrt((Double_t)binEntry);
+                        double binContent = profile3D_kaonMinus_v1->GetBinContent(currentBin);
+                        double binEntry = profile3D_kaonMinus_v1->GetBinEntries(currentBin);
+                        double binError = profile3D_kaonMinus_v1->GetBinError(currentBin);
+                        double ss = binError*TMath::Sqrt((double)binEntry);
                         content += binContent*binEntry;
                         contentS+= (ss*ss+binContent*binContent)*binEntry;
-                        entry   += (Int_t)binEntry;
+                        entry   += (int)binEntry;
                     }
                 }
             }
             if(entry > 0.0) {
-                content /= (Double_t)entry;
-                error = (contentS/(Double_t)entry < content*content)? 0.0 : TMath::Sqrt(contentS/(Double_t)entry-content*content);
-                error   /= TMath::Sqrt((Double_t)entry);
+                content /= (double)entry;
+                error = (contentS/(double)entry < content*content)? 0.0 : TMath::Sqrt(contentS/(double)entry-content*content);
+                error   /= TMath::Sqrt((double)entry);
                 kaonMinus_v1_cent[icent-1]->SetBinContent(bin,content);
                 kaonMinus_v1_cent[icent-1]->SetBinError(bin,error);
             }
           }
         }
-        proton_v1_cent[icent-1]->Divide(psi_resolution_tmp);
-        deuteron_v1_cent[icent-1]->Divide(psi_resolution_tmp);
-        pionPlus_v1_cent[icent-1]->Divide(psi_resolution_tmp);
-        pionMinus_v1_cent[icent-1]->Divide(psi_resolution_tmp);
-        kaonPlus_v1_cent[icent-1]->Divide(psi_resolution_tmp);
-        kaonMinus_v1_cent[icent-1]->Divide(psi_resolution_tmp);
+        proton_v1_cent[icent-1]->Divide(psi_resolution_tmp_half);
+        pionPlus_v1_cent[icent-1]->Divide(psi_resolution_tmp_half);
+        pionMinus_v1_cent[icent-1]->Divide(psi_resolution_tmp_half);
+        kaonPlus_v1_cent[icent-1]->Divide(psi_resolution_tmp_half);
+        kaonMinus_v1_cent[icent-1]->Divide(psi_resolution_tmp_half);
     }
-    // average flow over centralities
-    for(Int_t bin=1;bin<=rapidityBins;bin++){
+    // Average flow over centralities
+    for(int bin=1;bin<=rapidityBins;bin++){
         // proton
       {
-        Double_t content = 0.0, error = 0.0;
-        for(Int_t icent=2;icent<=5;icent++){
+        double content = 0.0, error = 0.0;
+        for(int icent=2;icent<=5;icent++){
             if(proton_v1_cent[icent-1]->GetBinError(bin) > 0.0) {
-            content += proton_v1_cent[icent-1]->GetBinContent(bin) / TMath::Power(proton_v1_cent[icent-1]->GetBinError(bin),2.0);
-            error += 1.0 / TMath::Power(proton_v1_cent[icent-1]->GetBinError(bin),2.0);
+                content += proton_v1_cent[icent-1]->GetBinContent(bin) / TMath::Power(proton_v1_cent[icent-1]->GetBinError(bin),2.0);
+                error += 1.0 / TMath::Power(proton_v1_cent[icent-1]->GetBinError(bin),2.0);
             }
         }
         if(error > 0.0) {
@@ -1335,8 +1343,8 @@ Int_t FxtMaker::Finish() {
         }
       }
       {
-        Double_t content = 0.0, error = 0.0;
-        for(Int_t icent=3;icent<=5;icent++){
+        double content = 0.0, error = 0.0;
+        for(int icent=3;icent<=5;icent++){
             if(proton_v1_cent[icent-1]->GetBinError(bin) > 0.0) {
                 content += proton_v1_cent[icent-1]->GetBinContent(bin) / TMath::Power(proton_v1_cent[icent-1]->GetBinError(bin),2.0);
                 error += 1.0 / TMath::Power(proton_v1_cent[icent-1]->GetBinError(bin),2.0);
@@ -1349,26 +1357,11 @@ Int_t FxtMaker::Finish() {
             proton_v1_10_25_averaged->SetBinError(bin,error);
         }
       }
-        // deuteron
-      {
-        Double_t content = 0.0, error = 0.0;
-        for(Int_t icent=2;icent<=5;icent++){
-            if(deuteron_v1_cent[icent-1]->GetBinError(bin) > 0.0) {
-                content += deuteron_v1_cent[icent-1]->GetBinContent(bin) / TMath::Power(deuteron_v1_cent[icent-1]->GetBinError(bin),2.0);
-                error += 1.0 / TMath::Power(deuteron_v1_cent[icent-1]->GetBinError(bin),2.0);
-            }
-        }
-        if(error > 0.0) {
-            content /= error;
-            error = TMath::Sqrt(1.0/error);
-            deuteron_v1_10_30_averaged->SetBinContent(bin,content);
-            deuteron_v1_10_30_averaged->SetBinError(bin,error);
-        }
-      }
+        
         // pionPlus
       {
-        Double_t content = 0.0, error = 0.0;
-        for(Int_t icent=2;icent<=5;icent++){
+        double content = 0.0, error = 0.0;
+        for(int icent=2;icent<=5;icent++){
             if(pionPlus_v1_cent[icent-1]->GetBinError(bin) > 0.0) {
                 content += pionPlus_v1_cent[icent-1]->GetBinContent(bin) / TMath::Power(pionPlus_v1_cent[icent-1]->GetBinError(bin),2.0);
                 error += 1.0 / TMath::Power(pionPlus_v1_cent[icent-1]->GetBinError(bin),2.0);
@@ -1381,10 +1374,12 @@ Int_t FxtMaker::Finish() {
             pionPlus_v1_10_30_averaged->SetBinError(bin,error);
         }
       }
+    }
+    for(int bin=1;bin<=rapidityBins;bin++){
         // pionMinus
       {
-        Double_t content = 0.0, error = 0.0;
-        for(Int_t icent=2;icent<=5;icent++){
+        double content = 0.0, error = 0.0;
+        for(int icent=2;icent<=5;icent++){
             if(pionMinus_v1_cent[icent-1]->GetBinError(bin) > 0.0) {
                 content += pionMinus_v1_cent[icent-1]->GetBinContent(bin) / TMath::Power(pionMinus_v1_cent[icent-1]->GetBinError(bin),2.0);
                 error += 1.0 / TMath::Power(pionMinus_v1_cent[icent-1]->GetBinError(bin),2.0);
@@ -1399,8 +1394,8 @@ Int_t FxtMaker::Finish() {
       }
         // kaonPlus
       {
-        Double_t content = 0.0, error = 0.0;
-        for(Int_t icent=2;icent<=5;icent++){
+        double content = 0.0, error = 0.0;
+        for(int icent=2;icent<=5;icent++){
             if(kaonPlus_v1_cent[icent-1]->GetBinError(bin) > 0.0) {
                 content += kaonPlus_v1_cent[icent-1]->GetBinContent(bin) / TMath::Power(kaonPlus_v1_cent[icent-1]->GetBinError(bin),2.0);
                 error += 1.0 / TMath::Power(kaonPlus_v1_cent[icent-1]->GetBinError(bin),2.0);
@@ -1415,8 +1410,8 @@ Int_t FxtMaker::Finish() {
       }
         // kaonMinus
       {
-        Double_t content = 0.0, error = 0.0;
-        for(Int_t icent=2;icent<=5;icent++){
+        double content = 0.0, error = 0.0;
+        for(int icent=2;icent<=5;icent++){
             if(kaonMinus_v1_cent[icent-1]->GetBinError(bin) > 0.0) {
                 content += kaonMinus_v1_cent[icent-1]->GetBinContent(bin) / TMath::Power(kaonMinus_v1_cent[icent-1]->GetBinError(bin),2.0);
                 error += 1.0 / TMath::Power(kaonMinus_v1_cent[icent-1]->GetBinError(bin),2.0);
@@ -1430,25 +1425,25 @@ Int_t FxtMaker::Finish() {
         }
       }
     }
-    // save histograms to output file
+    // Save histograms to output file
     outputFile->Write();
     return kStOK;
 }
 
-// run in every event to do analysis
+// Run in every event to do analysis
 Int_t FxtMaker::Make() {
-    // get the number of Primary Vertices
+    // Get the number of Primary Vertices
     Int_t verticesNumber = mMuDstMaker->muDst()->numberOfPrimaryVertices();
     hist_vertMult->Fill(verticesNumber);
     // vertices loop starts
     /*for ( Int_t iv = 0; iv < verticesNumber; iv++ )*/ {
         // set the ith Primary Vertex as current one
         //mMuDstMaker->muDst()->setVertexIndex(iv);
-        // get Event pointer
+        // Get Event pointer
         StMuEvent *muEvent = mMuDstMaker->muDst()->event();
-        // check if Event pointer isn't Null
+        // Check if Event pointer isn't Null
         if(muEvent) {
-            // get Event-wise parameters and fill histograms
+            // Get Event-wise parameters and fill histograms
             Int_t runId = muEvent->runId();
             Double_t Day = (Double_t)runId - 16140032.0;
             hist_runId->Fill(runId);
@@ -1461,14 +1456,14 @@ Int_t FxtMaker::Make() {
             hist_Vr->Fill(primaryVertex_perp);
             hist_VyVx->Fill(primaryVertex_X,primaryVertex_Y);
             
-            // get VPD Vz
+            // Get VPD Vz
             StBTofHeader *btofhead = mMuDstMaker->muDst()->btofHeader();
             if(btofhead) {
                 Double_t VpdVz = btofhead->vpdVz();
                 hist_vpdVz->Fill(VpdVz);
             }
             
-            // check triggerId
+            // Check triggerId
             Bool_t triggerIdSelection = kFALSE;
             if(muEvent->triggerIdCollection().nominal().isTrigger(1)) triggerIdSelection = kTRUE;
             
@@ -1479,22 +1474,23 @@ Int_t FxtMaker::Make() {
             hist_grefmult->Fill(grefMult);
             hist_refmult_grefmult->Fill(grefMult,refMult);
             
-            // get the number of Primary Tracks
+            // Get the number of Primary Tracks
             Int_t trackMult = mMuDstMaker->muDst()->numberOfPrimaryTracks();
             hist_trackmult->Fill(trackMult);
             hist_refmult_trackmult->Fill(trackMult,refMult);
             hist_grefmult_trackmult->Fill(trackMult,grefMult);
             
-            // 1st Primary Tracks loop to get tofMult
+            // 1st Primary Tracks loop to get tofMult & centrality
             Int_t tofMult = 0;
+            Int_t Ntracks = 0;
             for(Int_t itr=0;itr<trackMult;itr++) {
-                // get Track pointer
+                // Get Track pointer
                 StMuTrack *track = mMuDstMaker->muDst()->primaryTracks(itr);
-                // check if Track pointer isn't Null
+                // Check if Track pointer isn't Null
                 if(track) {
-                    // count tofMult number for current Primary Vertex
+                    // Count tofMult number for current Primary Vertex
                     if(track->btofPidTraits().matchFlag()) tofMult++;
-                    // fill track histograms
+                    // Fill track histograms
                     Int_t nHitsDedx = track->nHitsDedx();
                     hist_ndEdx->Fill(nHitsDedx);
                     
@@ -1509,36 +1505,62 @@ Int_t FxtMaker::Make() {
                     
                     Double_t GlobalDCA = track->dcaGlobal().mag();
                     hist_gDCA->Fill(GlobalDCA);
+                    // Apply Track Cuts
+                    if( // Cut on nHitsDedx
+                       track->nHitsDedx() > 0
+                       // Avoid track splitting
+                       && (Double_t)track->nHitsFit()/track->nHitsPoss() >= 0.52
+                       // Apply other track cuts
+                       //&& TMath::Abs( track->eta() ) < 1.0
+                       //&& track->pt() > 0.2 && track->pt() < 5.0
+                       //&& track->dcaGlobal().mag() < 2.0
+                       ) {
+                        // Count primary track number after cuts
+                        Ntracks++;
+                    } // track cuts end
                 } // Track pointer check ends
             } // 1st Primary tracks loop ends
             hist_tofmult->Fill(tofMult);
             hist_tofmult_trackmult->Fill(trackMult,tofMult);
             hist_refmult_tofmult->Fill(tofMult,refMult);
             hist_grefmult_tofmult->Fill(tofMult,grefMult);
-            
-            // apply Event Cuts
-            if( // check if it's FXT runs
-               Day >= 1.0 && Day <= 6.0
-               // triggerId cut
-               && triggerIdSelection
-               // apply Vertex Cut
+            // get centrality
+            Int_t centrality = 0;
+            if( Ntracks >=   1 && Ntracks <  48 ) centrality = 1; // >30%
+            if( Ntracks >=  48 && Ntracks <  61 ) centrality = 2; // 25-30%
+            if( Ntracks >=  61 && Ntracks <  77 ) centrality = 3; // 20-25%
+            if( Ntracks >=  77 && Ntracks <  97 ) centrality = 4; // 15-20%
+            if( Ntracks >=  97 && Ntracks < 121 ) centrality = 5; // 10-15%
+            if( Ntracks >= 121 && Ntracks < 153 ) centrality = 6; //  5-10%
+            if( Ntracks >= 153 && Ntracks < 240 ) centrality = 7; //  0- 5%
+            // Apply Event Cuts
+            if( // Check if it's FXT runs
+               Day >= 1.0 && Day <= 6.0  // run number 16140033 - 38
+               // TriggerId cut
+               && triggerIdSelection  // trigger ID=1
+               // Apply Vertex Cut
                && verticesNumber > 0
                && mMuDstMaker->muDst()->currentVertexIndex() == 0 // 0-rank Primary Vertex
-               // apply Primary Vertex position cuts
+               // Apply Primary Vertex position cuts
                && primaryVertex_Z > 210.0 && primaryVertex_Z < 212.0
                && primaryVertex_X >  -1.5 && primaryVertex_X <   1.0
                && primaryVertex_Y >  -2.5 && primaryVertex_Y <  -1.0
-               // insert systematic check cuts
-               //&& TMath::Abs(primaryVertex_Z - 211.0) < 0.75 + 0.1*cutTest1
-               //&& TMath::Abs(primaryVertex_X - -0.25) < 1.0 + 0.1*cutTest1
-               //&& TMath::Abs(primaryVertex_Y - -1.75) < 0.5 + 0.1*cutTest1
-               // cut on refMult
+               // Insert systematic check cuts
+               //&& TMath::Abs(primaryVertex_Z - 211.0) < 0.8 + 0.04*cutTest1
+               //&& TMath::Abs(primaryVertex_X - -0.25) < 1.0 + 0.05*cutTest1
+               //&& TMath::Abs(primaryVertex_Y - -1.75) < 0.6 + 0.03*cutTest1
+               // Cut on refMult
                //&& refMult > 5
-               // cut on trackMult
-               && trackMult <= 240
+               // Cut on Ntracks & centralities
+               && 1 <= Ntracks && Ntracks < 240  // remove pile-up
                ) {
-                // 2nd Primary Tracks loop to get centrality
-                Int_t Ntracks = 0, Nprotons = 0, Ndeuterons = 0, NpionPlus = 0, NpionMinus = 0, NkaonPlus = 0, NkaonMinus = 0;
+                hist_realTrackMult->Fill(Ntracks);
+                hist_cent->Fill(centrality);
+                hist_realTrackMult_refmult->Fill(Ntracks,refMult);
+                hist_realTrackMult_grefmult->Fill(Ntracks,grefMult);
+                hist_realTrackMult_tofmult->Fill(Ntracks,tofMult);
+                hist_realTrackMult_trackmult->Fill(Ntracks,trackMult);
+                // Define event plane parameters
                 Int_t N_tpc_east = 0, N_tpc_west = 0, N_thirdEP = 0;
                 Double_t tpc_east_Qx = 0.0, tpc_east_Qy = 0.0, tpc_east_Qweight = 0.0;
                 Double_t tpc_west_Qx = 0.0, tpc_west_Qy = 0.0, tpc_west_Qweight = 0.0;
@@ -1549,7 +1571,7 @@ Int_t FxtMaker::Make() {
                 Double_t thirdEP_Qx = 0.0, thirdEP_Qy = 0.0, thirdEP_Qweight = 0.0;
                 Double_t thirdEP_plane1 = -999.0, thirdEP_plane2 = -999.0, thirdEP_plane3 = -999.0;
 #if indTPCepIndicator > 0
-                // individual tpc event plane
+                // Individual tpc event plane
                 Double_t *Qx1_ex_east = new Double_t[trackMult], *Qy1_ex_east = new Double_t[trackMult], *w1_ex_east = new Double_t[trackMult];
                 Double_t *Qx1_ex_west = new Double_t[trackMult], *Qy1_ex_west = new Double_t[trackMult], *w1_ex_west = new Double_t[trackMult];
                 Double_t *Qx1_ex_full = new Double_t[trackMult], *Qy1_ex_full = new Double_t[trackMult];
@@ -1565,119 +1587,69 @@ Int_t FxtMaker::Make() {
                     reaction_plane1_ex_full[iTrack] = -999.0; reaction_plane2_ex_full[iTrack] = -999.0; reaction_plane3_ex_full[iTrack] = -999.0;
                 }
 #endif
-                // first track loop to get centrality
+                // 2nd Primary Tracks loop to get event plane parameters
                 for(Int_t itr=0;itr<trackMult;itr++) {
-                    // get Track pointer
+                    // Get Track pointer
                     StMuTrack *track = mMuDstMaker->muDst()->primaryTracks(itr);
-                    // check if Track pointer isn't Null
+                    // Check if Track pointer isn't Null
                     if(track) {
-                        // apply Track Cuts
-                        if( // cut on nHitsDedx
+                        // Apply Track Cuts
+                        if( // Cut on nHitsDedx
                            track->nHitsDedx() > 0
-                           // avoid track splitting
+                           // Sytemactic checks
+                           //track->nHitsDedx() > 10
+                           //track->nHitsDedx() > 15
+                           //track->nHitsDedx() > 20
+                           // Avoid track splitting
                            && (Double_t)track->nHitsFit()/track->nHitsPoss() >= 0.52
-                           // apply other track cuts
+                           // Apply other track cuts
                            //&& TMath::Abs( track->eta() ) < 1.0
                            //&& track->pt() > 0.2 && track->pt() < 5.0
+                           // Sytemactic checks
+                           //&& track->dcaGlobal().mag() < 1.0
                            //&& track->dcaGlobal().mag() < 2.0
+                           //&& track->dcaGlobal().mag() < 3.0
                            ) {
-                            // count primary track number after cuts
-                            Ntracks++;
-                        } // track cuts end
-                    } // NULL pointer check end
-                } // first track loop to get centrality ends
-                
-                // get centrality
-                Int_t centrality = 0;
-                if( Ntracks >=   1 && Ntracks <  48 ) centrality = 1; // >30%
-                if( Ntracks >=  48 && Ntracks <  61 ) centrality = 2; // 25-30%
-                if( Ntracks >=  61 && Ntracks <  77 ) centrality = 3; // 20-25%
-                if( Ntracks >=  77 && Ntracks <  97 ) centrality = 4; // 15-20%
-                if( Ntracks >=  97 && Ntracks < 121 ) centrality = 5; // 10-15%
-                if( Ntracks >= 121 && Ntracks < 153 ) centrality = 6; //  5-10%
-                if( Ntracks >= 153 && Ntracks < 240 ) centrality = 7; //  0- 5%
-                
-                hist_realTrackMult->Fill(Ntracks);
-                hist_cent->Fill(centrality);
-                
-                for(Int_t itr=0;itr<trackMult;itr++) {
-                    // get Track pointer
-                    StMuTrack *track = mMuDstMaker->muDst()->primaryTracks(itr);
-                    // check if Track pointer isn't Null
-                    if(track) {
-                        // apply Track Cuts
-                        if( // cut on nHitsDedx
-                           track->nHitsDedx() > 0
-                           // avoid track splitting
-                           && (Double_t)track->nHitsFit()/track->nHitsPoss() >= 0.52
-                           // apply other track cuts
-                           //&& TMath::Abs( track->eta() ) < 1.0
-                           //&& track->pt() > 0.2 && track->pt() < 5.0
-                           //&& track->dcaGlobal().mag() < 2.0
-                           ) {
-                            // count primary track number after cuts
-                            //Ntracks++;
-                            // fill track-wise parameter histograms
+                            // Fill track-wise parameter histograms
                             Double_t pt = track->pt();
                             hist_pt->Fill(pt);
                             Double_t pz = track->p().z();
-                            
                             Double_t eta = track->eta();
                             hist_eta->Fill(eta);
-                            
+                            // Get PID parameters
+                            Double_t Beta = track->btofPidTraits().beta();
+                            Double_t trackP = track->p().mag();
+                            Double_t mass2 = 0.0;
+                            // Check if TOF info available
+                            if(Beta != -999.0) {
+                                mass2 = trackP*trackP * ( ( 1.0 / ( Beta*Beta ) ) - 1.0 );
+                            }
                             Double_t phi = track->phi();
                             if(phi < 0.0            ) phi += 2.0*TMath::Pi();
                             if(phi > 2.0*TMath::Pi()) phi -= 2.0*TMath::Pi();
                             hist_phi->Fill(phi);
-                            
-                            // fill PID histograms
-                            Int_t charge = track->charge();
-                            Double_t Beta = track->btofPidTraits().beta();
-                            Double_t trackP = track->p().mag();
-                            Double_t mass2 = 0.0;
-                            hist_dEdx->Fill(charge*trackP,track->dEdx()*1.0e6);
-                            // check if TOF info available
-                            if(Beta != -999.0) {
-                                mass2 = trackP*trackP * ( ( 1.0 / ( Beta*Beta ) ) - 1.0 );
-                                hist_beta->Fill(charge*trackP,1.0/Beta);
-                                hist_mass->Fill(charge*trackP,mass2);
-                            }
-                            
-                            // define flow weight
+                            // Define flow weight
                             Double_t w0 = 0.0, w1 = 0.0;
-                            
-                            // initial particle identifications
-                            // protons
+                            // Proton
                             if( TMath::Abs( track->nSigmaProton() ) < 2.0
-                               && ( Beta == -999.0 || ( Beta != -999.0
-                                                       && mass2 > 0.6
-                                                       && mass2 < 1.1
-                                                       // systematic check
-                                                       //&& mass2 > 0.6 + 0.02*cutTest1
-                                                       //&& mass2 < 1.0 + 0.02*cutTest1
-                                                       ) )
+                               && ( ( Beta == -999.0 /*&& TMath::Abs( track->nSigmaPion() ) > 0.3*/ ) ||
+                                   ( Beta != -999.0
+                                    && mass2 > 0.4
+                                    && mass2 < 1.4
+                                    // Systematic check cuts
+                                    //&& mass2 > 0.4 + 0.008*cutTest1
+                                    //&& mass2 < 1.4 - 0.028*cutTest1
+                                    )
+                                   )
                                && track->charge() > 0
-                               && pt > 0.4
-                               && pt < 2.0
-                               && track->eta() > -2.0
-                               && track->eta() < 0.0
-                               // systematic check
-                               //&& TMath::Abs( track->nSigmaProton() ) < 1.0 + 0.2*cutTest1
-                               //&& pt > 0.0 + 0.05*cutTest1
-                               //&& pt < 1.8 + 0.05*cutTest1
-                               //&& track->eta() > -2.25 + 0.05*cutTest1
-                               //&& track->eta() < -0.25 + 0.025*cutTest1
-                               ) {
-                                // count proton tracks number
-                                Nprotons++;
-                                // get particle track rapidity
+                               // Insert systematic check cuts
+                               //&& TMath::Abs( track->nSigmaProton() ) < 1.6 + 0.08*cutTest1
+                               )
+                              {
+                                // Get particle track rapidity
                                 Double_t energy_Proton = TMath::Sqrt(trackP*trackP + Mass_Proton*Mass_Proton);
                                 Double_t rap_Proton = 0.5*TMath::Log( (energy_Proton + pz) / (energy_Proton - pz) );
-                                
-                                // value flow weight
-                                w0 = rap_Proton + 1.52;
-                                w1 = 1.0;
-                                
+                                // Get eff corr
                                 Double_t efficiency = 0.0;
                                 if(ProtonEffTableFile->IsOpen() && ProtonEfficiencyTable->GetEntries()) {
                                     Int_t centralitybin = centrality;
@@ -1691,133 +1663,43 @@ Int_t FxtMaker::Make() {
                                        ) {
                                         Int_t tablebin = ProtonEfficiencyTable->GetBin(centralitybin,rapiditybin,transversemassbin);
                                         efficiency = ProtonEfficiencyTable->GetBinContent(tablebin);
-                                        efficiency = (efficiency > 0.0)? 1.0 / efficiency : 0.0;
+                                        efficiency = (efficiency >= 0.001 && efficiency <= 1.0)? 1.0 / efficiency : 0.0;
                                         //cout<<centrality<<"   "<<rapiditybin-1<<"   "<<transversemass<<"   "<<efficiency<<endl;
                                     }
                                 }
-                                w1 *= efficiency;
-                                
-                                Double_t TPC_PID_efficiency = 0.0;
-                                if(TPC_PID_efficiency_file->IsOpen() && Proton_TPC_efficiency_table->GetEntries()) {
-                                    Int_t rapiditybin = Proton_TPC_efficiency_table->GetXaxis()->FindBin(rap_Proton);
-                                    Double_t transversemass = TMath::Sqrt( Mass_Proton*Mass_Proton + track->pt()*track->pt() ) - Mass_Proton;
-                                    Int_t transversemassbin = Proton_TPC_efficiency_table->GetYaxis()->FindBin(transversemass);
-                                    if( rapiditybin >= 1 && rapiditybin <= 15
-                                       && transversemassbin >= 1 && transversemassbin <= 38
-                                       ) {
-                                        Int_t tablebin = Proton_TPC_efficiency_table->GetBin(rapiditybin,transversemassbin);
-                                        TPC_PID_efficiency = Proton_TPC_efficiency_table->GetBinContent(tablebin);
-                                        TPC_PID_efficiency = (TPC_PID_efficiency > 0.0)? 1.0 / TPC_PID_efficiency : 0.0;
-                                        //cout<<centrality<<"   "<<rapiditybin<<"   "<<transversemass<<"   "<<TPC_PID_efficiency<<endl;
-                                    }
+                                // Get phi weight
+                                Double_t phi_weight = 0.0;
+                                if(phi_input->IsOpen() && Hist_Phi->GetEntries()) {
+                                    Int_t phi_bin = Hist_Phi->FindBin(phi);
+                                    phi_weight = Hist_Phi->GetBinContent(phi_bin);
                                 }
-                                if(Beta != -999.0) TPC_PID_efficiency = 1.0;
-                                w1 *= TPC_PID_efficiency;
-                                
-                                // fill histograms
-                                hist_pt_proton->Fill(pt);
-                                hist_eta_proton->Fill(eta);
-                                hist_y_proton->Fill(rap_Proton);
-                                hist_pt_y_proton->Fill(rap_Proton,pt,efficiency * TPC_PID_efficiency);
-                                hist_phi_proton->Fill(phi);
-                                hist_dEdx_proton->Fill(charge*trackP,track->dEdx()*1.0e6);
-                                if(Beta != -999.0) {
-                                    hist_beta_proton->Fill(charge*trackP,1.0/Beta);
-                                    hist_mass_proton->Fill(charge*trackP,mass2);
-                                }
-                                
-                            }
-                            
-                            // deuterons
-                            if( track->nSigmaProton() > 2.5
-                               && ( Beta != -999.0
-                                   && mass2 > 3.0
-                                   && mass2 < 4.1
-                                   // systematic check
-                                   //&& mass2 > 2.9 + 0.02*cutTest1
-                                   //&& mass2 < 4.0 + 0.02*cutTest1
-                                   )
-                               && track->charge() > 0
-                               // systematic check
-                               //&& TMath::Abs( track->nSigmaProton() ) > 2.0 + 0.1*cutTest1
-                               ) {
-                                // count deuteron tracks number
-                                Ndeuterons++;
-                                // get particle track rapidity
-                                Double_t energy_Deuteron = TMath::Sqrt(trackP*trackP + Mass_Deuteron*Mass_Deuteron);
-                                Double_t rap_Deuteron = 0.5*TMath::Log( (energy_Deuteron + pz) / (energy_Deuteron - pz) );
-                                // fill histograms
-                                hist_pt_deuteron->Fill(pt);
-                                hist_eta_deuteron->Fill(eta);
-                                hist_y_deuteron->Fill(rap_Deuteron);
-                                hist_pt_y_deuteron->Fill(rap_Deuteron,pt);
-                                hist_phi_deuteron->Fill(phi);
-                                hist_dEdx_deuteron->Fill(charge*trackP,track->dEdx()*1.0e6);
-                                if(Beta != -999.0) {
-                                    hist_beta_deuteron->Fill(charge*trackP,1.0/Beta);
-                                    hist_mass_deuteron->Fill(charge*trackP,mass2);
-                                }
-                                // value flow weight
-                                w0 = rap_Deuteron + 1.52;
-                                w1 = 1.0;
-                                
-                                /*Double_t TPC_PID_efficiency = 0.0;
-                                if(TPC_PID_efficiency_file->IsOpen() && Deuteron_TPC_efficiency_table->GetEntries()) {
-                                    Int_t rapiditybin = Deuteron_TPC_efficiency_table->GetXaxis()->FindBin(rap_Deuteron);
-                                    Double_t transversemass = TMath::Sqrt( Mass_Deuteron*Mass_Deuteron + track->pt()*track->pt() ) - Mass_Deuteron;
-                                    Int_t transversemassbin = Deuteron_TPC_efficiency_table->GetYaxis()->FindBin(transversemass);
-                                    if( rapiditybin >= 1 && rapiditybin <= 15
-                                       && transversemassbin >= 1 && transversemassbin <= 38
-                                       ) {
-                                        Int_t tablebin = Deuteron_TPC_efficiency_table->GetBin(rapiditybin,transversemassbin);
-                                        TPC_PID_efficiency = Deuteron_TPC_efficiency_table->GetBinContent(tablebin);
-                                        TPC_PID_efficiency = (TPC_PID_efficiency > 0.0)? 1.0 / TPC_PID_efficiency : 0.0;
-                                        //cout<<centrality<<"   "<<rapiditybin<<"   "<<transversemass<<"   "<<TPC_PID_efficiency<<endl;
-                                    }
-                                }
-                                w1 *= TPC_PID_efficiency;*/
-                                
-                            }
-                            
-                            // pions
+                                if(efficiency > 0.0)
+                                  {
+                                    w0 = rap_Proton + 1.52;
+                                    w1 = efficiency * phi_weight;
+                                    //w1 = phi_weight;
+                                  }
+                              }
+                            // Pions
                             if( TMath::Abs( track->nSigmaPion() ) < 2.0
                                && ( ( Beta != -999.0
-                                     && mass2 > -0.1
-                                     && mass2 < 0.12
-                                     // systematic check
-                                     //&& mass2 > -0.105 + 0.001*cutTest1
-                                     //&& mass2 < 0.115 + 0.001*cutTest1
+                                     && mass2 > -0.15
+                                     && mass2 < 0.14
+                                     // Systematic check cuts
+                                     //&& mass2 > -0.15 + 0.003*cutTest1
+                                     //&& mass2 < 0.14 - 0.0028*cutTest1
                                      )
-                                   && ( ( trackP < 0.62 && TMath::Abs(mass2) > 0.005 ) || trackP > 0.62 ) )
-                               // systematic check
-                               //&& TMath::Abs( track->nSigmaPion() ) < 1.0 + 0.2*cutTest1
-                               ) {
-                                // get particle track rapidity
+                                   )
+                               // Insert systematic check cuts
+                               //&& TMath::Abs( track->nSigmaPion() ) < 1.6 + 0.08*cutTest1
+                               )
+                              {
+                                // Get particle track rapidity
                                 Double_t energy_Pion = TMath::Sqrt(trackP*trackP + Mass_Pion*Mass_Pion);
                                 Double_t rap_Pion = 0.5*TMath::Log( (energy_Pion + pz) / (energy_Pion - pz) );
-                                
-                                // value flow weight
-                                w0 = rap_Pion + 1.52;
-                                w1 = -1.0;
-                                
-                                /*Double_t TPC_PID_efficiency = 0.0;
-                                if(TPC_PID_efficiency_file->IsOpen() && Pion_TPC_efficiency_table->GetEntries()) {
-                                    Int_t rapiditybin = Pion_TPC_efficiency_table->GetXaxis()->FindBin(rap_Pion);
-                                    Double_t transversemass = TMath::Sqrt( Mass_Pion*Mass_Pion + track->pt()*track->pt() ) - Mass_Pion;
-                                    Int_t transversemassbin = Pion_TPC_efficiency_table->GetYaxis()->FindBin(transversemass);
-                                    if( rapiditybin >= 1 && rapiditybin <= 15
-                                       && transversemassbin >= 1 && transversemassbin <= 38
-                                       ) {
-                                        Int_t tablebin = Pion_TPC_efficiency_table->GetBin(rapiditybin,transversemassbin);
-                                        TPC_PID_efficiency = Pion_TPC_efficiency_table->GetBinContent(tablebin);
-                                        TPC_PID_efficiency = (TPC_PID_efficiency > 0.0)? 1.0 / TPC_PID_efficiency : 0.0;
-                                        //cout<<centrality<<"   "<<rapiditybin<<"   "<<transversemass<<"   "<<TPC_PID_efficiency<<endl;
-                                    }
-                                }
-                                w1 *= TPC_PID_efficiency;*/
-                                
-                                // pionPlus
-                                if(charge > 0) {
+                                if(track->charge() > 0)
+                                  {
+                                    // Get eff corr
                                     Double_t efficiency = 0.0;
                                     if(PiPlusEffTableFile->IsOpen() && PionPlusEfficiencyTable->GetEntries()) {
                                         Int_t centralitybin = centrality;
@@ -1831,28 +1713,20 @@ Int_t FxtMaker::Make() {
                                            ) {
                                             Int_t tablebin = PionPlusEfficiencyTable->GetBin(centralitybin,rapiditybin,transversemassbin);
                                             efficiency = PionPlusEfficiencyTable->GetBinContent(tablebin);
-                                            efficiency = (efficiency > 0.0)? 1.0 / efficiency : 0.0;
+                                            efficiency = (efficiency >= 0.001 && efficiency <= 1.0)? 1.0 / efficiency : 0.0;
                                             //cout<<centrality<<"   "<<rapiditybin-1<<"   "<<transversemass<<"   "<<efficiency<<endl;
                                         }
                                     }
-                                    w1 *= efficiency;
-                                    
-                                    // count pionPlus tracks number
-                                    NpionPlus++;
-                                    // fill histograms
-                                    hist_pt_pionPlus->Fill(pt);
-                                    hist_eta_pionPlus->Fill(eta);
-                                    hist_y_pionPlus->Fill(rap_Pion);
-                                    hist_pt_y_pionPlus->Fill(rap_Pion,pt,efficiency);
-                                    hist_phi_pionPlus->Fill(phi);
-                                    hist_dEdx_pionPlus->Fill(charge*trackP,track->dEdx()*1.0e6);
-                                    if(Beta != -999.0) {
-                                        hist_beta_pionPlus->Fill(charge*trackP,1.0/Beta);
-                                        hist_mass_pionPlus->Fill(charge*trackP,mass2);
-                                    }
-                                }
-                                // pionMinus
-                                if(charge < 0) {
+                                    if(efficiency > 0.0)
+                                      {
+                                        w0 = rap_Pion + 1.52;
+                                        w1 = efficiency /* -1.0*/;
+                                        //w1 = 1.0;
+                                      }
+                                  }
+                                if(track->charge() < 0)
+                                  {
+                                    // Get eff corr
                                     Double_t efficiency = 0.0;
                                     if(PiMinusEffTableFile->IsOpen() && PionMinusEfficiencyTable->GetEntries()) {
                                         Int_t centralitybin = centrality;
@@ -1866,51 +1740,37 @@ Int_t FxtMaker::Make() {
                                            ) {
                                             Int_t tablebin = PionMinusEfficiencyTable->GetBin(centralitybin,rapiditybin,transversemassbin);
                                             efficiency = PionMinusEfficiencyTable->GetBinContent(tablebin);
-                                            efficiency = (efficiency > 0.0)? 1.0 / efficiency : 0.0;
+                                            efficiency = (efficiency >= 0.001 && efficiency <= 1.0)? 1.0 / efficiency : 0.0;
                                             //cout<<centrality<<"   "<<rapiditybin-1<<"   "<<transversemass<<"   "<<efficiency<<endl;
                                         }
                                     }
-                                    w1 *= efficiency;
-                                    
-                                    // count pionMinus tracks number
-                                    NpionMinus++;
-                                    // fill histograms
-                                    hist_pt_pionMinus->Fill(pt);
-                                    hist_eta_pionMinus->Fill(eta);
-                                    hist_y_pionMinus->Fill(rap_Pion);
-                                    hist_pt_y_pionMinus->Fill(rap_Pion,pt,efficiency);
-                                    hist_phi_pionMinus->Fill(phi);
-                                    hist_dEdx_pionMinus->Fill(charge*trackP,track->dEdx()*1.0e6);
-                                    if(Beta != -999.0) {
-                                        hist_beta_pionMinus->Fill(charge*trackP,1.0/Beta);
-                                        hist_mass_pionMinus->Fill(charge*trackP,mass2);
-                                    }
-                                }
-                                
-                            }
-                            
-                            // kaons
+                                    if(efficiency > 0.0)
+                                      {
+                                        w0 = rap_Pion + 1.52;
+                                        w1 = efficiency /* -1.0*/;
+                                        //w1 = 1.0;
+                                      }
+                                  }
+                              }
+                            // Kaons
                             if( TMath::Abs( track->nSigmaKaon() ) < 2.0
                                && ( Beta != -999.0
-                                   && mass2 > 0.15
-                                   && mass2 < 0.34
-                                   // systematic check
-                                   //&& mass2 > 0.14 + 0.002*cutTest1
-                                   //&& mass2 < 0.33 + 0.002*cutTest1
+                                   && mass2 > 0.14
+                                   && mass2 < 0.4
+                                   // Systematic check cuts
+                                   //&& mass2 > 0.14 + 0.0028*cutTest1
+                                   //&& mass2 < 0.4 - 0.008*cutTest1
                                    )
-                               // systematic check
-                               //&& TMath::Abs( track->nSigmaKaon() ) < 1.0 + 0.2*cutTest1
-                               ) {
-                                // get particle track rapidity
+                               // Insert systematic check cuts
+                               //&& TMath::Abs( track->nSigmaKaon() ) < 1.6 + 0.08*cutTest1
+                               )
+                              {
+                                // Get particle track rapidity
                                 Double_t energy_Kaon = TMath::Sqrt(trackP*trackP + Mass_Kaon*Mass_Kaon);
                                 Double_t rap_Kaon = 0.5*TMath::Log( (energy_Kaon + pz) / (energy_Kaon - pz) );
-                                
-                                // value flow weight
-                                w0 = rap_Kaon + 1.52;
-                                w1 = -1.0;
-                                
-                                // kaonPlus
-                                if(charge > 0) {
+                                if(track->charge() > 0)
+                                  {
+                                    // Get eff corr
                                     Double_t efficiency = 0.0;
                                     if(KPlusEffTableFile->IsOpen() && KaonPlusEfficiencyTable->GetEntries()) {
                                         Int_t centralitybin = centrality;
@@ -1924,28 +1784,20 @@ Int_t FxtMaker::Make() {
                                            ) {
                                             Int_t tablebin = KaonPlusEfficiencyTable->GetBin(centralitybin,rapiditybin,transversemassbin);
                                             efficiency = KaonPlusEfficiencyTable->GetBinContent(tablebin);
-                                            efficiency = (efficiency > 0.0)? 1.0 / efficiency : 0.0;
+                                            efficiency = (efficiency >= 0.001 && efficiency <= 1.0)? 1.0 / efficiency : 0.0;
                                             //cout<<centrality<<"   "<<rapiditybin-1<<"   "<<transversemass<<"   "<<efficiency<<endl;
                                         }
                                     }
-                                    w1 *= efficiency;
-                                    
-                                    // count kaonPlus tracks number
-                                    NkaonPlus++;
-                                    // fill histograms
-                                    hist_pt_kaonPlus->Fill(pt);
-                                    hist_eta_kaonPlus->Fill(eta);
-                                    hist_y_kaonPlus->Fill(rap_Kaon);
-                                    hist_pt_y_kaonPlus->Fill(rap_Kaon,pt);
-                                    hist_phi_kaonPlus->Fill(phi);
-                                    hist_dEdx_kaonPlus->Fill(charge*trackP,track->dEdx()*1.0e6);
-                                    if(Beta != -999.0) {
-                                        hist_beta_kaonPlus->Fill(charge*trackP,1.0/Beta);
-                                        hist_mass_kaonPlus->Fill(charge*trackP,mass2);
-                                    }
-                                }
-                                // kaonMinus
-                                if(charge < 0) {
+                                    if(efficiency > 0.0)
+                                      {
+                                        w0 = rap_Kaon + 1.52;
+                                        w1 = efficiency /* -1.0*/;
+                                        //w1 = 1.0;
+                                      }
+                                  }
+                                if(track->charge() < 0)
+                                  {
+                                    // Get eff corr
                                     Double_t efficiency = 0.0;
                                     if(KMinusEffTableFile->IsOpen() && KaonMinusEfficiencyTable->GetEntries()) {
                                         Int_t centralitybin = centrality;
@@ -1959,30 +1811,25 @@ Int_t FxtMaker::Make() {
                                            ) {
                                             Int_t tablebin = KaonMinusEfficiencyTable->GetBin(centralitybin,rapiditybin,transversemassbin);
                                             efficiency = KaonMinusEfficiencyTable->GetBinContent(tablebin);
-                                            efficiency = (efficiency > 0.0)? 1.0 / efficiency : 0.0;
+                                            efficiency = (efficiency >= 0.001 && efficiency <= 1.0)? 1.0 / efficiency : 0.0;
                                             //cout<<centrality<<"   "<<rapiditybin-1<<"   "<<transversemass<<"   "<<efficiency<<endl;
                                         }
                                     }
-                                    w1 *= efficiency;
-                                    
-                                    // count kaonMinus tracks number
-                                    NkaonMinus++;
-                                    // fill histograms
-                                    hist_pt_kaonMinus->Fill(pt);
-                                    hist_eta_kaonMinus->Fill(eta);
-                                    hist_y_kaonMinus->Fill(rap_Kaon);
-                                    hist_pt_y_kaonMinus->Fill(rap_Kaon,pt);
-                                    hist_phi_kaonMinus->Fill(phi);
-                                    hist_dEdx_kaonMinus->Fill(charge*trackP,track->dEdx()*1.0e6);
-                                    if(Beta != -999.0) {
-                                        hist_beta_kaonMinus->Fill(charge*trackP,1.0/Beta);
-                                        hist_mass_kaonMinus->Fill(charge*trackP,mass2);
-                                    }
+                                    if(efficiency > 0.0)
+                                      {
+                                        w0 = rap_Kaon + 1.52;
+                                        w1 = efficiency /* -1.0*/;
+                                        //w1 = 1.0;
+                                      }
+                                  }
+                              }
+                            // Systematic check
+                            /*if(w0 != 0.0 && w1 != 0.0) {
+                                if(TMath::Abs(w0) >= 0.8) {
+                                    if(w0 > 0.0) w0 = 0.8;
+                                    else if(w0 < 0.0) w0 = -0.8;
                                 }
-                                
-                            }
-                            
-                            // systematic check
+                            }*/
                             /*if(w0*w1 != 0.0) {
                                 if(w0*w1 > 0.0) {
                                     w0 = 1.0; w1 = 1.0;
@@ -1991,13 +1838,16 @@ Int_t FxtMaker::Make() {
                                     w0 = 1.0; w1 = -1.0;
                                 }
                             }*/
-                            
                             //w1 *= pt;
-                            
-                            // accumulate flow vectors
+                            // Take all charged particles in
+                            //w0 = 1.0; w1 = 1.0;
+                            // Accumulate flow vectors
                             Bool_t IsEast = kFALSE, IsWest = kFALSE;
-                            if( eta < -1.165 ) IsEast = kTRUE;
-                            if( eta > -1.155 ) IsWest = kTRUE;
+                            //if( eta < -1.165 ) IsEast = kTRUE;
+                            //if( eta > -1.155 ) IsWest = kTRUE;
+                            Double_t randomNumber = gRandom->Uniform(1);
+                            if( randomNumber < 0.5 ) IsEast = kTRUE;
+                            if( randomNumber >= 0.5 ) IsWest = kTRUE;
                             // East
                             if( IsEast ) {
                                 N_tpc_east++;
@@ -2031,22 +1881,10 @@ Int_t FxtMaker::Make() {
                         } // Track Cuts end
                     } // Track pointer check ends
                 } // 2nd Primary tracks loop ends
-                
-                hist_realTrackMult_refmult->Fill(Ntracks,refMult);
-                hist_realTrackMult_grefmult->Fill(Ntracks,grefMult);
-                hist_realTrackMult_tofmult->Fill(Ntracks,tofMult);
-                hist_realTrackMult_trackmult->Fill(Ntracks,trackMult);
-                hist_trackmult_proton->Fill(Nprotons);
-                hist_trackmult_deuteron->Fill(Ndeuterons);
-                hist_trackmult_pionPlus->Fill(NpionPlus);
-                hist_trackmult_pionMinus->Fill(NpionMinus);
-                hist_trackmult_kaonPlus->Fill(NkaonPlus);
-                hist_trackmult_kaonMinus->Fill(NkaonMinus);
-                
-                // event centrality cut
-                if(centrality >= 1 && centrality <= 7) {
-                    // compute tpc event planes
-                    // tpc east
+                // Event centrality cut
+                /*if(centrality >= 1 && centrality <= 7)*/ {
+                    // Compute tpc event planes
+                    // TPC east
                     if(N_tpc_east >= 5 && tpc_east_Qweight > 0.0) {
                         tpc_east_Qx /= tpc_east_Qweight;
                         tpc_east_Qy /= tpc_east_Qweight;
@@ -2055,7 +1893,7 @@ Int_t FxtMaker::Make() {
                             if(tpc_east_plane1 < 0.0            ) tpc_east_plane1 += 2.0*TMath::Pi();
                             if(tpc_east_plane1 > 2.0*TMath::Pi()) tpc_east_plane1 -= 2.0*TMath::Pi();
                             hist_tpc_east_psi_raw->Fill(tpc_east_plane1);
-                            // recenter reaction plane vector
+                            // Recenter reaction plane vector
                             profile3D_tpc_east_Qx_Qy->Fill(Day,centrality,1,tpc_east_Qx);
                             profile3D_tpc_east_Qx_Qy->Fill(Day,centrality,2,tpc_east_Qy);
                             if(eventPlanes_input->IsOpen() && profile3D_tpc_east_Qx_Qy_input && profile3D_tpc_east_Qx_Qy_input->GetEntries() > 0) {
@@ -2067,7 +1905,7 @@ Int_t FxtMaker::Make() {
                                 if(tpc_east_plane2 < 0.0            ) tpc_east_plane2 += 2.0*TMath::Pi();
                                 if(tpc_east_plane2 > 2.0*TMath::Pi()) tpc_east_plane2 -= 2.0*TMath::Pi();
                                 hist_tpc_east_psi_recentered->Fill(tpc_east_plane2);
-                                // shift recenterd event plane to flat
+                                // Shift recenterd event plane to flat
                                 Double_t reaction_plane_new = tpc_east_plane2;
                                 for(Int_t k=0;k<order;k++) {
                                     profile3D_tpc_east_psiShift->Fill(Day,centrality,1+2*k,TMath::Cos(reaction_plane_new*(k+1)));
@@ -2094,7 +1932,7 @@ Int_t FxtMaker::Make() {
                             }
                         }
                     }
-                    // tpc west
+                    // TPC west
                     if(N_tpc_west >= 5 && tpc_west_Qweight > 0.0) {
                         tpc_west_Qx /= tpc_west_Qweight;
                         tpc_west_Qy /= tpc_west_Qweight;
@@ -2103,7 +1941,7 @@ Int_t FxtMaker::Make() {
                             if(tpc_west_plane1 < 0.0            ) tpc_west_plane1 += 2.0*TMath::Pi();
                             if(tpc_west_plane1 > 2.0*TMath::Pi()) tpc_west_plane1 -= 2.0*TMath::Pi();
                             hist_tpc_west_psi_raw->Fill(tpc_west_plane1);
-                            // recenter reaction plane vector
+                            // Recenter reaction plane vector
                             profile3D_tpc_west_Qx_Qy->Fill(Day,centrality,1,tpc_west_Qx);
                             profile3D_tpc_west_Qx_Qy->Fill(Day,centrality,2,tpc_west_Qy);
                             if(eventPlanes_input->IsOpen() && profile3D_tpc_west_Qx_Qy_input && profile3D_tpc_west_Qx_Qy_input->GetEntries() > 0) {
@@ -2115,7 +1953,7 @@ Int_t FxtMaker::Make() {
                                 if(tpc_west_plane2 < 0.0            ) tpc_west_plane2 += 2.0*TMath::Pi();
                                 if(tpc_west_plane2 > 2.0*TMath::Pi()) tpc_west_plane2 -= 2.0*TMath::Pi();
                                 hist_tpc_west_psi_recentered->Fill(tpc_west_plane2);
-                                // shift recenterd event plane to flat
+                                // Shift recenterd event plane to flat
                                 Double_t reaction_plane_new = tpc_west_plane2;
                                 for(Int_t k=0;k<order;k++) {
                                     profile3D_tpc_west_psiShift->Fill(Day,centrality,1+2*k,TMath::Cos(reaction_plane_new*(k+1)));
@@ -2142,7 +1980,7 @@ Int_t FxtMaker::Make() {
                             }
                         }
                     }
-                    // tpc full
+                    // TPC full
                     if( (N_tpc_east + N_tpc_west) >= 5 && tpc_east_Qweight > 0.0 && tpc_west_Qweight > 0.0 ) {
                         tpc_full_Qx = tpc_east_Qx/tpc_east_Qweight + tpc_west_Qx/tpc_west_Qweight;
                         tpc_full_Qy = tpc_east_Qy/tpc_east_Qweight + tpc_west_Qy/tpc_west_Qweight;
@@ -2151,7 +1989,7 @@ Int_t FxtMaker::Make() {
                             if(tpc_full_plane1 < 0.0            ) tpc_full_plane1 += 2.0*TMath::Pi();
                             if(tpc_full_plane1 > 2.0*TMath::Pi()) tpc_full_plane1 -= 2.0*TMath::Pi();
                             hist_tpc_full_psi_raw->Fill(tpc_full_plane1);
-                            // recenter reaction plane vector
+                            // Recenter reaction plane vector
                             profile3D_tpc_full_Qx_Qy->Fill(Day,centrality,1,tpc_full_Qx);
                             profile3D_tpc_full_Qx_Qy->Fill(Day,centrality,2,tpc_full_Qy);
                             if(eventPlanes_input->IsOpen() && profile3D_tpc_full_Qx_Qy_input && profile3D_tpc_full_Qx_Qy_input->GetEntries() > 0) {
@@ -2163,7 +2001,7 @@ Int_t FxtMaker::Make() {
                                 if(tpc_full_plane2 < 0.0            ) tpc_full_plane2 += 2.0*TMath::Pi();
                                 if(tpc_full_plane2 > 2.0*TMath::Pi()) tpc_full_plane2 -= 2.0*TMath::Pi();
                                 hist_tpc_full_psi_recentered->Fill(tpc_full_plane2);
-                                // shift recenterd event plane to flat
+                                // Shift recenterd event plane to flat
                                 Double_t reaction_plane_new = tpc_full_plane2;
                                 for(Int_t k=0;k<order;k++) {
                                     profile3D_tpc_full_psiShift->Fill(Day,centrality,1+2*k,TMath::Cos(reaction_plane_new*(k+1)));
@@ -2199,7 +2037,7 @@ Int_t FxtMaker::Make() {
                             if(thirdEP_plane1 < 0.0            ) thirdEP_plane1 += 2.0*TMath::Pi();
                             if(thirdEP_plane1 > 2.0*TMath::Pi()) thirdEP_plane1 -= 2.0*TMath::Pi();
                             hist_thirdEP_psi_raw->Fill(thirdEP_plane1);
-                            // recenter reaction plane vector
+                            // Recenter reaction plane vector
                             profile3D_thirdEP_Qx_Qy->Fill(Day,centrality,1,thirdEP_Qx);
                             profile3D_thirdEP_Qx_Qy->Fill(Day,centrality,2,thirdEP_Qy);
                             if(eventPlanes_input->IsOpen() && profile3D_thirdEP_Qx_Qy_input && profile3D_thirdEP_Qx_Qy_input->GetEntries() > 0) {
@@ -2211,7 +2049,7 @@ Int_t FxtMaker::Make() {
                                 if(thirdEP_plane2 < 0.0            ) thirdEP_plane2 += 2.0*TMath::Pi();
                                 if(thirdEP_plane2 > 2.0*TMath::Pi()) thirdEP_plane2 -= 2.0*TMath::Pi();
                                 hist_thirdEP_psi_recentered->Fill(thirdEP_plane2);
-                                // shift recenterd event plane to flat
+                                // Shift recenterd event plane to flat
                                 Double_t reaction_plane_new = thirdEP_plane2;
                                 for(Int_t k=0;k<order;k++) {
                                     profile3D_thirdEP_psiShift->Fill(Day,centrality,1+2*k,TMath::Cos(reaction_plane_new*(k+1)));
@@ -2240,7 +2078,7 @@ Int_t FxtMaker::Make() {
                     }
 #if indTPCepIndicator > 0
                     for(Int_t iTrack2=0;iTrack2<trackMult;iTrack2++) {
-                        // east
+                        // Ind TPC east
                         if(N_tpc_east >= 5 && w1_ex_east[iTrack2] > 0.0) {
                             Qx1_ex_east[iTrack2] /= w1_ex_east[iTrack2];
                             Qy1_ex_east[iTrack2] /= w1_ex_east[iTrack2];
@@ -2249,7 +2087,7 @@ Int_t FxtMaker::Make() {
                                 if(reaction_plane1_ex_east[iTrack2] < 0.0            ) reaction_plane1_ex_east[iTrack2] += 2.0*TMath::Pi();
                                 if(reaction_plane1_ex_east[iTrack2] > 2.0*TMath::Pi()) reaction_plane1_ex_east[iTrack2] -= 2.0*TMath::Pi();
                                 hist_tpc_ind_east_psi_raw->Fill(reaction_plane1_ex_east[iTrack2]);
-                                // recenter reaction plane vector
+                                // Recenter reaction plane vector
                                 profile3D_tpc_ind_east_Qx_Qy->Fill(Day,centrality,1,Qx1_ex_east[iTrack2]);
                                 profile3D_tpc_ind_east_Qx_Qy->Fill(Day,centrality,2,Qy1_ex_east[iTrack2]);
                                 if(eventPlanes_input->IsOpen() && profile3D_tpc_ind_east_Qx_Qy_input && profile3D_tpc_ind_east_Qx_Qy_input->GetEntries() > 0) {
@@ -2261,7 +2099,7 @@ Int_t FxtMaker::Make() {
                                     if(reaction_plane2_ex_east[iTrack2] < 0.0            ) reaction_plane2_ex_east[iTrack2] += 2.0*TMath::Pi();
                                     if(reaction_plane2_ex_east[iTrack2] > 2.0*TMath::Pi()) reaction_plane2_ex_east[iTrack2] -= 2.0*TMath::Pi();
                                     hist_tpc_ind_east_psi_recentered->Fill(reaction_plane2_ex_east[iTrack2]);
-                                    // shift recenterd event plane to flat
+                                    // Shift recenterd event plane to flat
                                     Double_t reaction_plane_new = reaction_plane2_ex_east[iTrack2];
                                     for(Int_t k=0;k<order;k++) {
                                         profile3D_tpc_ind_east_psiShift->Fill(Day,centrality,1+2*k,TMath::Cos(reaction_plane_new*(k+1)));
@@ -2288,7 +2126,7 @@ Int_t FxtMaker::Make() {
                                 }
                             }
                         }
-                        // west
+                        // Ind TPC west
                         if(N_tpc_west >= 5 && w1_ex_west[iTrack2] > 0.0) {
                             Qx1_ex_west[iTrack2] /= w1_ex_west[iTrack2];
                             Qy1_ex_west[iTrack2] /= w1_ex_west[iTrack2];
@@ -2297,7 +2135,7 @@ Int_t FxtMaker::Make() {
                                 if(reaction_plane1_ex_west[iTrack2] < 0.0            ) reaction_plane1_ex_west[iTrack2] += 2.0*TMath::Pi();
                                 if(reaction_plane1_ex_west[iTrack2] > 2.0*TMath::Pi()) reaction_plane1_ex_west[iTrack2] -= 2.0*TMath::Pi();
                                 hist_tpc_ind_west_psi_raw->Fill(reaction_plane1_ex_west[iTrack2]);
-                                // recenter reaction plane vector
+                                // Recenter reaction plane vector
                                 profile3D_tpc_ind_west_Qx_Qy->Fill(Day,centrality,1,Qx1_ex_west[iTrack2]);
                                 profile3D_tpc_ind_west_Qx_Qy->Fill(Day,centrality,2,Qy1_ex_west[iTrack2]);
                                 if(eventPlanes_input->IsOpen() && profile3D_tpc_ind_west_Qx_Qy_input && profile3D_tpc_ind_west_Qx_Qy_input->GetEntries() > 0) {
@@ -2309,7 +2147,7 @@ Int_t FxtMaker::Make() {
                                     if(reaction_plane2_ex_west[iTrack2] < 0.0            ) reaction_plane2_ex_west[iTrack2] += 2.0*TMath::Pi();
                                     if(reaction_plane2_ex_west[iTrack2] > 2.0*TMath::Pi()) reaction_plane2_ex_west[iTrack2] -= 2.0*TMath::Pi();
                                     hist_tpc_ind_west_psi_recentered->Fill(reaction_plane2_ex_west[iTrack2]);
-                                    // shift recenterd event plane to flat
+                                    // Shift recenterd event plane to flat
                                     Double_t reaction_plane_new = reaction_plane2_ex_west[iTrack2];
                                     for(Int_t k=0;k<order;k++) {
                                         profile3D_tpc_ind_west_psiShift->Fill(Day,centrality,1+2*k,TMath::Cos(reaction_plane_new*(k+1)));
@@ -2336,7 +2174,7 @@ Int_t FxtMaker::Make() {
                                 }
                             }
                         }
-                        // full
+                        // Ind TPC full
                         if( (N_tpc_east + N_tpc_west) >= 5 && w1_ex_east[iTrack2] > 0.0 && w1_ex_west[iTrack2] > 0.0 ) {
                             Qx1_ex_full[iTrack2] = Qx1_ex_east[iTrack2]/w1_ex_east[iTrack2] + Qx1_ex_west[iTrack2]/w1_ex_west[iTrack2];
                             Qy1_ex_full[iTrack2] = Qy1_ex_east[iTrack2]/w1_ex_east[iTrack2] + Qy1_ex_west[iTrack2]/w1_ex_west[iTrack2];
@@ -2345,7 +2183,7 @@ Int_t FxtMaker::Make() {
                                 if(reaction_plane1_ex_full[iTrack2] < 0.0            ) reaction_plane1_ex_full[iTrack2] += 2.0*TMath::Pi();
                                 if(reaction_plane1_ex_full[iTrack2] > 2.0*TMath::Pi()) reaction_plane1_ex_full[iTrack2] -= 2.0*TMath::Pi();
                                 hist_tpc_ind_full_psi_raw->Fill(reaction_plane1_ex_full[iTrack2]);
-                                // recenter reaction plane vector
+                                // Recenter reaction plane vector
                                 profile3D_tpc_ind_full_Qx_Qy->Fill(Day,centrality,1,Qx1_ex_full[iTrack2]);
                                 profile3D_tpc_ind_full_Qx_Qy->Fill(Day,centrality,2,Qy1_ex_full[iTrack2]);
                                 if(eventPlanes_input->IsOpen() && profile3D_tpc_ind_full_Qx_Qy_input && profile3D_tpc_ind_full_Qx_Qy_input->GetEntries() > 0) {
@@ -2357,7 +2195,7 @@ Int_t FxtMaker::Make() {
                                     if(reaction_plane2_ex_full[iTrack2] < 0.0            ) reaction_plane2_ex_full[iTrack2] += 2.0*TMath::Pi();
                                     if(reaction_plane2_ex_full[iTrack2] > 2.0*TMath::Pi()) reaction_plane2_ex_full[iTrack2] -= 2.0*TMath::Pi();
                                     hist_tpc_ind_full_psi_recentered->Fill(reaction_plane2_ex_full[iTrack2]);
-                                    // shift recenterd event plane to flat
+                                    // Shift recenterd event plane to flat
                                     Double_t reaction_plane_new = reaction_plane2_ex_full[iTrack2];
                                     for(Int_t k=0;k<order;k++) {
                                         profile3D_tpc_ind_full_psiShift->Fill(Day,centrality,1+2*k,TMath::Cos(reaction_plane_new*(k+1)));
@@ -2386,7 +2224,7 @@ Int_t FxtMaker::Make() {
                         }
                     }
 #endif
-                    // compute bbc event planes
+                    // Compute bbc event planes
                     Int_t N_bbc_east = 0, N_bbc_west = 0;
                     Double_t bbc_east_Qx = 0.0, bbc_east_Qy = 0.0, bbc_east_Qweight = 0.0;
                     Double_t bbc_west_Qx = 0.0, bbc_west_Qy = 0.0, bbc_west_Qweight = 0.0;
@@ -2432,14 +2270,14 @@ Int_t FxtMaker::Make() {
                         nHitW[i] *= (wtotal > 0.0)? 1.0 / wtotal : 0.0;
                     }
                     for(Int_t iTile=0;iTile<16;iTile++) {
-                        // east
+                        // BBC east
                         if(nHitE[iTile] > 0.0) {
                             N_bbc_east++;
                             bbc_east_Qx += TMath::Cos( BBC_GetPhi(0,iTile,primaryVertex_X,primaryVertex_Y) ) * nHitE[iTile];
                             bbc_east_Qy += TMath::Sin( BBC_GetPhi(0,iTile,primaryVertex_X,primaryVertex_Y) ) * nHitE[iTile];
                             bbc_east_Qweight += nHitE[iTile];
                         }
-                        // west
+                        // BBC west
                         if(nHitW[iTile] > 0.0) {
                             N_bbc_west++;
                             bbc_west_Qx += TMath::Cos( BBC_GetPhi(1,iTile,primaryVertex_X,primaryVertex_Y) ) * nHitW[iTile];
@@ -2447,7 +2285,7 @@ Int_t FxtMaker::Make() {
                             bbc_west_Qweight += nHitW[iTile];
                         }
                     }
-                    // bbc east
+                    // BBC east
                     if(N_bbc_east >= 5 && bbc_east_Qweight > 0.0) {
                         bbc_east_Qx /= bbc_east_Qweight;
                         bbc_east_Qy /= bbc_east_Qweight;
@@ -2456,7 +2294,7 @@ Int_t FxtMaker::Make() {
                             if(bbc_east_plane1 < 0.0            ) bbc_east_plane1 += 2.0*TMath::Pi();
                             if(bbc_east_plane1 > 2.0*TMath::Pi()) bbc_east_plane1 -= 2.0*TMath::Pi();
                             hist_bbc_east_psi_raw->Fill(bbc_east_plane1);
-                            // recenter reaction plane vector
+                            // Recenter reaction plane vector
                             profile3D_bbc_east_Qx_Qy->Fill(Day,centrality,1,bbc_east_Qx);
                             profile3D_bbc_east_Qx_Qy->Fill(Day,centrality,2,bbc_east_Qy);
                             if(eventPlanes_input->IsOpen() && profile3D_bbc_east_Qx_Qy_input && profile3D_bbc_east_Qx_Qy_input->GetEntries() > 0) {
@@ -2468,7 +2306,7 @@ Int_t FxtMaker::Make() {
                                 if(bbc_east_plane2 < 0.0            ) bbc_east_plane2 += 2.0*TMath::Pi();
                                 if(bbc_east_plane2 > 2.0*TMath::Pi()) bbc_east_plane2 -= 2.0*TMath::Pi();
                                 hist_bbc_east_psi_recentered->Fill(bbc_east_plane2);
-                                // shift recenterd event plane to flat
+                                // Shift recenterd event plane to flat
                                 Double_t reaction_plane_new = bbc_east_plane2;
                                 for(Int_t k=0;k<order;k++) {
                                     profile3D_bbc_east_psiShift->Fill(Day,centrality,1+2*k,TMath::Cos(reaction_plane_new*(k+1)));
@@ -2495,7 +2333,7 @@ Int_t FxtMaker::Make() {
                             }
                         }
                     }
-                    // bbc west
+                    // BBC west
                     if(N_bbc_west >= 2 && bbc_west_Qweight > 0.0) {
                         bbc_west_Qx /= bbc_west_Qweight;
                         bbc_west_Qy /= bbc_west_Qweight;
@@ -2504,7 +2342,7 @@ Int_t FxtMaker::Make() {
                             if(bbc_west_plane1 < 0.0            ) bbc_west_plane1 += 2.0*TMath::Pi();
                             if(bbc_west_plane1 > 2.0*TMath::Pi()) bbc_west_plane1 -= 2.0*TMath::Pi();
                             hist_bbc_west_psi_raw->Fill(bbc_west_plane1);
-                            // recenter reaction plane vector
+                            // Recenter reaction plane vector
                             profile3D_bbc_west_Qx_Qy->Fill(Day,centrality,1,bbc_west_Qx);
                             profile3D_bbc_west_Qx_Qy->Fill(Day,centrality,2,bbc_west_Qy);
                             if(eventPlanes_input->IsOpen() && profile3D_bbc_west_Qx_Qy_input && profile3D_bbc_west_Qx_Qy_input->GetEntries() > 0) {
@@ -2516,7 +2354,7 @@ Int_t FxtMaker::Make() {
                                 if(bbc_west_plane2 < 0.0            ) bbc_west_plane2 += 2.0*TMath::Pi();
                                 if(bbc_west_plane2 > 2.0*TMath::Pi()) bbc_west_plane2 -= 2.0*TMath::Pi();
                                 hist_bbc_west_psi_recentered->Fill(bbc_west_plane2);
-                                // shift recenterd event plane to flat
+                                // Shift recenterd event plane to flat
                                 Double_t reaction_plane_new = bbc_west_plane2;
                                 for(Int_t k=0;k<order;k++) {
                                     profile3D_bbc_west_psiShift->Fill(Day,centrality,1+2*k,TMath::Cos(reaction_plane_new*(k+1)));
@@ -2543,7 +2381,7 @@ Int_t FxtMaker::Make() {
                             }
                         }
                     }
-                    // bbc full
+                    // BBC full
                     if( (N_bbc_east + N_bbc_west) >= 5 && bbc_east_Qweight > 0.0 && bbc_west_Qweight > 0.0 ) {
                         bbc_full_Qx = bbc_east_Qx/bbc_east_Qweight + bbc_west_Qx/bbc_west_Qweight;
                         bbc_full_Qy = bbc_east_Qy/bbc_east_Qweight + bbc_west_Qy/bbc_west_Qweight;
@@ -2552,7 +2390,7 @@ Int_t FxtMaker::Make() {
                             if(bbc_full_plane1 < 0.0            ) bbc_full_plane1 += 2.0*TMath::Pi();
                             if(bbc_full_plane1 > 2.0*TMath::Pi()) bbc_full_plane1 -= 2.0*TMath::Pi();
                             hist_bbc_full_psi_raw->Fill(bbc_full_plane1);
-                            // recenter reaction plane vector
+                            // Recenter reaction plane vector
                             profile3D_bbc_full_Qx_Qy->Fill(Day,centrality,1,bbc_full_Qx);
                             profile3D_bbc_full_Qx_Qy->Fill(Day,centrality,2,bbc_full_Qy);
                             if(eventPlanes_input->IsOpen() && profile3D_bbc_full_Qx_Qy_input && profile3D_bbc_full_Qx_Qy_input->GetEntries() > 0) {
@@ -2564,7 +2402,7 @@ Int_t FxtMaker::Make() {
                                 if(bbc_full_plane2 < 0.0            ) bbc_full_plane2 += 2.0*TMath::Pi();
                                 if(bbc_full_plane2 > 2.0*TMath::Pi()) bbc_full_plane2 -= 2.0*TMath::Pi();
                                 hist_bbc_full_psi_recentered->Fill(bbc_full_plane2);
-                                // shift recenterd event plane to flat
+                                // Shift recenterd event plane to flat
                                 Double_t reaction_plane_new = bbc_full_plane2;
                                 for(Int_t k=0;k<order;k++) {
                                     profile3D_bbc_full_psiShift->Fill(Day,centrality,1+2*k,TMath::Cos(reaction_plane_new*(k+1)));
@@ -2591,8 +2429,8 @@ Int_t FxtMaker::Make() {
                             }
                         }
                     }
-                    // accumulate Event Plane correlations
-                    Double_t centTMP = profile_correlation_tpc_east_tpc_west->GetBinCenter(Ncentralities-centrality+1);
+                    // Accumulate Event Plane correlations
+                    Double_t centTMP = Ncentralities-centrality+1;
                     if( tpc_east_plane3 >= 0.0 && tpc_east_plane3 <= 2.0*TMath::Pi() ) {
                         if( tpc_west_plane3 >= 0.0 && tpc_west_plane3 <= 2.0*TMath::Pi() ) {
                             profile_correlation_tpc_east_tpc_west->Fill(centTMP,TMath::Cos(tpc_east_plane3 - tpc_west_plane3));
@@ -2638,50 +2476,76 @@ Int_t FxtMaker::Make() {
                             correlation2D_bbc_sub->Fill(bbc_west_plane3,bbc_east_plane3);
                         }
                     }
+                    // Define PID parameters
+                    Int_t Nprotons = 0, NpionPlus = 0, NpionMinus = 0, NkaonPlus = 0, NkaonMinus = 0;
                     // 3rd Primary Tracks loop to get flow
                     for(Int_t itr=0;itr<trackMult;itr++) {
-                        // get Track pointer
+                        // Get Track pointer
                         StMuTrack *track = mMuDstMaker->muDst()->primaryTracks(itr);
-                        // check if Track pointer isn't Null
+                        // Check if Track pointer isn't Null
                         if(track) {
-                            // apply Track Cuts
-                            if( // cut on nHitsDedx
+                            // Apply Track Cuts
+                            if( // Cut on nHitsDedx
                                track->nHitsDedx() > 0
-                               // avoid track splitting
+                               // Sytemactic checks
+                               //track->nHitsDedx() > 10
+                               //track->nHitsDedx() > 15
+                               //track->nHitsDedx() > 20
+                               // Avoid track splitting
                                && (Double_t)track->nHitsFit()/track->nHitsPoss() >= 0.52
-                               // apply other track cuts
+                               // Apply other track cuts
                                //&& TMath::Abs( track->eta() ) < 1.0
                                //&& track->pt() > 0.2 && track->pt() < 5.0
+                               // Sytemactic checks
+                               //&& track->dcaGlobal().mag() < 1.0
                                //&& track->dcaGlobal().mag() < 2.0
+                               //&& track->dcaGlobal().mag() < 3.0
                                ) {
-                                // get track-wise parameter histograms
+                                // Get track-wise parameter histograms
                                 Double_t pt = track->pt();
                                 Double_t pz = track->p().z();
-                                //Double_t eta = track->eta();
+                                Double_t eta = track->eta();
                                 Double_t phi = track->phi();
                                 if(phi < 0.0            ) phi += 2.0*TMath::Pi();
                                 if(phi > 2.0*TMath::Pi()) phi -= 2.0*TMath::Pi();
-                                // get PID parameters
+                                // Get PID parameters
                                 Int_t charge = track->charge();
                                 Double_t Beta = track->btofPidTraits().beta();
                                 Double_t trackP = track->p().mag();
                                 Double_t mass2 = 0.0;
-                                // check if TOF info available
+                                hist_dEdx->Fill(charge*trackP,track->dEdx()*1.0e6);
+                                // Check if TOF info available
                                 if(Beta != -999.0) {
                                     mass2 = trackP*trackP * ( ( 1.0 / ( Beta*Beta ) ) - 1.0 );
+                                    hist_beta->Fill(charge*trackP,1.0/Beta);
+                                    hist_mass->Fill(charge*trackP,mass2);
                                 }
                                 // 2nd particle identifications
-                                // protons
+                                // Protons
                                 if( TMath::Abs( track->nSigmaProton() ) < 2.0
-                                   && ( Beta == -999.0 || ( Beta != -999.0 && mass2 > 0.6 && mass2 < 1.1 ) )
+                                   && ( (Beta == -999.0 /*&& TMath::Abs( track->nSigmaPion() ) > 0.3*/ ) ||
+                                       ( Beta != -999.0
+                                        && mass2 > 0.4
+                                        && mass2 < 1.4
+                                        // Systematic check cuts
+                                        //&& mass2 > 0.4 + 0.008*cutTest1
+                                        //&& mass2 < 1.4 - 0.028*cutTest1
+                                        )
+                                       )
                                    && track->charge() > 0
-                                   && pt > 0.4 && pt < 2.0
-                                   && track->eta() > -2.0 && track->eta() < 0.0
+                                   && pt > 0.4
+                                   && pt < 2.0
+                                   // Insert systematic check cuts
+                                   //&& TMath::Abs( track->nSigmaProton() ) < 1.6 + 0.08*cutTest1
+                                   //&& pt > 0.32 + 0.016*cutTest1
+                                   //&& pt < 1.6 + 0.08*cutTest1
                                    ) {
-                                    // get particle track rapidity
+                                    // Count proton tracks number
+                                    Nprotons++;
+                                    // Get particle track rapidity
                                     Double_t energy_Proton = TMath::Sqrt(trackP*trackP + Mass_Proton*Mass_Proton);
                                     Double_t rap_Proton = 0.5*TMath::Log( (energy_Proton + pz) / (energy_Proton - pz) );
-                                    
+                                    // Get eff corr
                                     Double_t efficiency = 0.0;
                                     if(ProtonEffTableFile->IsOpen() && ProtonEfficiencyTable->GetEntries()) {
                                         Int_t centralitybin = centrality;
@@ -2695,11 +2559,11 @@ Int_t FxtMaker::Make() {
                                            ) {
                                             Int_t tablebin = ProtonEfficiencyTable->GetBin(centralitybin,rapiditybin,transversemassbin);
                                             efficiency = ProtonEfficiencyTable->GetBinContent(tablebin);
-                                            efficiency = (efficiency > 0.0)? 1.0 / efficiency : 0.0;
+                                            efficiency = (efficiency >= 0.001 && efficiency <= 1.0)? 1.0 / efficiency : 0.0;
                                             //cout<<centrality<<"   "<<rapiditybin-1<<"   "<<transversemass<<"   "<<efficiency<<endl;
                                         }
                                     }
-                                    
+                                    // Get TPC eff corr
                                     Double_t TPC_PID_efficiency = 0.0;
                                     if(TPC_PID_efficiency_file->IsOpen() && Proton_TPC_efficiency_table->GetEntries()) {
                                         Int_t rapiditybin = Proton_TPC_efficiency_table->GetXaxis()->FindBin(rap_Proton);
@@ -2710,102 +2574,78 @@ Int_t FxtMaker::Make() {
                                            ) {
                                             Int_t tablebin = Proton_TPC_efficiency_table->GetBin(rapiditybin,transversemassbin);
                                             TPC_PID_efficiency = Proton_TPC_efficiency_table->GetBinContent(tablebin);
-                                            TPC_PID_efficiency = (TPC_PID_efficiency > 0.0)? 1.0 / TPC_PID_efficiency : 0.0;
+                                            TPC_PID_efficiency = (TPC_PID_efficiency >= 0.01 && TPC_PID_efficiency <= 1.0)? 1.0 / TPC_PID_efficiency : 0.0;
                                             //cout<<centrality<<"   "<<rapiditybin<<"   "<<transversemass<<"   "<<TPC_PID_efficiency<<endl;
                                         }
                                     }
                                     if(Beta != -999.0) TPC_PID_efficiency = 1.0;
-                                    efficiency *= TPC_PID_efficiency;
-                                    //hist_pt_rap_proton->Fill(rap_Proton,pt);
-                                    
-                                    efficiency = 1.0; // this will mask out the efficiency corrections
-                                    
-                                    if( chooseBBCeastEP && bbc_east_plane3 >= 0.0 && bbc_east_plane3 <= 2.0*TMath::Pi() && efficiency > 0.0)
-                                        profile3D_proton_v1->Fill(centrality,pt,rap_Proton,efficiency * TMath::Cos(phi - bbc_east_plane3 - TMath::Pi()));
-                                    
-                                    if( chooseTPCEP && reaction_plane3_ex_west[itr] >= 0.0 && reaction_plane3_ex_west[itr] <= 2.0*TMath::Pi() && efficiency > 0.0)
-                                        profile3D_proton_v1->Fill(centrality,pt,rap_Proton,efficiency * TMath::Cos(phi - reaction_plane3_ex_west[itr]));
+                                    //efficiency *= TPC_PID_efficiency;
+                                    // Get phi weight
+                                    Double_t phi_weight = 0.0;
+                                    if(phi_input->IsOpen() && Hist_Phi->GetEntries()) {
+                                        Int_t phi_bin = Hist_Phi->FindBin(phi);
+                                        phi_weight = Hist_Phi->GetBinContent(phi_bin);
+                                    }
+                                    efficiency *= phi_weight;
+                                    // Fill histograms
+                                    hist_pt_proton->Fill(pt);
+                                    hist_eta_proton->Fill(eta);
+                                    hist_y_proton->Fill(rap_Proton);
+                                    hist_rap_eta_proton->Fill(eta,rap_Proton);
+                                    hist_pt_y_proton->Fill(rap_Proton,pt,efficiency);
+                                    hist_pt_eta_proton->Fill(eta,pt,efficiency);
+                                    hist_phi_proton->Fill(phi);
+                                    hist_dEdx_proton->Fill(charge*trackP,track->dEdx()*1.0e6);
+                                    if(Beta != -999.0) {
+                                        hist_beta_proton->Fill(charge*trackP,1.0/Beta);
+                                        hist_mass_proton->Fill(charge*trackP,mass2);
+                                    }
+                                    // Accumulate flows
+                                    if( /*chooseBBCeastEP &&*/ bbc_east_plane3 >= 0.0 && bbc_east_plane3 <= 2.0*TMath::Pi() && efficiency > 0.0 ) {
+                                        profile3D_proton_v1->Fill(centrality,pt,rap_Proton/*track->eta()*/,TMath::Cos(phi - bbc_east_plane3 - TMath::Pi()),efficiency/*1.0*/);
+                                    }
+                                    if( /*chooseTPCEP &&*/ reaction_plane3_ex_west[itr] >= 0.0 && reaction_plane3_ex_west[itr] <= 2.0*TMath::Pi() && efficiency > 0.0 ) {
+                                        profile3D_proton_v1_tpc->Fill(centrality,pt,rap_Proton/*track->eta()*/,TMath::Cos(1.0*phi - reaction_plane3_ex_west[itr]),efficiency/*1.0*/);
+                                    }
                                 }
                                 
-                                // deuterons
-                                if( track->nSigmaProton() > 2.5
-                                   && ( Beta != -999.0 && mass2 > 3.0 && mass2 < 4.1 )
-                                   && track->charge() > 0
-                                   ) {
-                                    // get particle track rapidity
-                                    Double_t energy_Deuteron = TMath::Sqrt(trackP*trackP + Mass_Deuteron*Mass_Deuteron);
-                                    Double_t rap_Deuteron = 0.5*TMath::Log( (energy_Deuteron + pz) / (energy_Deuteron - pz) );
-                                    
-                                    /*Double_t TPC_PID_efficiency = 0.0;
-                                    if(TPC_PID_efficiency_file->IsOpen() && Deuteron_TPC_efficiency_table->GetEntries()) {
-                                        Int_t rapiditybin = Deuteron_TPC_efficiency_table->GetXaxis()->FindBin(rap_Deuteron);
-                                        Double_t transversemass = TMath::Sqrt( Mass_Deuteron*Mass_Deuteron + track->pt()*track->pt() ) - Mass_Deuteron;
-                                        Int_t transversemassbin = Deuteron_TPC_efficiency_table->GetYaxis()->FindBin(transversemass);
-                                        if( rapiditybin >= 1 && rapiditybin <= 15
-                                           && transversemassbin >= 1 && transversemassbin <= 38
-                                           ) {
-                                            Int_t tablebin = Deuteron_TPC_efficiency_table->GetBin(rapiditybin,transversemassbin);
-                                            TPC_PID_efficiency = Deuteron_TPC_efficiency_table->GetBinContent(tablebin);
-                                            TPC_PID_efficiency = (TPC_PID_efficiency > 0.0)? 1.0 / TPC_PID_efficiency : 0.0;
-                                            //cout<<centrality<<"   "<<rapiditybin<<"   "<<transversemass<<"   "<<TPC_PID_efficiency<<endl;
-                                        }
-                                    }*/
-                                    
-                                    if( chooseBBCeastEP && bbc_east_plane3 >= 0.0 && bbc_east_plane3 <= 2.0*TMath::Pi() /*&& TPC_PID_efficiency > 0.0*/)
-                                        profile3D_deuteron_v1->Fill(centrality,pt,rap_Deuteron,/*TPC_PID_efficiency */ TMath::Cos(phi - bbc_east_plane3 - TMath::Pi()));
-                                    
-                                    if( chooseTPCEP && reaction_plane3_ex_west[itr] >= 0.0 && reaction_plane3_ex_west[itr] <= 2.0*TMath::Pi() /*&& TPC_PID_efficiency > 0.0*/)
-                                        profile3D_deuteron_v1->Fill(centrality,pt,rap_Deuteron,/*TPC_PID_efficiency */ TMath::Cos(phi - reaction_plane3_ex_west[itr]));
-                                }
-                                
-                                // pions
+                                // Pions
                                 /*if( TMath::Abs( track->nSigmaPion() ) < 2.0
-                                   && ( ( Beta != -999.0 && mass2 > -0.1 && mass2 < 0.12 )
-                                       && ( ( trackP < 0.62 && TMath::Abs(mass2) > 0.005 ) || trackP > 0.62 ) )
+                                   && ( ( Beta != -999.0
+                                         && mass2 > -0.15
+                                         && mass2 < 0.14
+                                         )
+                                       //&& ( ( trackP < 0.62 && TMath::Abs(mass2) > 0.005 ) || trackP > 0.62 )
+                                       )
+                                   && track->pt() > 0.2
+                                   && track->pt() < 1.6
+                                   //&& track->p().mag() < 1.6
                                    )*/
+                                // POI selection (Pion), Lukasz's cuts
                                 if( TMath::Abs(track->nSigmaPion()) < 1.0
                                    && TMath::Abs(track->btofPidTraits().sigmaPion()) < 1.0
                                    && TMath::Abs(track->btofPidTraits().sigmaKaon()) > 1.0
                                    && TMath::Abs(track->btofPidTraits().sigmaProton()) > 1.0
                                    && TMath::Abs(track->nSigmaElectron()) > 1.0
-                                   //&& track->charge() > 0
-                                   && track->pt() > 0.2 //&& track->pt() < 1.6
-                                   && track->p().mag() < 1.6
-                                   && track->eta() > -2.0
-                                   && track->eta() < 0.0
-                                   // systematic checks
-                                   //&& TMath::Abs(track->nSigmaPion()) < 0.75 + 0.1*cutTest1
-                                   //&& TMath::Abs(track->nSigmaElectron()) > 0.5 + 0.1*cutTest1
-                                   //&& TMath::Abs(track->btofPidTraits().sigmaPion()) < 0.75 + 0.1*cutTest1
-                                   //&& TMath::Abs(track->btofPidTraits().sigmaKaon()) > 0.5 + 0.1*cutTest1
-                                   //&& TMath::Abs(track->btofPidTraits().sigmaProton()) > 0.5 + 0.1*cutTest1
-                                   //&& track->pt() > 0.0 + 0.04*cutTest1
+                                   && track->pt() > 0.2
+                                   && track->pt() < 1.6
+                                   // Systematic checks
+                                   //&& track->p().mag() < 1.6
+                                   //&& TMath::Abs(track->nSigmaPion()) < 0.8 + 0.04*cutTest1
+                                   //&& TMath::Abs(track->btofPidTraits().sigmaPion()) < 0.8 + 0.04*cutTest1
+                                   //&& TMath::Abs(track->btofPidTraits().sigmaKaon()) > 1.0 - 0.02*cutTest1
+                                   //&& TMath::Abs(track->btofPidTraits().sigmaProton()) > 1.0 - 0.02*cutTest1
+                                   //&& TMath::Abs(track->nSigmaElectron()) > 1.0 - 0.02*cutTest1
+                                   //&& pt > 0.16 + 0.008*cutTest1
+                                   //&& pt < 1.28 + 0.064*cutTest1
                                    //&& track->p().mag() < 1.4 + 0.02*cutTest1
-                                   //&& track->eta() > -2.25 + 0.05*cutTest1
-                                   //&& track->eta() < -0.25 + 0.025*cutTest1
-                                   )    // POI selection (Pion), Lukasz's cuts
-                                  {
-                                    // get particle track rapidity
+                                   ) {
+                                    // Get particle track rapidity
                                     Double_t energy_Pion = TMath::Sqrt(trackP*trackP + Mass_Pion*Mass_Pion);
                                     Double_t rap_Pion = 0.5*TMath::Log( (energy_Pion + pz) / (energy_Pion - pz) );
-                                    
-                                    /*Double_t TPC_PID_efficiency = 0.0;
-                                    if(TPC_PID_efficiency_file->IsOpen() && Pion_TPC_efficiency_table->GetEntries()) {
-                                        Int_t rapiditybin = Pion_TPC_efficiency_table->GetXaxis()->FindBin(rap_Pion);
-                                        Double_t transversemass = TMath::Sqrt( Mass_Pion*Mass_Pion + track->pt()*track->pt() ) - Mass_Pion;
-                                        Int_t transversemassbin = Pion_TPC_efficiency_table->GetYaxis()->FindBin(transversemass);
-                                        if( rapiditybin >= 1 && rapiditybin <= 15
-                                           && transversemassbin >= 1 && transversemassbin <= 38
-                                           ) {
-                                            Int_t tablebin = Pion_TPC_efficiency_table->GetBin(rapiditybin,transversemassbin);
-                                            TPC_PID_efficiency = Pion_TPC_efficiency_table->GetBinContent(tablebin);
-                                            TPC_PID_efficiency = (TPC_PID_efficiency > 0.0)? 1.0 / TPC_PID_efficiency : 0.0;
-                                            //cout<<centrality<<"   "<<rapiditybin<<"   "<<transversemass<<"   "<<TPC_PID_efficiency<<endl;
-                                        }
-                                    }*/
-                                    
                                     // pionPlus
                                     if(charge > 0) {
+                                        // Get eff corr
                                         Double_t efficiency = 0.0;
                                         if(PiPlusEffTableFile->IsOpen() && PionPlusEfficiencyTable->GetEntries()) {
                                             Int_t centralitybin = centrality;
@@ -2819,26 +2659,37 @@ Int_t FxtMaker::Make() {
                                                ) {
                                                 Int_t tablebin = PionPlusEfficiencyTable->GetBin(centralitybin,rapiditybin,transversemassbin);
                                                 efficiency = PionPlusEfficiencyTable->GetBinContent(tablebin);
-                                                efficiency = (efficiency > 0.0)? 1.0 / efficiency : 0.0;
+                                                efficiency = (efficiency >= 0.001 && efficiency <= 1.0)? 1.0 / efficiency : 0.0;
                                                 //cout<<centrality<<"   "<<rapiditybin-1<<"   "<<transversemass<<"   "<<efficiency<<endl;
                                             }
                                         }
+                                        // Count pionPlus tracks number
+                                        NpionPlus++;
+                                        // Fill histograms
+                                        hist_pt_pionPlus->Fill(pt);
+                                        hist_eta_pionPlus->Fill(eta);
+                                        hist_y_pionPlus->Fill(rap_Pion);
+                                        hist_rap_eta_pionPlus->Fill(eta,rap_Pion);
+                                        hist_pt_y_pionPlus->Fill(rap_Pion,pt,efficiency);
+                                        hist_pt_eta_pionPlus->Fill(eta,pt,efficiency);
+                                        hist_phi_pionPlus->Fill(phi);
+                                        hist_dEdx_pionPlus->Fill(charge*trackP,track->dEdx()*1.0e6);
+                                        if(Beta != -999.0) {
+                                            hist_beta_pionPlus->Fill(charge*trackP,1.0/Beta);
+                                            hist_mass_pionPlus->Fill(charge*trackP,mass2);
+                                        }
+                                        // Accumulate flows
+                                        if( /*chooseBBCeastEP &&*/ bbc_east_plane3 >= 0.0 && bbc_east_plane3 <= 2.0*TMath::Pi() && efficiency > 0.0 ) {
+                                            profile3D_pionPlus_v1->Fill(centrality,pt,rap_Pion/*track->eta()*/,TMath::Cos(phi - bbc_east_plane3 - TMath::Pi()),efficiency/*1.0*/);
+                                        }
                                         
-                                        //efficiency *= TPC_PID_efficiency;
-                                        
-                                        efficiency = 1.0; // this will mask out the efficiency corrections
-                                        
-                                        if( chooseBBCeastEP && bbc_east_plane3 >= 0.0 && bbc_east_plane3 <= 2.0*TMath::Pi() && efficiency > 0.0)
-                                            profile3D_pionPlus_v1->Fill(centrality,pt,rap_Pion,efficiency * TMath::Cos(phi - bbc_east_plane3 - TMath::Pi()));
-                                        
-                                        if( chooseTPCEP && reaction_plane3_ex_west[itr] >= 0.0 && reaction_plane3_ex_west[itr] <= 2.0*TMath::Pi() && efficiency > 0.0)
-                                            profile3D_pionPlus_v1->Fill(centrality,pt,rap_Pion,efficiency * TMath::Cos(phi - reaction_plane3_ex_west[itr]));
-                                        
-                                        //hist_pt_rap_pionPlus->Fill(rap_Pion,pt);
-
+                                        if( /*chooseTPCEP &&*/ reaction_plane3_ex_west[itr] >= 0.0 && reaction_plane3_ex_west[itr] <= 2.0*TMath::Pi() && efficiency > 0.0 ) {
+                                            profile3D_pionPlus_v1_tpc->Fill(centrality,pt,rap_Pion/*track->eta()*/,TMath::Cos(1.0*phi - reaction_plane3_ex_west[itr]),efficiency/*1.0*/);
+                                        }
                                     }
                                     // pionMinus
                                     if(charge < 0) {
+                                        // Get eff corr
                                         Double_t efficiency = 0.0;
                                         if(PiMinusEffTableFile->IsOpen() && PionMinusEfficiencyTable->GetEntries()) {
                                             Int_t centralitybin = centrality;
@@ -2852,38 +2703,58 @@ Int_t FxtMaker::Make() {
                                                ) {
                                                 Int_t tablebin = PionMinusEfficiencyTable->GetBin(centralitybin,rapiditybin,transversemassbin);
                                                 efficiency = PionMinusEfficiencyTable->GetBinContent(tablebin);
-                                                efficiency = (efficiency > 0.0)? 1.0 / efficiency : 0.0;
+                                                efficiency = (efficiency >= 0.001 && efficiency <= 1.0)? 1.0 / efficiency : 0.0;
                                                 //cout<<centrality<<"   "<<rapiditybin-1<<"   "<<transversemass<<"   "<<efficiency<<endl;
                                             }
                                         }
-                                        
-                                        //efficiency *= TPC_PID_efficiency;
-                                        
-                                        efficiency = 1.0; // this will mask out the efficiency corrections
-                                        
-                                        if( chooseBBCeastEP && bbc_east_plane3 >= 0.0 && bbc_east_plane3 <= 2.0*TMath::Pi() && efficiency > 0.0)
-                                            profile3D_pionMinus_v1->Fill(centrality,pt,rap_Pion,efficiency * TMath::Cos(phi - bbc_east_plane3 - TMath::Pi()));
-                                        
-                                        if( chooseTPCEP && reaction_plane3_ex_west[itr] >= 0.0 && reaction_plane3_ex_west[itr] <= 2.0*TMath::Pi() && efficiency > 0.0)
-                                            profile3D_pionMinus_v1->Fill(centrality,pt,rap_Pion,efficiency * TMath::Cos(phi - reaction_plane3_ex_west[itr]));
-                                        
-                                        //hist_pt_rap_pionMinus->Fill(rap_Pion,pt);
+                                        // Count pionMinus tracks number
+                                        NpionMinus++;
+                                        // Fill histograms
+                                        hist_pt_pionMinus->Fill(pt);
+                                        hist_eta_pionMinus->Fill(eta);
+                                        hist_y_pionMinus->Fill(rap_Pion);
+                                        hist_rap_eta_pionMinus->Fill(eta,rap_Pion);
+                                        hist_pt_y_pionMinus->Fill(rap_Pion,pt,efficiency);
+                                        hist_pt_eta_pionMinus->Fill(eta,pt,efficiency);
+                                        hist_phi_pionMinus->Fill(phi);
+                                        hist_dEdx_pionMinus->Fill(charge*trackP,track->dEdx()*1.0e6);
+                                        if(Beta != -999.0) {
+                                            hist_beta_pionMinus->Fill(charge*trackP,1.0/Beta);
+                                            hist_mass_pionMinus->Fill(charge*trackP,mass2);
+                                        }
+                                        // Accumulate flows
+                                        if( /*chooseBBCeastEP &&*/ bbc_east_plane3 >= 0.0 && bbc_east_plane3 <= 2.0*TMath::Pi() && efficiency > 0.0 ) {
+                                            profile3D_pionMinus_v1->Fill(centrality,pt,rap_Pion/*track->eta()*/,TMath::Cos(phi - bbc_east_plane3 - TMath::Pi()),efficiency/*1.0*/);
+                                        }
+                                        if( /*chooseTPCEP &&*/ reaction_plane3_ex_west[itr] >= 0.0 && reaction_plane3_ex_west[itr] <= 2.0*TMath::Pi() && efficiency > 0.0 ) {
+                                            profile3D_pionMinus_v1_tpc->Fill(centrality,pt,rap_Pion/*track->eta()*/,TMath::Cos(1.0*phi - reaction_plane3_ex_west[itr]),efficiency/*1.0*/);
+                                        }
                                     }
-                                  }
+                                }
                                 
-                                // kaons
+                                // Kaons
                                 if( TMath::Abs( track->nSigmaKaon() ) < 2.0
-                                   && ( Beta != -999.0 && mass2 > 0.15 && mass2 < 0.34 )
-                                   && track->pt() > 0.2 //&& track->pt() < 1.6
-                                   && track->p().mag() < 1.6
-                                   && track->eta() > -2.0 && track->eta() < 0.0
+                                   && ( Beta != -999.0
+                                       && mass2 > 0.14
+                                       && mass2 < 0.4
+                                       // Systematic check cuts
+                                       //&& mass2 > 0.14 + 0.0028*cutTest1
+                                       //&& mass2 < 0.4 - 0.008*cutTest1
+                                       )
+                                   && track->pt() > 0.2
+                                   && track->pt() < 1.6
+                                   //&& track->p().mag() < 1.6
+                                   // Insert systematic check cuts
+                                   //&& TMath::Abs( track->nSigmaKaon() ) < 1.6 + 0.08*cutTest1
+                                   //&& pt > 0.16 + 0.008*cutTest1
+                                   //&& pt < 1.28 + 0.064*cutTest1
                                    ) {
-                                    // get particle track rapidity
+                                    // Get particle track rapidity
                                     Double_t energy_Kaon = TMath::Sqrt(trackP*trackP + Mass_Kaon*Mass_Kaon);
                                     Double_t rap_Kaon = 0.5*TMath::Log( (energy_Kaon + pz) / (energy_Kaon - pz) );
-                                    
                                     // kaonPlus
                                     if(charge > 0) {
+                                        // Get eff corr
                                         Double_t efficiency = 0.0;
                                         if(KPlusEffTableFile->IsOpen() && KaonPlusEfficiencyTable->GetEntries()) {
                                             Int_t centralitybin = centrality;
@@ -2897,25 +2768,38 @@ Int_t FxtMaker::Make() {
                                                ) {
                                                 Int_t tablebin = KaonPlusEfficiencyTable->GetBin(centralitybin,rapiditybin,transversemassbin);
                                                 efficiency = KaonPlusEfficiencyTable->GetBinContent(tablebin);
-                                                efficiency = (efficiency > 0.0)? 1.0 / efficiency : 0.0;
+                                                efficiency = (efficiency >= 0.001 && efficiency <= 1.0)? 1.0 / efficiency : 0.0;
                                                 //cout<<centrality<<"   "<<rapiditybin-1<<"   "<<transversemass<<"   "<<efficiency<<endl;
                                             }
                                         }
-                                        
-                                        efficiency = 1.0; // this will mask out the efficiency corrections
-                                        
                                         //efficiency = 1.0;
-                                        if( chooseBBCeastEP && bbc_east_plane3 >= 0.0 && bbc_east_plane3 <= 2.0*TMath::Pi() && efficiency > 0.0)
-                                            profile3D_kaonPlus_v1->Fill(centrality,pt,rap_Kaon,efficiency * TMath::Cos(phi - bbc_east_plane3 - TMath::Pi()));
+                                        // Count kaonPlus tracks number
+                                        NkaonPlus++;
+                                        // Fill histograms
+                                        hist_pt_kaonPlus->Fill(pt);
+                                        hist_eta_kaonPlus->Fill(eta);
+                                        hist_y_kaonPlus->Fill(rap_Kaon);
+                                        hist_rap_eta_kaonPlus->Fill(eta,rap_Kaon);
+                                        hist_pt_y_kaonPlus->Fill(rap_Kaon,pt,efficiency);
+                                        hist_pt_eta_kaonPlus->Fill(eta,pt,efficiency);
+                                        hist_phi_kaonPlus->Fill(phi);
+                                        hist_dEdx_kaonPlus->Fill(charge*trackP,track->dEdx()*1.0e6);
+                                        if(Beta != -999.0) {
+                                            hist_beta_kaonPlus->Fill(charge*trackP,1.0/Beta);
+                                            hist_mass_kaonPlus->Fill(charge*trackP,mass2);
+                                        }
+                                        // Accumulate flows
+                                        if( /*chooseBBCeastEP &&*/ bbc_east_plane3 >= 0.0 && bbc_east_plane3 <= 2.0*TMath::Pi() && efficiency > 0.0 ) {
+                                            profile3D_kaonPlus_v1->Fill(centrality,pt,rap_Kaon/*track->eta()*/,TMath::Cos(phi - bbc_east_plane3 - TMath::Pi()),efficiency/*1.0*/);
+                                        }
                                         
-                                        if( chooseTPCEP && reaction_plane3_ex_west[itr] >= 0.0 && reaction_plane3_ex_west[itr] <= 2.0*TMath::Pi() && efficiency > 0.0)
-                                            profile3D_kaonPlus_v1->Fill(centrality,pt,rap_Kaon,efficiency * TMath::Cos(phi - reaction_plane3_ex_west[itr]));
-                                        
-                                        //hist_pt_rap_kaonPlus->Fill(rap_Kaon,pt);
-
+                                        if( /*chooseTPCEP &&*/ reaction_plane3_ex_west[itr] >= 0.0 && reaction_plane3_ex_west[itr] <= 2.0*TMath::Pi() && efficiency > 0.0 ) {
+                                            profile3D_kaonPlus_v1_tpc->Fill(centrality,pt,rap_Kaon/*track->eta()*/,TMath::Cos(1.0*phi - reaction_plane3_ex_west[itr]),efficiency/*1.0*/);
+                                        }
                                     }
                                     // kaonMinus
                                     if(charge < 0) {
+                                        // Get eff corr
                                         Double_t efficiency = 0.0;
                                         if(KMinusEffTableFile->IsOpen() && KaonMinusEfficiencyTable->GetEntries()) {
                                             Int_t centralitybin = centrality;
@@ -2929,30 +2813,47 @@ Int_t FxtMaker::Make() {
                                                ) {
                                                 Int_t tablebin = KaonMinusEfficiencyTable->GetBin(centralitybin,rapiditybin,transversemassbin);
                                                 efficiency = KaonMinusEfficiencyTable->GetBinContent(tablebin);
-                                                efficiency = (efficiency > 0.0)? 1.0 / efficiency : 0.0;
+                                                efficiency = (efficiency >= 0.001 && efficiency <= 1.0)? 1.0 / efficiency : 0.0;
                                                 //cout<<centrality<<"   "<<rapiditybin-1<<"   "<<transversemass<<"   "<<efficiency<<endl;
                                             }
                                         }
-                                        
-                                        efficiency = 1.0; // this will mask out the efficiency corrections
-                                        
                                         //efficiency = 1.0;
-                                        if( chooseBBCeastEP && bbc_east_plane3 >= 0.0 && bbc_east_plane3 <= 2.0*TMath::Pi() && efficiency > 0.0)
-                                            profile3D_kaonMinus_v1->Fill(centrality,pt,rap_Kaon,efficiency * TMath::Cos(phi - bbc_east_plane3 - TMath::Pi()));
+                                        // count kaonMinus tracks number
+                                        NkaonMinus++;
+                                        // fill histograms
+                                        hist_pt_kaonMinus->Fill(pt);
+                                        hist_eta_kaonMinus->Fill(eta);
+                                        hist_y_kaonMinus->Fill(rap_Kaon);
+                                        hist_rap_eta_kaonMinus->Fill(eta,rap_Kaon);
+                                        hist_pt_y_kaonMinus->Fill(rap_Kaon,pt,efficiency);
+                                        hist_pt_eta_kaonMinus->Fill(eta,pt,efficiency);
+                                        hist_phi_kaonMinus->Fill(phi);
+                                        hist_dEdx_kaonMinus->Fill(charge*trackP,track->dEdx()*1.0e6);
+                                        if(Beta != -999.0) {
+                                            hist_beta_kaonMinus->Fill(charge*trackP,1.0/Beta);
+                                            hist_mass_kaonMinus->Fill(charge*trackP,mass2);
+                                        }
+                                        // Accumulate flows
+                                        if( /*chooseBBCeastEP &&*/ bbc_east_plane3 >= 0.0 && bbc_east_plane3 <= 2.0*TMath::Pi() && efficiency > 0.0 ) {
+                                            profile3D_kaonMinus_v1->Fill(centrality,pt,rap_Kaon/*track->eta()*/,TMath::Cos(phi - bbc_east_plane3 - TMath::Pi()),efficiency/*1.0*/);
+                                        }
                                         
-                                        if( chooseTPCEP && reaction_plane3_ex_west[itr] >= 0.0 && reaction_plane3_ex_west[itr] <= 2.0*TMath::Pi() && efficiency > 0.0)
-                                            profile3D_kaonMinus_v1->Fill(centrality,pt,rap_Kaon,efficiency * TMath::Cos(phi - reaction_plane3_ex_west[itr]));
-                                        
-                                        //hist_pt_rap_kaonMinus->Fill(rap_Kaon,pt);
-                                        
+                                        if( /*chooseTPCEP &&*/ reaction_plane3_ex_west[itr] >= 0.0 && reaction_plane3_ex_west[itr] <= 2.0*TMath::Pi() && efficiency > 0.0) {
+                                            profile3D_kaonMinus_v1_tpc->Fill(centrality,pt,rap_Kaon/*track->eta()*/,TMath::Cos(1.0*phi - reaction_plane3_ex_west[itr]),efficiency/*1.0*/);
+                                        }
                                     }
                                 }
                             } // Track Cuts end
                         } // Track pointer check ends
                     } // 3rd Primary Tracks loop ends
-                } // event centrality cut ends
+                    hist_trackmult_proton->Fill(Nprotons);
+                    hist_trackmult_pionPlus->Fill(NpionPlus);
+                    hist_trackmult_pionMinus->Fill(NpionMinus);
+                    hist_trackmult_kaonPlus->Fill(NkaonPlus);
+                    hist_trackmult_kaonMinus->Fill(NkaonMinus);
+                } // Event centrality cut ends
 #if indTPCepIndicator > 0
-                // clean up
+                // Clean up
                 delete[] Qx1_ex_full; delete[] Qy1_ex_full;
                 delete[] Qx1_ex_east; delete[] Qy1_ex_east; delete[] w1_ex_east;
                 delete[] Qx1_ex_west; delete[] Qy1_ex_west; delete[] w1_ex_west;
@@ -2961,8 +2862,8 @@ Int_t FxtMaker::Make() {
                 delete[] reaction_plane1_ex_west; delete[] reaction_plane2_ex_west; delete[] reaction_plane3_ex_west;
 #endif
             } // Event selection ends
-        } // check Event pointer ends
-    } // vertices loop ends
+        } // Check Event pointer ends
+    } // Vertices loop ends
     return kStOK;
 }
 
@@ -3021,7 +2922,7 @@ Double_t FxtMaker::BBC_GetPhi(Int_t e_w,Int_t iTile,Double_t Vx,Double_t Vy) {
 Double_t FxtMaker::resEventPlane(Double_t chi) {
     // Calculates the event plane resolution as a function of chi
     
-    Double_t con = 0.626657;                   // sqrt(pi/2)/2
+    Double_t con = 0.626657;  // sqrt(pi/2)/2
     Double_t arg = chi * chi / 4.0;
     
     Double_t res = con * chi * exp(-arg) * (TMath::BesselI0(arg) + TMath::BesselI1(arg));
