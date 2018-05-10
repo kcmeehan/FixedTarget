@@ -35,16 +35,16 @@ TCanvas* makeCanvas(TString fileName, Int_t folder){
     qSide[1] = (TH1D*)gDirectory->Get("qSideFit");
     qLong[1] = (TH1D*)gDirectory->Get("qLongFit");
 
-    TCanvas* cTest = new TCanvas("cTest","Projections of the Correlation Function",1000,700);
-    cTest->Clear();
-    cTest->Divide(3,1,0,0);
+    TCanvas* canvas = new TCanvas("cCorrFunc","Projections of the Correlation Function",1000,700);
+    canvas->Clear();
+    canvas->Divide(3,1,0,0);
     Float_t bottomMargin = 0.15, leftMargin = 0.10;
-    plot::setPadMargins(cTest, 1, 3, leftMargin, bottomMargin, 0.05, .05);
+    plot::setPadMargins(canvas, 1, 3, leftMargin, bottomMargin, 0.05, .05);
     Float_t titleSize = 0.2, titleSmall = titleSize / 1.3;
     Float_t labelSize = 0.13, labelSmall = labelSize / 1.3;
 
-    cTest->cd(1);
-    // cTest->cd(1)->SetLeftMargin(leftMargin);
+    canvas->cd(1);
+    // canvas->cd(1)->SetLeftMargin(leftMargin);
     formatTH1(qOut[0],kBlue,kFullTriangleUp,2,1,2);
     formatTH1(qOut[1],kRed,kFullTriangleUp,2,1,4);
     qOut[0]->Draw();
@@ -55,14 +55,14 @@ TCanvas* makeCanvas(TString fileName, Int_t folder){
     qOut[0]->GetYaxis()->SetTitle("C(q)");
     qOut[1]->Draw("lchistsame");
 
-    cTest->cd(2);
+    canvas->cd(2);
     formatTH1(qSide[0],kBlue,kFullTriangleUp,2,1,2);
     formatTH1(qSide[1],kRed,kFullTriangleUp,2,1,4);
     qSide[0]->GetXaxis()->SetLabelSize(labelSize);
     qSide[0]->Draw();
     qSide[1]->Draw("lchistsame");
 
-    cTest->cd(3);
+    canvas->cd(3);
     formatTH1(qLong[0],kBlue,kFullTriangleUp,2,1,2);
     formatTH1(qLong[1],kRed,kFullTriangleUp,2,1,4);
     qLong[0]->Draw();
@@ -79,20 +79,20 @@ TCanvas* makeCanvas(TString fileName, Int_t folder){
     TText* outLabel = new TText(labelXPosition, labelYPosition, "Out");
     outLabel->SetTextAlign(22);
     outLabel->SetTextSize(.2/1.3);
-    cTest->cd(1);
+    canvas->cd(1);
     outLabel->Draw();
 
     TText* sideLabel = new TText(labelXPosition, labelYPosition, "Side");
     sideLabel->SetTextAlign(22);
     sideLabel->SetTextSize(.2);
-    cTest->cd(2);
+    canvas->cd(2);
     sideLabel->Draw();
 
     TText* longLabel = new TText(labelXPosition, labelYPosition, "Long");
     longLabel->SetTextAlign(22);
     longLabel->SetTextSize(.2);
-    cTest->cd(3);
-    // cTest->cd(3)->SetRightMargin(0.01);
+    canvas->cd(3);
+    // canvas->cd(3)->SetRightMargin(0.01);
     longLabel->Draw();
 
     gStyle->SetOptStat(0);
@@ -102,7 +102,7 @@ TCanvas* makeCanvas(TString fileName, Int_t folder){
     pt->AddText(centralityLabels[folder].Data());
     pt->SetTextSize(.08);
 
-    cTest->cd(3);
+    canvas->cd(3);
     TLegend* leg = new TLegend(0.36,.98,.95,.82);
     leg->SetTextAlign(22);
     leg->SetMargin(0.5);
@@ -115,7 +115,7 @@ TCanvas* makeCanvas(TString fileName, Int_t folder){
     gStyle->SetTitleSize(0.06,"t");
     gPad->Modified();
     // pt->Draw();
-    return cTest;
+    return canvas;
 }
 
 void formatTH1(TH1* graph, Color_t color, Style_t mStyle, Size_t mSize, Style_t lStyle, Size_t lSize)

@@ -72,7 +72,7 @@ void drawRsideVsRlong()
 
     // --- Plot stuff --- //
     Float_t xLow = 2.5, xHigh = 9.5;
-    TCanvas* canvas = new TCanvas("c1","R_side vs. R_long",1000,1000);
+    TCanvas* canvas = new TCanvas("cRsideRlong","R_side vs. R_long",1000,1000);
     tmGraph->Draw("ap");
     tmGraph->GetXaxis()->SetLimits(xLow,xHigh);
     tmGraph->SetMinimum(xLow);
