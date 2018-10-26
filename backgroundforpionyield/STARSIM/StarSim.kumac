@@ -1,0 +1,27 @@
+*Send a tx file through STARSIM
+MACRO StarSim inputFile outputFile nEvents detectorGeometry 
+
+*Set Debug Mode on/off
+DEBUG on
+
+*Open the Output File
+USER/OUTPUT o [outputFile].fzd
+
+*Set Geometry
+DETP geom [detectorGeometry]
+
+*Create Geometry
+gexe $STAR_LIB/xgeometry.so
+*MAKE geometry
+
+*Set the input file
+USER/INPUT TX [inputFile]
+
+*Number of Events
+trig [nEvents]
+
+*Close Output File
+USER/OUTPUT c [outputFile].fzd
+
+*Exit from STARSIM
+exit

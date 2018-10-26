@@ -1,0 +1,3 @@
+[submodule "src/urqmdreader"]
+	path = src/urqmdreader
+	url = https://bitbucket.org/chris_flores/urqmdreader.git

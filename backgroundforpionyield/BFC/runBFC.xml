@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<job maxFilesPerProcess="1" fileListSyntax="paths" simulateSubmission="false">
+
+  <stdout URL="file:/star/data01/pwg/kmeehan/AuAuFXT2015_BFCforSimulation/logs/thesis/BFC_AuAu4pt5FXT_$JOBINDEX.out" />
+  <stderr URL="file:/star/data01/pwg/kmeehan/AuAuFXT2015_BFCforSimulation/logs/thesis/BFC_AuAu4pt5FXT_$JOBINDEX.err" />
+  
+  <input URL="filelist:/star/data01/pwg/kmeehan/AuAuFXT2015_STARSIM/output/thesis/bfcForThesis.list" /> 
+  
+
+  <!--ONLY SAVE THE MINIMC FILES -->
+  <output fromScratch="*.minimc.root" toURL="file:/star/data01/pwg/kmeehan/AuAuFXT2015_BFCforSimulation/output/thesis/" />
+
+  <Generator>
+    <Location>
+	   /star/data01/pwg/kmeehan/AuAuFXT2015_BFCforSimulation/schedFiles/
+    </Location>
+  </Generator>
+
+  <ResourceUsage>
+    <Memory><MinMemory>2000</MinMemory></Memory>
+  </ResourceUsage>
+
+  <command>
+    
+    starver SL16d
+
+    <!-- Copy the input file to Scheduler's Scratch Directory to improve IO -->
+    foreach line ( "` cat $FILELIST `" )
+        cp $line $SCRATCH
+    end
+
+    cd $SCRATCH
+
+    <!-- Set variables to pass to BFC -->
+	 set chain = "DbV20160126 DbV20150920_tpc_Calibrations BAna hitfilt y2015b geantout BemcChkStat UseXgeom AgML TpcRS TpxClu VFMinuit ITTF l3onl emcDY2 fpd trgd ZDCvtx StiHftC tpcDB TpcHitMover MakeEvent mtd McEvent IdTruth -dstout big fzin MiniMcMk btof CorrX -hitfilt sdt20150520.155012"
+    set first = 1
+    set last = 100
+
+    <!-- Run the BFC on each file in the list -->
+    foreach line ( "` cat $FILELIST `" )
+        set inputFile = `basename $line`
+        set outputFile = `basename $line .fzd`
+
+        <!-- If the user has not specified a value for first and last -->
+        <!-- then run the bfc over all the events in the file -->
+        if ($first == $last) then
+            echo "Running BFC Over all events in file."
+            bfc $chain $inputFile
+    
+        <!-- Otherwise run the BFC over the events in the specified range -->
+        else
+	    echo "Running BFC over events in range [$first,$last]"
+            <!-- Add Commas in the chain because software is annoying -->
+	    set chain = `echo $chain | tr ' ' ','`
+	    root4star -l -b -q bfc.C\($first,$last,\"$chain\",\"$inputFile\",\"$outputFile\"\)
+
+	    <!--For whatever reason when you run bfc with the outputFile argument it does not -->
+	    <!-- name the tags.root and minimc.root files properly. So rename them here. -->
+		 ls *minimc*
+	    mv $outputFile "$outputFile".tags.root
+	    mv `ls *minimc*` "$outputFile".minimc.root
+
+	    <!-- Move the minimc file to the output directory so that if one file in the list-->
+	    <!-- fails we'll still have the output from the previous files. -->
+	    mv *.minimc.root /star/data01/pwg/kmeehan/AuAuFXT2015_BFCforSimulation/output/thesis/
+
+        endif
+    end
+    
+  </command>
+
+
+</job>

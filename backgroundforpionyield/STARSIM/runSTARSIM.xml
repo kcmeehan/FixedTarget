@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<job maxFilesPerProcess="1" fileListSyntax="paths" simulateSubmission="false">
+
+  <stdout URL="file:/star/data01/pwg/kmeehan/AuAuFXT2015_STARSIM/logs/thesis/STARSIM_AuAu4pt5_$JOBINDEX.out" />
+  <stderr URL="file:/star/data01/pwg/kmeehan/AuAuFXT2015_STARSIM/logs/thesis/STARSIM_AuAu4pt5_$JOBINDEX.err" />
+  
+  <input URL="filelist:/star/u/kmeehan/FixedTarget/SimRepoForQA/STARSIM/inputfiles/txfiles.list" />
+
+  <output fromScratch="*fzd" toURL="file:/star/data01/pwg/kmeehan/AuAuFXT2015_STARSIM/output/thesis/" />
+
+  <Generator>
+    <Location>
+      /star/data01/pwg/kmeehan/AuAuFXT2015_STARSIM/schedFiles/
+    </Location>
+  </Generator>
+
+  <command>
+    
+
+    <!-- Copy the input file(s) to Scheduler's Scratch Directory to improve IO -->
+    foreach line ( "` cat $FILELIST `" )
+        cp $line $SCRATCH
+    end 
+
+    <!-- Copy over the STARSIM kumac file -->
+    cp /star/u/kmeehan/FixedTarget/SimRepoForQA/STARSIM/StarSim.kumac $SCRATCH
+    cd $SCRATCH
+
+
+    <!-- Set variables to pass to STARSIM -->
+    set geometry = y2015b
+    set kumac = $SCRATCH/StarSim.kumac
+
+    <!-- Run STARSIM for each file -->
+    foreach line ( "` cat $FILELIST `" )
+        set inputFile = `basename $line`
+        set outputFile = `basename $line .tx`
+        set nEvents = `grep -c --no-filename "EVENT" $line`
+    
+        starsim -w 0 -b ${kumac} ${inputFile} ${outputFile} ${nEvents} ${geometry}
+    
+    end 
+
+  </command>
+
+
+</job>
