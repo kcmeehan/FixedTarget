@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<job maxFilesPerProcess="1" simulateSubmission="false" fileListSyntax="paths">
+
+  <stdout URL="file:/star/data01/pwg/kmeehan/AuAuFXT2015_MinimcReaderForBG/3cmDCA/logs/thesis/Background_$JOBID.out" />
+  <stderr URL="file:/star/data01/pwg/kmeehan/AuAuFXT2015_MinimcReaderForBG/3cmDCA/logs/thesis/Background_$JOBID.err" />
+  
+  <Generator><Location>
+    /star/data01/pwg/kmeehan/AuAuFXT2015_MinimcReaderForBG/3cmDCA/schedFiles/
+  </Location></Generator>
+  
+  <input URL="filelist:/star/u/kmeehan/FixedTarget/MiniMCReaders/MiniMCReadersForThesis/backgroundMinimcReader/filelists/thesis.list" />
+   
+  <SandBox installer="ZIP">
+    <Package name="sched">
+      <File>file:/star/u/kmeehan/FixedTarget/MiniMCReaders/MiniMCReadersForThesis/backgroundMinimcReader/inc/</File>
+      <File>file:/star/u/kmeehan/FixedTarget/MiniMCReaders/MiniMCReadersForThesis/backgroundMinimcReader/makefile</File>
+      <File>file:/star/u/kmeehan/FixedTarget/MiniMCReaders/MiniMCReadersForThesis/backgroundMinimcReader/macros/</File>
+      <File>file:/star/u/kmeehan/FixedTarget/MiniMCReaders/MiniMCReadersForThesis/backgroundMinimcReader/src/</File>
+    </Package>
+  </SandBox>
+
+  <command>
+    make
+    
+    cd macros
+    
+    set outputFile = $SCRATCH/Background_AuAuFXT2015_$JOBID.root
+
+    root4star -l -q -b RunProcessBackgroundSimulations.C\(\"$FILELIST\",\"$outputFile\"\)
+    
+  </command>
+
+  <output fromScratch="*.root" toURL="file:/star/data01/pwg/kmeehan/AuAuFXT2015_MinimcReaderForBG/3cmDCA/thesis_test_output/" />
+
+</job>

@@ -1,0 +1,44 @@
+****************************************************************************
+This repository is for processing the minimc.root files produced by running
+the code in the background simulation repo. This code creates the root files 
+needed as input to the code that generates and fits the background curves 
+in the davisdst analysis repo.
+****************************************************************************
+
+* Note on setting up the repository:
+Once you have cloned the repository, navigate to the backgroundMinimcReader directory and 
+compile the code with the make command. This should create a bin/ directory with the 
+compiled libraries.
+
+
+* Note on submitting many jobs:
+First the user needs to make a list of the *minimc.root files (obtained from running the bfc)
+to use as input for the background processing code. This can be done by doing something like:
+$ ls $PWD/*.minimc.root > myFileList.list 
+These file lists are stored in the filelists/ directory. For the background study for the
+2015 4.5 GeV Au + Au data, I simulated 100,000 events. To prevent the jobs from being
+evicted for exceeding the time limit of the queue, I divided these 100,000 events into 
+10,000 jobs each with only 10 events. Thus, I ended up with 10,000 minimc files. To
+facilitate job submission, I divided these 10,000 input jobs into five file lists of 2000 jobs
+each. For each file list I created its own xml script to submit the jobs, so I could open 
+five terminals and submit each list of jobs simultaneously.
+
+* Configuring the xml script:
+In the scripts directory, the xml script(s) execute the RunProcessBackgroundSimulations.C macro.
+To run the xml script, it is recommended to set the maxFilesPerProcess job tag to 1 to prevent
+eviction from exceeding the queue time limit. The user must set paths for the input file list, 
+the standard output files, standard error files, scheduler auxiliary files, and root output files.
+The rest of the script should already be properly set up so no additional changes are needed.
+The macro RunProcessBackgroundSimulations.C simply loads the necessary libraries and runs the 
+RunProcessBackgroundSimulations.cxx source code.
+
+*Note on the source code:
+The source code ProcessBackgroundSimulations.cxx creates the histograms used for the background 
+studies. For pions, the histograms contain information on the id of the parent particle of the 
+background vertex the pion came from, or whether it came from the primary vertex. If the pion 
+came from a secondary interaction with detector material rather than a weak decay, it might have a 
+"parent" id of a proton or neutron. Analysis cuts such as the track selection and the DCA cut are 
+set in the BinningAndCuts.cxx source code.
+
+OUTPUT: The output root files are then used as input for the code in the main analysis repo that 
+generates and fits the background curves for each rapidity bin as a function of transverse mass.

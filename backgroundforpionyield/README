@@ -18,9 +18,8 @@ STEP 0: GET THE CODE
 
      usage:        You can obtain all of the code for this repository from the public
      		   repositories of the author. This repository includes a sub-repository
-		   called urqmdReader which will also be obtained. To obtain all of the code
-		   do the following:
-		     $ git clone https://kmeehan713@bitbucket.org/kmeehan713/backgroundforpionyield.git 
+		   called urqmdReader which will also be obtained. After cloning the main 
+			repository, navigate to the backgroundforpionyield/ directory and do the following:
 			  $ git submodule init
 			  $ git submodule update
 
@@ -240,5 +239,4 @@ STEP 8: RUN BFC
 
 	  Congratulations! You have successfully produced minimc.root files from background simulations! To 
 	  process these files to extract the information needed to generate the background curves for futher 
-	  analysis, use the RunProcessBackgroundSimulations.xml script in the minimcreader repository: 
-	  https://bitbucket.org/kmeehan713/backgroundminimcreaderforthesis/src/master/
+	  analysis, use the RunProcessBackgroundSimulations.xml script in the minimcreader repository.

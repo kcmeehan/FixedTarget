@@ -1,0 +1,12 @@
+*~
+*.so
+*.d
+*.root
+*sched*
+*.dataset
+*.session.xml
+*.package
+*.zip
+*.tmp
+*.list
+*.swp
