@@ -1,0 +1,13 @@
+*.root
+*.dataset
+*.session.xml
+*.slr
+*.log
+
+sched.zip
+clear.sh
+
+sched.package/
+schedFiles/
+logs/
+ThesisTest/

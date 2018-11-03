@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<job maxFilesPerProcess="1" simulateSubmission="false" fileListSyntax="paths">
+
+  <stdout URL="file:/global/homes/m/meehan/Embedding/AuAu_4_5GeV_2015/EmbeddingForThesis/ThesisTest/logs/ProcessEmbedding_$JOBID.out" />
+  <stderr URL="file:/global/homes/m/meehan/Embedding/AuAu_4_5GeV_2015/EmbeddingForThesis/ThesisTest/logs/ProcessEmbedding_$JOBID.err" />
+  
+  <Generator><Location>
+    /global/homes/m/meehan/Embedding/AuAu_4_5GeV_2015/EmbeddingForThesis/ThesisTest/schedFiles/
+  </Location></Generator>
+  
+  <input URL="filelist:/global/homes/m/meehan/Embedding/AuAu_4_5GeV_2015/EmbeddingForThesis/pim_fullEmbedding.list" />
+   
+  <SandBox installer="ZIP">
+    <Package name="sched">
+			<File>file:/global/homes/m/meehan/Embedding/AuAu_4_5GeV_2015/EmbeddingForThesis/readAuAuFile.C</File>
+      <File>file:/global/homes/m/meehan/Embedding/AuAu_4_5GeV_2015/EmbeddingForThesis/ProcessEmbedding.C</File>
+    </Package>
+  </SandBox>
+
+  <command>
+
+	  set OUTPUTFILE = $SCRATCH/ProcessEmbedding_$JOBID.root
+		set CENTDB = /global/homes/m/meehan/Embedding/AuAu_4_5GeV_2015/EmbeddingForThesis/AuAu_4_5GeV_2015_centDB.csv
+		set NCENTBINS = 6
+	  set ENERGY = 4.5
+	  set PID = 1
+    set EVENTNAME = 7
+
+    root4star -l -q -b ProcessEmbedding.C\(\"$FILELIST\",\"$OUTPUTFILE\",\"$CENTDB\",$NCENTBINS,$ENERGY,$PID,$EVENTNAME\)
+
+  </command>
+
+  <output fromScratch="*.root" toURL="file:/global/homes/m/meehan/Embedding/AuAu_4_5GeV_2015/EmbeddingForThesis/ThesisTest/output/" />
+	
+
+</job>
