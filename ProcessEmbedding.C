@@ -496,7 +496,7 @@ void ProcessEmbedding(const char* MINIMCLIST, TString OUTPUTFILE, TString CENTDB
       //***************************************************************                                
       if (matchTrackNFitPts[matchTrackIndex] < 10 || matchTrackNHitsdEdx[matchTrackIndex] < 1) {continue;}
       if (matchTrackNFitPts[matchTrackIndex] / (Float_t)matchTrackNPossPts[matchTrackIndex] < .52) {continue;}
-			if (matchTrackDCAGl[matchTrackIndex] > 0.7) continue;
+			if (matchTrackDCAGl[matchTrackIndex] > 3) continue;
 
       //Compute the Rapidity of The Track                                                               
       Double_t matchTrackRapidityEmb = ComputeRapidity(matchTrackPtEmb[matchTrackIndex],
