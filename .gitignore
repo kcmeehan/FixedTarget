@@ -1,2 +1,13 @@
 .sl64_gcc482/
 *.consign
+*.root
+*.dataset
+*.session.xml
+*.slr
+*.log
+
+sched.zip
+sched.package/
+schedFiles/
+logs/
+ThesisTest/
