@@ -21,3 +21,14 @@ star-submit RunProcessEmbedding_pdsf.xml
 The user should set the path for the log, scheduler, and output files. In addition, the user should verify 
 that the path to the input list of minimc files, the path to the centrality database CSV, and the paths in
 the sandbox are correct. The rest of the xml script should already be properly configured.
+_______________________________________________________________________________________________________
+
+STEP 2: Obtaining the efficiency histograms
+
+Use hadd to combine the output root files from the previous step into a single file. Then open root and run:
+
+.x Efficiency.C("inputfile","nameofoutputfile")
+
+All the user needs to do is pass in the input file and then choose a name for the output file. The rest of 
+the code should already be correctly configured for negatively charged pions. The output root file can then be used with the main davisdstanalysis repo to construct the final efficiency correction curves.
+
