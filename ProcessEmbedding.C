@@ -68,7 +68,7 @@ void ProcessEmbedding(const char* MINIMCLIST, TString OUTPUTFILE, TString CENTDB
   const int nCentBins = 7;
 
 	//Read in centrality database
-	std::vector <std::vector <std::vector<int> > > vCentDB = readAuAuFile(CENTDB); //change this after testing
+	std::vector <std::vector <std::vector<int> > > vCentDB = readAuAuFile(CENTDB); 
 
   //Create an Event and Set its type        
   EventType event;
@@ -404,7 +404,6 @@ void ProcessEmbedding(const char* MINIMCLIST, TString OUTPUTFILE, TString CENTDB
     Int_t centralityBin = getCentBinMC(runNumber, eventNumber, vCentDB);
 		if (centralityBin == -999) continue; //exclude non-index-0 vertices
 		if (centralityBin == -2) continue; //exclude pileUp events
-		//cout<<"ERROR: event not in cent DB. Run number: "<<runNumber<<" event number: "<<eventNumber<<endl;
 		if (centralityBin == -1) centralityBin = 6; //set events with centrality class > 30% to all be in last bin
 
     //Fill The Event Level Histograms                                                                   
@@ -633,17 +632,6 @@ void ProcessEmbedding(const char* MINIMCLIST, TString OUTPUTFILE, TString CENTDB
 		rapidityLossHisto[centIndex]->Write();
 	}
 
-  //Create a Summary Vector and Write it
-	/*
-  outFile->cd();
-  TVectorD summaryVector;
-  summaryVector.ResizeTo(3);
-  summaryVector[0] = totalEvents;
-  summaryVector[1] = usedEvents;
-  summaryVector[2] = unusedEvents;
-  summaryVector.Write("SummaryVector");
-	*/
-
   //Close the File
   outFile->Close();
 
@@ -795,9 +783,5 @@ void SetEventType(EventType *eventType, Int_t eventName){
     eventType->yBinWidth = 0.1;
 
   }
-
-  //Set the Number of Bins                         
-  //eventType->nRapBins =  (Int_t)(fabs(eventType->maxY-eventType->minY)/eventType->yBinWidth);
-  //eventType->nmTm0Bins = (Int_t)(fabs(eventType->maxmTm0-eventType->minmTm0)/eventType->mTm0BinWidth);
 
 }
