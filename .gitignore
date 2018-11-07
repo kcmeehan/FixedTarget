@@ -1,0 +1,9 @@
+*.log
+*.dataset
+*.session.xml
+*.slr
+
+sched.zip
+
+ThesisTest/
+sched.package/
