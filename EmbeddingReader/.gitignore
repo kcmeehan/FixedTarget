@@ -1,0 +1,16 @@
+*.consign
+*.root
+*.dataset
+*.session.xml
+*.slr
+*.log
+
+AutoDict*
+
+sched.zip
+
+.sl64_gcc482/
+sched.package/
+schedFiles/
+logs/
+ThesisTest/

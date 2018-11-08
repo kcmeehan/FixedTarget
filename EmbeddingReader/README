@@ -1,0 +1,34 @@
+*******************************************************************************************************
+-------------------------------------------------------------------------------------------------------
+This repository was designed for use on PDSF. The RunProcessEmbedding_pdsf.xml script runs over the embedding minimc files and produces a root file with embedding QA. The Efficiency.C macro then runs on this output to produce the histograms needed to calculate the TPC acceptance + efficiency curves. The output root file from Efficiency.C can be copied to menkar/nuclear or where the main davisdstanalysis repo is located, and passed as input to the RunMakeEmbeddingCorrectionCurves.C macro.
+-------------------------------------------------------------------------------------------------------
+*******************************************************************************************************
+
+_______________________________________________________________________________________________________
+
+STEP 0: Setup
+
+Before running this code, a CSV file with the centrality bin of each event must have been created using
+the RunCreateCentralityDatabaseCSV.sh script in the main davisdstsanalysis repository. 
+_______________________________________________________________________________________________________
+
+STEP 1: Reading the minimcs
+
+Execute the code with star-submit:
+
+star-submit RunProcessEmbedding_pdsf.xml
+
+The user should set the path for the log, scheduler, and output files. In addition, the user should verify 
+that the path to the input list of minimc files, the path to the centrality database CSV, and the paths in
+the sandbox are correct. The rest of the xml script should already be properly configured.
+_______________________________________________________________________________________________________
+
+STEP 2: Obtaining the efficiency histograms
+
+Use hadd to combine the output root files from the previous step into a single file. Then open root and run:
+
+.x Efficiency.C("inputfile","nameofoutputfile")
+
+All the user needs to do is pass in the input file and then choose a name for the output file. The rest of 
+the code should already be correctly configured for negatively charged pions. The output root file can then be used with the main davisdstanalysis repo to construct the final efficiency correction curves.
+
