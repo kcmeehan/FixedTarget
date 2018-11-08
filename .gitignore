@@ -3,6 +3,8 @@
 *.session.xml
 *.slr
 
+AutoDict*
+
 sched.zip
 
 ThesisTest/
