@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<job  datasetSplitting="fileBased" minEvents="20000" maxEvents="25000" simulateSubmission="false" fileListSyntax="xrootd" softLimits="true">
+
+    <command>
+        starver SL16a
+        root4star -l -b fxtFemtoAnalysis.C\(\"$FILELIST\",\"&fileTag;_multBin_&multBin;_${JOBID}.root\",&multBin;,&minPt;,&maxPt;,999999\) &gt;&amp; &fileTag;_multBin_&multBin;_${JOBID}.log
+    </command> 
+
+    <SandBox installer="ZIP">
+        <Package name="hbtCode">
+            <File>file:./fxtFemtoAnalysis.C</File>
+            <File>file:./.sl73_gcc485</File>
+        </Package>
+    </SandBox>
+
+    <stdout discard="true" />
+        <input URL="catalog:star.bnl.gov?path~/data19,trgsetupname=fixedTarget2015,production=P16ia,filetype=daq_reco_MuDst,storage=nfs,runnumber[]16140033-16140038" nFiles="all" />
+        <input URL="catalog:star.bnl.gov?path~/data23,trgsetupname=fixedTarget2015,production=P16ia,filetype=daq_reco_MuDst,storage=nfs,runnumber[]16140033-16140038" nFiles="all" />
+        <output fromScratch="*.root" toURL="file:&scratchRoot;/output/" />
+        <output fromScratch="*.log" toURL="file:&scratchRoot;/logs/" />
+    <stderr URL="file:&scratchRoot;/logs/$JOBID.err"/>
+
+    <Generator>
+        <Location>/&scratchRoot;/schedulerFiles</Location>
+        <ReportLocation>/&scratchRoot;/schedulerFiles</ReportLocation>
+    </Generator>
+</job>

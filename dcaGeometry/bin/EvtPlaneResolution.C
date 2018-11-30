@@ -1,0 +1,10 @@
+{
+  cout<<"TPC SUBEVT1: "<<TMath::Sqrt(subev1minus3->GetMean()*subev1minus2->GetMean()/subev2minus3->GetMean())
+      <<" +- "<<0.5*TMath::Sqrt(subev1minus3->GetMeanError()*subev1minus3->GetMeanError()/subev1minus3->GetMean()/subev1minus3->GetMean()
+			       +subev1minus2->GetMeanError()*subev1minus2->GetMeanError()/subev1minus2->GetMean()/subev1minus2->GetMean()
+			       +subev2minus3->GetMeanError()*subev2minus3->GetMeanError()/subev2minus3->GetMean()/subev2minus3->GetMean())<<endl;
+  cout<<"TPC SUBEVT1: "<<TMath::Sqrt(subev1minus2->GetMean()*subev1minusBBC->GetMean()/subev2minusBBC->GetMean())<<" +- "<<0.5*TMath::Sqrt(subev1minus2->GetMeanError()*subev1minus2->GetMeanError()/subev1minus2->GetMean()/subev1minus2->GetMean()                                                                                                                            +subev1minusBBC->GetMeanError()*subev1minusBBC->GetMeanError()/subev1minusBBC->GetMean()/subev1minusBBC->GetMean()                                                                                                                                             +subev2minusBBC->GetMeanError()*subev2minusBBC->GetMeanError()/subev2minusBBC->GetMean()/subev2minusBBC->GetMean())<<endl;
+
+  cout<<"BBC SUBEVT : "<<TMath::Sqrt(BBCminusA->GetMean()*BBCminusB->GetMean()/AminusB->GetMean())<<" +- "<<0.5*TMath::Sqrt(BBCminusA->GetMeanError()*BBCminusA->GetMeanError()/BBCminusA->GetMean()/BBCminusA->GetMean()                                                                                                                            +BBCminusB->GetMeanError()*BBCminusB->GetMeanError()/BBCminusB->GetMean()/BBCminusB->GetMean()                                                                                                                                             +AminusB->GetMeanError()*AminusB->GetMeanError()/AminusB->GetMean()/AminusB->GetMean())<<endl;
+  cout<<"Psi1A SUBEVT : "<<TMath::Sqrt(BBCminusA->GetMean()*AminusB->GetMean()/BBCminusB->GetMean())<<endl;
+}
