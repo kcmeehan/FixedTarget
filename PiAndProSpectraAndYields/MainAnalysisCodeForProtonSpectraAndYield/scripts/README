@@ -1,0 +1,91 @@
+#DavisDstAnalysis
+  
+	DavisDstAnalysis is a collection of compiled root macros to create AuAu proton 
+	spectra and dndy for the 2015 data.
+
+#Authors
+
+	Samuel Heppelmann, Kathryn Meehan and Chris Flores.
+	For any questions, please email sheppelmann@gmail.com
+
+
+#Installation
+	
+	Compile code with "make" in directory davisdstanaylsis/.
+
+#Run
+
+	In the directory davisdstanalysis/scripts/. are a list of scripts to run the analysis.
+	
+	The full analysis can be run using ./RunFullAnalysis.bash. Within the script, 
+	the user must specifiy the data directory, image directory, analysis directory, 
+	correction file, nEvents, energy, eventConfiguration, starlib, centIndex and system Label.
+
+	The user specifies the baseNames of the produced root files and the scripts 
+	generates the root files in the analysis directory.
+
+	If the user prefers to run individual sub-processes of the analysis:
+	
+	#1 RunSkimmerAndBinner.bash (with option 0)
+		
+		Reads the davisdst-analysis files and produces a histogram file 
+		with 3D histograms of the proton dEdx, mt-m0 and rapidity for dEdx fitting 
+		as well as tof, mt-m0 and rapidity for tof fitting. 
+		First pass does not bin include tofCut with option 0.
+
+	#2 RunFitZTOFProtons.bash
+
+		Reads the 3D histogram file and fits the tof histograms. 
+		Fits are stored in $tofFitFile and used when rerunning RunSkimmerAndBinner.bash 
+		with option 1.
+
+	#3 RunSkimmerAndBinner.bash (with option 1)
+
+	   	Second pass of the script reads the davisdst-analysis files and generates 
+		tof cut 3D histogram files.
+
+	#4 RunFitZTPCProtonsTofCut.sh 
+
+		Reads the tofCut yield histogram file and fits dedx of the tofCut Protons. 
+		The clean tof cut signal produces a $protonWidthFile 
+		used in the ./RunFitZTPCProtons.sh for better fit constraints.
+		
+	#5 RunFitZTPCDeuteronsTofCut.sh 
+
+		Reads the tofCut yield histogram file and fits dedx of the tofCut Deuterons. 
+		The clean tof cut signal produces a $deuteronWidthFile 
+		used in the ./RunFitZTPCProtons.sh for better fit constraints.
+	   
+	#6 RunFitZTPCProtons.sh 
+
+		Reads the yield histogram file and fits dEdx of 
+		the protons, pions, e+, kaons, and deuterons. Proton and deuteron width 
+		and centroid values are from the $protonWidthFile and 
+		$deuteronWidthFile respectively.   
+		Script generates the uncorrected spectra.
+		
+	#7 RunCorrectSpectra.sh 
+
+	   	Uncorrected spectra file is corrected with correctionFile.root.
+		Additionally, the corrections are individually applied to the uncorrected 
+		spectra and the average deviation is calculated for the spectra systematic errors.  	
+	#8 DrawProtonSpectraNoFit.sh
+
+		Runs macro that draws proton spectra.
+
+	#9 RunFitThermalProtonSpectra.sh
+
+		Corrected spectra is fit with a Blastwave fit and a thermal fit. Using the 
+		difference of the fits, the systematic errors are calculated. Produces $dndyFile.
+
+	#10 RunFitdNdy.sh
+
+		Lastly, the script fits the dNdy in the $dndyFile with a double gaussian 
+		and saves a pdf of the fit.  
+
+
+	That's all there is!
+
+
+	
+	   	  
