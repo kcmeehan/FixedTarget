@@ -1,0 +1,11 @@
+#include <iostream>
+
+#include "TH1D.h"
+
+std::vector <double> FindCentralityBinCuts(){
+
+
+
+
+
+}

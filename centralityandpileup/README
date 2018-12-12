@@ -1,0 +1,37 @@
+What this does:
+
+This code creates the centrality and pileup figure for the Au+Au 4.5 GeV 2015 data. It is setup to run over davisDSTs.
+
+
+Contact:
+
+Todd A Kinghorn
+
+email: takinghorn@ucdavis.edu
+
+
+Installation:
+
+You can clone this code into your directory by typing:
+git clone https://bitbucket.org/tkinghorn/centralityandpileup/
+
+After this is done, you can compile the code with the command "make" in directory "centralityandpileup/".
+
+
+Run code:
+
+1. First, change directory to scripts with the command "cd scripts/" while in the directory "centralityandpileup/". All scripts should be ran from this directory.
+
+2. Run the Glauber simulation with the command "./RunGlauberSimulation.sh". Doing this will produce a root file in the directory "centralityandpileup/userfiles/AuAu_4_5GeV_2015/" with a name based on the user defined variables within the script. If the user wants a simulation with more statistics, the user can change the variable "nEvents" within the script.
+
+3. Run the centrality variable distributions script with the command "./RunCentralityVariableDistributions.bash". This runs over the davisDSTs located in the path specified in the script. A root file is produced in the directory "centralityandpileup/userfiles/AuAu_4_5GeV_2015/centralityVariableRuns/" called "CentralityVariableDistributions.root". If the user wants to rerun this script for any reason, the produced root file should be removed.
+
+4. Run the centrality determination script with the command "./RunCentralityDetermination.sh". This uses the root files created by steps (1) and (2). A root file is produced in the directory "centralityandpileup/userfiles/AuAu_4_5GeV_2015/centralityBins/" called "CentralityBins.root". This will also produce a text output informing the user of the binning results which include a trial number and negative binomial parameters. These numbers can be recorded and then used for the next step. If the user wants to rerun this script for any reason, the produced root file should be removed. There can be some variation in the results from the Glauber simulation ran in step (1).
+
+5. Run the pileup and chi-squared minimization script with the command "./RunPileUpChiSquaredMinimization.bash". This produces a root file in the directory "centralityandpileup/userfiles/AuAu_4_5GeV_2015/pileupLumi/" called "CentralityBins_pileupChiSquaredMinimization.root". This will also produce a text output informing the user of the chi-squared for the pileup percentage used as well as fitting the chi-squared as a function of pileup percentage with a second degree polynomial.
+
+6. Run the script that will produce a root file that contains the data, the Glauber simulation with a negative binomial fit, and the pileup with the command "./RunPileUpLumi.bash". This produces a root file in the directory "centralityandpileup/userfiles/AuAu_4_5GeV_2015/pileupLumi/" called "CentralityBins_pileupLumi.root".
+
+7. Next, change the directory to drawing macros with the command "cd macros/" while in the directory "centralityandpileup/".
+
+8. Open a root session and type the following ".x DrawCentralityBinResultsAndPileUp.C ("../userfiles/AuAu_4_5GeV_2015/pileupLumi/CentralityBins_pileupLumi.root","SL16a",4.5,"FixedTarget2015","Au+Au")". This will produce a figure that contains the data, the Glauber simulation, and the pileup. A pdf and eps version of this plot will be saved.

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#This script is used to find the centrality binning of data
+#It needs a Glauber Simulation to have been completed first.
+
+#USER DEFINED VARIABLES
+dataFileName=

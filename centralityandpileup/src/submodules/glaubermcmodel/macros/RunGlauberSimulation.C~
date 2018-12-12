@@ -1,0 +1,3 @@
+//This Macro simply calls the Glauber Model Simulation Function
+//With the Given parameters. This macro can be called from the
+//bash script in the parent directory called runGlauberSimulation.sh

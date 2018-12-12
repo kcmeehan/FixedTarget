@@ -1,0 +1,33 @@
+//This is a simple ROOT Style "Make" file
+
+void makeLibs(TString opt=""){
+
+  if (opt=="clean"){
+    gSystem->Exec("rm -f bin/*");
+    return;
+  }
+  
+  //Check to Make sure the bin/ and data/ directories exist...if they don't make them
+  if (gSystem->OpenDirectory("bin") == 0)
+    gSystem->MakeDirectory("bin");
+
+  if (gSystem->OpenDirectory("data") == 0)
+    gSystem->MakeDirectory("data");
+
+  
+  gSystem->SetBuildDir("$PWD/bin/",true);
+  gSystem->SetIncludePath(TString::Format("-I$ROOTSYS/include -I%s/inc",gSystem->pwd()));
+  
+  gSystem->CompileMacro("src/GlauberClass.cxx","k-");
+  gSystem->Load("GlauberClass_cxx");
+  
+  gSystem->CompileMacro("src/GlauberModel.cxx","k-");
+  gSystem->CompileMacro("src/FindBestFitNegativeBinomialParameters.cxx","k-");
+
+  gInterpreter->GenerateDictionary("vector<pair<double,double> >","vector");
+
+  //Root automatically makes some junk files that are not needed after the build process...
+  //so delete them
+  gSystem->Exec("rm AutoDict_*.cxx");
+ 
+}

@@ -1,0 +1,26 @@
+Int_t DetermineCentralityBin16(std::vector<double> centralityCuts, Double_t centralityVar){
+
+  //This Function loops over the centrality bins and determines which bin this event
+  //belongs to based on the value of its centralityVar
+
+  const Int_t nCentBins(16);
+  for (Int_t iCentBin=0; iCentBin<nCentBins; iCentBin++){
+
+    //Use this as long as we are not looking at the highest cent bin
+    if (iCentBin+1 < nCentBins &&
+	centralityVar >= centralityCuts[iCentBin] &&
+	centralityVar < centralityCuts[iCentBin+1])
+      return iCentBin;
+
+    //If we are looking at the highest cent bin then the centrality var
+    //only needs to be greater with no upper bound
+    else if (iCentBin+1 == nCentBins &&
+	     centralityVar >= centralityCuts[iCentBin])
+      return iCentBin;
+
+  }//End Loop Over Centrality Bins
+
+  //If for some reason we don't find a centrality bin then return something silly
+  return -1;
+
+}

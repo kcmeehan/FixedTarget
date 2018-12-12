@@ -1,0 +1,10 @@
+void RunGlauberSimulationAndCentralityDetermination(){
+
+  TFile *dataFile = new TFile("data/nPionHistos.root");
+  TH1D *dataHisto = (TH1D *)dataFile->Get("nPions_4_5");
+
+  TFile *glauberFile = new TFile("data/Glauber_197_27_30mb_WoodsSaxon.root");
+  TTree *glauberTree = (TTree *)glauberFile->Get("GlauberTree");
+
+
+}

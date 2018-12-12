@@ -1,0 +1,9 @@
+//These are various structures used as return trypes for functions
+
+struct NegBinomialSearchResults{
+
+  Double_t n;
+  Double_t p;
+  Double_t InverseChi2;
+
+};
