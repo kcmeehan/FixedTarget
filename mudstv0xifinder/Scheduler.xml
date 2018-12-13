@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<job  minFilesPerProcess="1" maxFilesPerProcess="1" fileListSyntax="paths"> 
+   <command>
+	./runv0.csh $FILELIST $INPUTFILECOUNT 0 $SCRATCH/ $JOBID &gt;&amp; $SCRATCH/${JOBID}.out
+
+	setenv PICOOUTPUT $SUBMITTINGDIRECTORY/output
+	<!-- Make output directory (if they don't exist) -->
+	if ( ! -f $PICOOUTPUT ) then 
+	  mkdir -pv $PICOOUTPUT
+	endif
+
+	<!-- Move LOG files to PICOOUTPUT -->
+	mv -v $SCRATCH/${JOBID}.out $PICOOUTPUT/
+   </command>
+
+   <!-- Define locations of ROOT files -->
+   <output fromScratch="*.root" toURL="$PICOOUTPUT/"/>
+
+   <!-- please change the output paths to valid folders where you have write permission -->
+   <stdout URL="file:./log/$JOBID.out"/>
+   <stderr URL="file:./log/$JOBID.err"/>
+
+   <input URL="catalog:star.bnl.gov?storage!=hpss,production=P16ia,trgsetupname=fixedTarget2015,filetype=daq_reco_MuDst,runnumber[]16140033-16140038,filename~st_physics,sanity=1" singleCopy="true" preferStorage="NFS" nFiles="all" />
+
+   <!-- csh/list files -->
+   <Generator>
+	<Location>./batch</Location>
+   </Generator>
+
+   <!-- Put any locally-compiled stuffs into a sand-box -->
+   <SandBox installer="ZIP">
+	<Package name="Localmakerlibs">
+	   <File>file:./.sl64_gcc482/</File>
+	   <File>file:./StRoot/</File>
+	   <File>file:./reconstruct_v0.C</File>
+	   <File>file:./runv0.csh</File>
+	</Package>
+   </SandBox>
+</job>

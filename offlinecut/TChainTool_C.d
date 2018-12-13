@@ -1,0 +1,39 @@
+
+# DO NOT DELETE
+
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TChain.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TTree.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TBranch.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TNamed.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TObject.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/Rtypes.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/RConfig.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/RVersion.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/DllImport.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/Rtypeinfo.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TGenericClassInfo.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TSchemaHelper.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TStorage.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TVersionCheck.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/Riosfwd.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TBuffer.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TString.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TRefCnt.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TMathBase.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TObjArray.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TSeqCollection.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TCollection.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TIterator.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TAttFill.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TAttLine.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TAttMarker.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TArrayD.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TArray.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TArrayI.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TDataType.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TDictionary.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/cint/Property.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TClass.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TObjString.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.o: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/TVirtualTreePlayer.h
+/gpfs/mnt/gpfs01/star/pwg/zhux/strange/code_for_paper/offlinecut/./TChainTool.C: /afs/rhic.bnl.gov/star/ROOT/5.22.00/.sl64_gcc482/rootdeb/include/cintdictversion.h
