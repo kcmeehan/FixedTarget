@@ -3,6 +3,11 @@ What this does:
 This code creates the centrality and pileup figure for the Au+Au 4.5 GeV 2015 data. It is setup to run over davisDSTs.
 
 
+Authors:
+
+Christopher Flores, Kathryn Meehan, Todd A Kinghorn
+
+
 Contact:
 
 Todd A Kinghorn
@@ -32,6 +37,6 @@ Run code:
 
 6. Run the script that will produce a root file that contains the data, the Glauber simulation with a negative binomial fit, and the pileup with the command "./RunPileUpLumi.bash". This produces a root file in the directory "centralityandpileup/userfiles/AuAu_4_5GeV_2015/pileupLumi/" called "CentralityBins_pileupLumi.root".
 
-7. Next, change the directory to drawing macros with the command "cd macros/" while in the directory "centralityandpileup/".
+7. Next, change the directory to drawing macros with the command "cd drawingmacros/" while in the directory "centralityandpileup/".
 
 8. Open a root session and type the following ".x DrawCentralityBinResultsAndPileUp.C ("../userfiles/AuAu_4_5GeV_2015/pileupLumi/CentralityBins_pileupLumi.root","SL16a",4.5,"FixedTarget2015","Au+Au")". This will produce a figure that contains the data, the Glauber simulation, and the pileup. A pdf and eps version of this plot will be saved.
